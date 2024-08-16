@@ -1,0 +1,244 @@
+// readline, rl_clear_history, rl_on_new_line,
+// rl_replace_line, rl_redisplay, add_history,
+// printf, malloc, free, write, access, open, read,
+// close, fork, wait, waitpid, wait3, wait4, signal,
+// sigaction, sigemptyset, sigaddset, kill, exit,
+// getcwd, chdir, stat, lstat, fstat, unlink, execve,
+// dup, dup2, pipe, opendir, readdir, closedir,
+// strerror, perror, isatty, ttyname, ttyslot, ioctl,
+// getenv, tcsetattr, tcgetattr, tgetent, tgetflag,
+// tgetnum, tgetstr, tgoto, tputs
+
+------------------------------------------------------------------------------------------------------------
+// NAME    readline - get a line from a user with editing
+
+/*
+SYNOPSIS
+       #include <stdio.h>
+       #include <readline/readline.h>
+       #include <readline/history.h>
+
+       char *readline (const char *prompt);
+
+------------------------------------------------------------------------------------------------------------
+
+NAME    rl_clear_history    ->  This function clears the entire history list.
+
+int main() 
+{
+    char *input;
+
+    // Read input from the user
+    input = readline("Prompt> ");
+    if (input && *input) 
+    {
+    // Add input to the history
+        add_history(input);
+    }
+
+    // Clear the history list
+    rl_clear_history();
+
+    printf("History cleared.\n");
+
+    // Free the input buffer
+    free(input);
+
+    return 0;
+}
+
+------------------------------------------------------------------------------------------------------------
+NAME    rl_on_new_line  ->  This function signals that the cursor is on a new line. 
+                            Its typically used in conjunction with rl_redisplay.
+
+int main()
+{
+    char *input;
+
+    // Read input from the user
+    input = readline("Prompt> ");
+    if (input && *input) 
+    {
+        // Add input to the history
+        add_history(input);
+    }
+
+    // Signal that we are on a new line
+    rl_on_new_line();
+
+    printf("Cursor moved to new line.\n");
+
+    // Free the input buffer
+    free(input);
+
+    return 0;
+}
+
+------------------------------------------------------------------------------------------------------------
+NAME    rl_replace_line -> This function replaces the current line with a new line.
+
+int main() 
+{
+    char *input;
+
+    // Read input from the user
+    input = readline("Prompt> ");
+    if (input && *input) 
+    {
+        // Add input to the history
+        add_history(input);
+
+        // Replace the current line with "New input"
+        rl_replace_line("New input", 1);
+
+        // Redisplay the new input
+        rl_redisplay();
+    }
+
+    // Free the input buffer
+    free(input);
+
+    return 0;
+}
+
+------------------------------------------------------------------------------------------------------------
+NAME    rl_redisplay    ->  This function refreshes the display to reflect the current input buffer.
+
+int main() 
+{
+    char *input;
+
+    // Read input from the user
+    input = readline("Prompt> ");
+    if (input && *input) 
+    {
+        // Add input to the history
+        add_history(input);
+
+        // Replace the current line with "New input"
+        rl_replace_line("New input", 1);
+
+        // Signal that we are on a new line
+        rl_on_new_line();
+
+        // Redisplay to show the updated input
+        rl_redisplay();
+    }
+    // Free the input buffer
+    free(input);
+    return 0;
+}
+
+------------------------------------------------------------------------------------------------------------
+NAME    add_history ->  This function adds a line to the history list.
+
+int main() 
+{
+    char *input;
+
+    // Read input from the user
+    input = readline("Prompt> ");
+    if (input && *input)
+    {
+        // Add input to the history
+        add_history(input);
+        printf("Added to history: %s\n", input);
+    }
+    // Free the input buffer
+    free(input);
+    return 0;
+}
+
+------------------------------------------------------------------------------------------------------------
+NAME       wait3, wait4 -> wait for process to change state, BSD style 
+These functions are nonstandard; in new programs, the use of waitpid(2) or waitid(2) is preferable.
+
+The  wait3()  and wait4() system calls are similar to waitpid(2), but additionally return resource usage information about the child in the structure
+pointed to by rusage.
+
+SYNOPSIS
+       #include <sys/types.h>
+       #include <sys/time.h>
+       #include <sys/resource.h>
+       #include <sys/wait.h>
+
+       pid_t wait3(int *wstatus, int options,
+                   struct rusage *rusage);
+
+       pid_t wait4(pid_t pid, int *wstatus, int options,
+                   struct rusage *rusage);
+
+------------------------------------------------------------------------------------------------------------
+NAME
+       wait, waitpid, waitid - wait for process to change state
+
+SYNOPSIS
+       #include <sys/types.h>
+       #include <sys/wait.h>
+
+       pid_t wait(int *wstatus);
+
+       pid_t waitpid(pid_t pid, int *wstatus, int options);
+
+       int waitid(idtype_t idtype, id_t id, siginfo_t *infop, int options);
+                       /* This is the glibc and POSIX interface; see
+                          NOTES for information on the raw system call.
+ wait() and waitpid()
+       The wait() system call suspends execution of the calling thread until one of its children terminates.  The call wait(&wstatus) is equivalent to:
+
+           waitpid(-1, &wstatus, 0);
+
+       The waitpid() system call suspends execution of the calling thread until a child specified by pid argument has changed state.  By default,  waitpid()
+       waits only for terminated children, but this behavior is modifiable via the options argument, as described below.
+
+       The value of pid can be:
+
+       < -1   meaning wait for any child process whose process group ID is equal to the absolute value of pid.
+
+       -1     meaning wait for any child process.
+
+       0      meaning wait for any child process whose process group ID is equal to that of the calling process at the time of the call to waitpid().
+
+       > 0    meaning wait for the child whose process ID is equal to the value of pid.
+------------------------------------------------------------------------------------------------------------
+
+NAME
+       access - check user's permissions for a file
+
+SYNOPSIS
+       #include <unistd.h>
+
+       int access(const char *pathname, int mode);
+
+------------------------------------------------------------------------------------------------------------
+NAME
+       signal - ANSI C signal handling
+
+SYNOPSIS
+       #include <signal.h>
+
+       typedef void (*sighandler_t)(int);
+
+       sighandler_t signal(int signum, sighandler_t handler);
+
+signal() sets the disposition of the signal signum to handler, which is either SIG_IGN, SIG_DFL, or the address of a programmer-defined function (a "signal handler").
+
+       If the signal signum is delivered to the process, then one of the following happens:
+
+       *  If the disposition is set to SIG_IGN, then the signal is ignored.
+
+       *  If the disposition is set to SIG_DFL, then the default action associated with the signal (see signal(7)) occurs.
+
+       *  If  the disposition is set to a function, then first either the disposition is reset to SIG_DFL, or the signal is blocked (see Portability below), and then handler is called with argument signum.  If invocation of the han‐
+          dler caused the signal to be blocked, then the signal is unblocked upon return from the handler.
+
+       The signals SIGKILL and SIGSTOP cannot be caught or ignored.
+
+RETURN VALUE
+       signal() returns the previous value of the signal handler, or SIG_ERR on error.  In the event of an error, errno is set to indicate the cause.
+
+ERRORS
+       EINVAL signum is invalid.
+*/
+
+
