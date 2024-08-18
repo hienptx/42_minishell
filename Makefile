@@ -4,6 +4,7 @@ SRCS_DIR = ./srcs
 OBJS_DIR = ./objs
 LIBFT_DIR = ./libft
 INCL_DIR = ./includes
+LIBFT_H = 
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR)
