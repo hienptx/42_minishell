@@ -19,9 +19,7 @@ SYNOPSIS
        #include <readline/history.h>
 
        char *readline (const char *prompt);
-
 ------------------------------------------------------------------------------------------------------------
-
 NAME    rl_clear_history    ->  This function clears the entire history list.
 
 int main() 
@@ -46,7 +44,6 @@ int main()
 
     return 0;
 }
-
 ------------------------------------------------------------------------------------------------------------
 NAME    rl_on_new_line  ->  This function signals that the cursor is on a new line. 
                             Its typically used in conjunction with rl_redisplay.
@@ -239,6 +236,36 @@ RETURN VALUE
 
 ERRORS
        EINVAL signum is invalid.
+------------------------------------------------------------------------------------------------------------
+NAME
+       getcwd, getwd, get_current_dir_name - get current working directory
+
+SYNOPSIS
+       #include <unistd.h>
+
+       char *getcwd(char *buf, size_t size);
+
+DESCRIPTION
+       These  functions  return a null-terminated string containing an absolute pathname that is the current working directory of the
+       calling process.  The pathname is returned as the function result and via the argument buf, if present.
+
+       The getcwd() function copies an absolute pathname of the current working directory to the array pointed to by buf, which is of
+       length size.
+
+       If  the  length  of  the absolute pathname of the current working directory, including the terminating null byte, exceeds size
+       bytes, NULL is returned, and errno is set to ERANGE; an application should check for this error, and allocate a larger  buffer
+       if necessary.
+
+       As  an  extension  to  the  POSIX.1-2001 standard, glibc's getcwd() allocates the buffer dynamically using malloc(3) if buf is
+       NULL.  In this case, the allocated buffer has the length size unless size is zero, when buf is allocated as big as  necessary.
+       The caller should free(3) the returned buffer.^
+
+RETURN VALUE
+       On  success,  these  functions  return a pointer to a string containing the pathname of the current working directory.  In the
+       case of getcwd() and getwd() this is the same value as buf.
+
+       On failure, these functions return NULL, and errno is set to indicate the error.  The contents of the array pointed to by  buf
+       are undefined on error.
 */
 
 

@@ -1,31 +1,57 @@
 #include "minishell.h"
 
-// Ctrl-D End of Transmission
-// Ctrl-C Signal Interrupt - SIGINT
-// Ctrl-\ Quit - SIGQUIT
+//  SIGNAL
+// Ctrl-D exit shell -> 
+// Ctrl-C Signal Interrupt - signum=SIGINT
+// Ctrl-\ does nothing - signum=SIGQUIT
+
+// BUILT-IN
+// ◦echo with option -n
+// ◦cd with only a relative or absolute path
+// ◦pwd with no options
+// ◦export with no options
+// ◦unset with no options
+// ◦env with no options or arguments
+// ◦exit with no options
+
+// APPROACH
+// Parsecmd - recursive descent parser
+// runcmd - walk the tree recursively. "execute" the nodes, create child processes as needed
+
+// Signal handler for SIGINT (^C)
+
+void signal_handler(int sig)
+{
+    printf("\n");
+    (void)sig;
+    // Signal that we are on a new line
+    rl_on_new_line();
+    // Redisplay to show the updated (empty) input prompt
+    rl_redisplay();
+}
 
 int main(void) 
 {
     char *input;
 
+    // Set the SIGINT (Ctrl+C) signal handler
+    signal(SIGINT, signal_handler);
+
     while(1)
     {
         // Read input from the user
         input = readline("Prompt> ");
-        if (input && *input) 
+        if (input && *input)
         {
             add_history(input); // Add input to the history
-            // rl_replace_line("New input\n", 1); // Replace the current line with "New input"
-            // rl_on_new_line(); // Signal that we are on a new line
-            // rl_redisplay(); // Redisplay to show the updated input
+            printf("%s\n", input); // Echo the input
         }
         else
         {
             perror("Exiting shell");
             exit(1);
         }
-        printf("%s\n", input);
+        free(input); // Free the input buffer after use
     }
-    free(input);     // Free the input buffer
     return 0;
 }
