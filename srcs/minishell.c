@@ -22,10 +22,10 @@
 
 void signal_handler(int sig)
 {
-    printf("\n");
     (void)sig;
     // Signal that we are on a new line
     rl_on_new_line();
+    printf("\n");
     // Redisplay to show the updated (empty) input prompt
     rl_redisplay();
 }
