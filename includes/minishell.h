@@ -8,8 +8,19 @@
 #include <signal.h>
 #include <unistd.h>
 // #include "minishell/libft/includes/libft.h"
-#include "/home/mafalda/42/minishell/includes/minishell.h"
+#include "/home/mafalda/42/minishell/libft/includes/libft.h"
+
+#define EXEC 1
+#define PIPE 2
+#define REDIR 3
 
 typedef void (*sighandler_t)(int);
+
+struct pipe
+{
+    int type;
+    char *left;
+    char *right;
+};
 
 #endif
