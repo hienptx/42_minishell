@@ -8,7 +8,7 @@
 #include <signal.h>
 #include <unistd.h>
 // #include "minishell/libft/includes/libft.h"
-#include "/home/mafalda/42/minishell/libft/includes/libft.h"
+#include "../libft/includes/libft.h"
 
 #define EXEC 1
 #define PIPE 2
