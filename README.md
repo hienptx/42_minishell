@@ -14,3 +14,11 @@ If the user tapes control C, (an interrpt with termination), the shell sends the
 
 Now if you want details of this, you need to look into the specific shell you are interested in, as different shells will do things their own way. The above is just a general description of how a shell usually does this. Not all shells do all the steps shown above.
 
+##definition (for our implementation)
+token : words or operators
+operator: control operators or redirection operators
+control operator : pipe (also newline, end-of-input indicator)
+redirection operator : '<', '>', '<<', '>>'
+word : token other than operators
+name : a word solely consists of underscores, digits, alphabets but not digit in the first character
+
