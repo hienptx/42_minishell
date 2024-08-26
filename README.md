@@ -17,8 +17,29 @@ Now if you want details of this, you need to look into the specific shell you ar
 ##definition (for our implementation)
 token : words or operators
 operator: control operators or redirection operators
-control operator : pipe (also newline, end-of-input indicator)
+control operator : '|' (also newline, end-of-input indicator)
 redirection operator : '<', '>', '<<', '>>'
 word : token other than operators
 name : a word solely consists of underscores, digits, alphabets but not digit in the first character
+assignment_word : (not clear for now)
+
+%token  WORD
+%token  ASSIGNMENT_WORD
+
+%token  DLESS  DGREAT LESS GREAT
+(*      '<<'   '>>'   '<'   '>'  *)
+
+%token PIPE
+(*     '|'  *)
+
+ex) echo hello
+-> {type : word, data : echo}
+   {type : word, data : hello}
+
+ex) echo hello | grep hello
+-> {type : word, data : echo}
+   {type : word, data : hello}
+   {type : PIPE, data : |}
+   {type : word, data : grep}
+   {type : word, data : grep}
 
