@@ -266,6 +266,14 @@ RETURN VALUE
 
        On failure, these functions return NULL, and errno is set to indicate the error.  The contents of the array pointed to by  buf
        are undefined on error.
-*/
+------------------------------------------------------------------------------------------------------------
+NAME
+       getenv, secure_getenv - get an environment variable
 
+SYNOPSIS
+       #include <stdlib.h>
+
+       char *getenv(const char *name);
+
+*/
 
