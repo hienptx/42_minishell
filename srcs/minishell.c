@@ -38,68 +38,64 @@ void signal_handler(int sig)
 size_t count_tokens(char *str)
 {
     int count = 0;
-    char *ptr = str;
-    char quote;
+    char *sep = "<>|";
 
-    while (*ptr != '\0')
+    while (*str != '\0')
     {
-        while (*ptr != '\0' && *ptr == ' ')
-            ptr++;
-        if (*ptr == '"' || *ptr == '\'')
+        while (*str == ' ')
+            str++;
+        if (*str == '\0')
+            break;
+        if (ft_strchr(sep, *str) != NULL)
         {
-            quote = *ptr;
-            ptr++; // Skip the opening quote
-            while (*ptr != '\0' && *ptr != quote)
-                ptr++;
-            if (*ptr == quote)
-                ptr++; // Skip the closing quote
+            count++;
+            if ((*str == '>' && *(str + 1) == '>') || (*str == '<' && *(str + 1) == '<'))
+                str += 2; // Skip the '>>' or '<<'
+            else
+                str++; // Skip the single special character
         }
         else
         {
-            while (*ptr != '\0' && *ptr != ' ' && *ptr != '"' && *ptr != '\'')
-                ptr++;
+            while (*str != '\0' && *str != ' ' && ft_strchr(sep, *str) == NULL)
+                str++;
+            count++;
         }
-        count++;
     }
     return count;
 }
 
 char *cpy_str(char **ret, char *str, size_t *pos)
 {
-    char quote;
-    char *ptr = str;
+    char *ptr;
     size_t wordlen;
-
+    char *sep = "<>|";
+    
     while (*str != '\0' && *str == ' ')
         str++;
+    if (*str == '\0')
+        return str;  // Return if the string ends after spaces
     ptr = str;
-    // Handle quoted tokens
-    if (*str == '"' || *str == '\'')
+    if (strchr(sep, *str) != NULL)
     {
-        quote = *str;
-        str++;  // Skip the opening quote
-        while (*str != '\0' && *str != quote)
-            str++;
-        if (*str == quote)
-            str++;  // Include the closing quote
-        wordlen = str - ptr;  // Calculate the word length including quotes
-        ret[*pos] = ft_malloc(ret[*pos], wordlen);
-        ret[*pos][wordlen] = '\0';
-        ft_strncpy(ret[*pos], ptr, wordlen);
+        if ((*str == '>' && *(str + 1) == '>') || (*str == '<' && *(str + 1) == '<'))
+            str = str + 2;
+        else
+            str++; // wordlen = str - ptr;  // Length of single operator like '>', '<', '|'
+        wordlen = str - ptr;  // Length of '>>' or '<<'
     }
     else
     {
-        // Handle unquoted tokens
-        while (*str != '\0' && *str != ' ')
+        while (*str != '\0' && *str != ' ' && ft_strchr(sep, *str) == NULL)
             str++;
         wordlen = str - ptr;  // Calculate the word length
-        ret[*pos] = ft_malloc(ret[*pos], wordlen);  // Allocate memory
-        ret[*pos][wordlen] = '\0';  // Null-terminate the string
-        ft_strncpy(ret[*pos], ptr, wordlen);
     }
+    ret[*pos] = ft_malloc(ret[*pos], wordlen);
+    ft_strncpy(ret[*pos], ptr, wordlen);
+    ret[*pos][wordlen] = '\0';  // Null-terminate the string
     *pos += 1;
     return str;
 }
+
 
 char **trim_cmd(char *str)
 {
@@ -110,6 +106,7 @@ char **trim_cmd(char *str)
 
     ptr = str;
     nbr_tokens = count_tokens(str);
+    printf("%li\n", nbr_tokens);
     ret = malloc((nbr_tokens + 1) * sizeof(char *));
     if (ret == NULL)
     {
@@ -122,13 +119,10 @@ char **trim_cmd(char *str)
     ret[nbr_tokens] = NULL;
     return (ret);
 }
-
  // expansion_handling $ -> use getenv
 
 void quote_handling(char **token)
 {
-    // char *ret_env;
-    // char **tokens_arr;
     char *ptr;
     char *squote_str;
     int i;
@@ -140,7 +134,6 @@ void quote_handling(char **token)
         squote_str = ft_strchr(token[i], '\''); 
         if (squote_str != NULL && ft_strcmp(squote_str, token[i]) == 0)
         {
-            // printf("%s\n", ft_strchr(token[i], '\''));
             token[i] = ft_strtrim(token[i], "\'\'");
             free(ptr);
         }
@@ -152,15 +145,12 @@ void quote_handling(char **token)
             //     token[i] = expansion_handling(token[i]);
             free(ptr);
         }
-        // exp: cmd|cmd infile>
-        // else if  (| < > >>)
         else
         {
             ;        
         }
         i++;
     }
-    // return (token);
 }
 
 int main(void) 
@@ -170,11 +160,11 @@ int main(void)
 
     signal(SIGINT, signal_handler);  // Set the SIGINT (Ctrl+C) signal handler
     signal(SIGQUIT, signal_handler); // Set the SIGINT (Ctrl+\) signal handler
-    char *ret_env = getenv("PATH");
-    if (ret_env != NULL)
-        printf("%s\n", ret_env);
-    else
-        printf("\n");
+    // char *ret_env = getenv("PATH");
+    // if (ret_env != NULL)
+    //     printf("%s\n", ret_env);
+    // else
+    //     printf("\n");
     while(1)
     {
         input = readline("$> "); // Read input from the user
@@ -185,6 +175,7 @@ int main(void)
         }
         if (input && *input)
         {
+            // printf("%li\n", count_tokens(input));
             add_history(input); // Add input to the history
             tok = trim_cmd(input);
             int i = 0;
@@ -210,7 +201,7 @@ int main(void)
 //                                                                   fd = open("output file"), flag=O_WRONLY, O_CREAT
 // // cat "'my file.txt'" | grep 'hello "$USER"' >> "$HOME/user_log.txt"
 
-// // cat Makefile | grep 'hello'| wc -l 
+// // cat Makefile>>grep 'hello'|wc -l 
 // Node 1        cat Makefile | grep 'hello'
 // Node 2        grep 'hello'| wc -l
 // ....
