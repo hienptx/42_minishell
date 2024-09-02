@@ -50,6 +50,7 @@ void				*ft_memmove(void *dst, const void *src, size_t len);
 size_t				ft_strlcpy(char *dst, const char *src, size_t dstsize);
 char				*ft_strncpy(char *dest, char *src, unsigned int n);
 size_t				ft_strlcat(char *dst, const char *src, size_t dstsize);
+char				*ft_strstr(char *str, char *to_find);
 char				*ft_strnstr(const char *haystack, const char *needle,
 						size_t len);
 int					ft_atoi(const char *str);

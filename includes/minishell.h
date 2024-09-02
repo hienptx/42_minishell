@@ -45,4 +45,9 @@
 int ft_strcmp(char *s1, char *s2);
 char *ft_malloc(char *str, size_t size);
 
+// tokenizer_input.c
+char **trim_cmd(char *str);
+char *cpy_str(char **ret, char *str, size_t *pos);
+size_t count_tokens(char *str);
+
 #endif
