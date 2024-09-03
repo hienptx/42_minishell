@@ -7,7 +7,12 @@ INCL_DIR = ./includes
 LIBFT_H = 
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR)
+ifeq ($(shell uname -s), Darwin)
+	CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR) -I$(shell brew --prefix readline)/include
+else
+	CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR)
+endif
+
 LDFLAGS = -lreadline 
 
 LIBFT = $(LIBFT_DIR)/libft.a
@@ -19,7 +24,11 @@ all: $(OBJS_DIR) $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
 	@echo "Creating $(NAME)"
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME)
+	@if [ "$(shell uname)" = "Darwin" ]; then \
+		$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -L$(shell brew --prefix readline)/lib $(LDFLAGS) -o $(NAME); \
+	else \
+		$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME); \
+	fi
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
