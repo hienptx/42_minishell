@@ -79,7 +79,7 @@ char *cpy_str(char **ret, char *str, size_t *pos)
     return str;
 }
 
-char **trim_cmd(char *str)
+char **get_tokens(char *str)
 {
     char **ret;
     char *ptr;
