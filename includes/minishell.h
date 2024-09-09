@@ -1,3 +1,4 @@
+
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
@@ -16,38 +17,50 @@
 
 // typedef void (*sighandler_t)(int);
 
-// struct pipe
+// simple command struct
+// typedef struct s_cmd
 // {
 //     int type;
-//     t_simple_cmd  *left;
-//     t_simple_cmd *right;
-// };
+// }               t_cmd;
+
+// typedef struct exec
+// {
+//     int type;
+//     char **arg;
+// }               t_exec;
 
 // // XXX > filename
-// struct redir
+// typedef struct redir
 // {
-//     char *cmd; //XXX
+//     t_cmd cmd; //XXX
 //     int type; //3
 //     char *file_name; //"text.c"
 //     int flag; //O_WRONLY, O_CREATE
 //     int fd; // 0=stdin, 1=stdout
+// }               t_redir;
+
+// struct pipe
+// {
+//     int type;
+//     t_cmd  *left;
+//     t_cmd *right;
 // };
 
-// // simple command struct
-// typedef struct simple_command
-// {
-//     char *cmd; //primary
-//     char *flag; // secondary
-//     char *argument; //secondary
-// } t_simple_cmd;
-
 // minishell_utils.c
-int ft_strcmp(char *s1, char *s2);
-char *ft_malloc(char *str, size_t size);
+char *quote_handling(char *token);
+char *expansion_handling(char *str);
+char *replace_substring(char *str, char *newsub, char *oldsub);
 
 // tokenizer_input.c
-char **trim_cmd(char *str);
+char **get_tokens(char *str);
 char *cpy_str(char **ret, char *str, size_t *pos);
 size_t count_tokens(char *str);
+char *walk_string(char *str, char c);
+
+//minishell_utils.c
+int ft_strcmp(char *s1, char *s2);
+char *ft_malloc(char *str, size_t size);
+void free_tokens(char **tokens);
+void panic_sms(char *s);
 
 #endif

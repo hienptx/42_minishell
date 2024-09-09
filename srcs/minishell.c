@@ -15,7 +15,7 @@
 // ◦exit with no options
 
 // APPROACH
-// Parsecmd - recursive descent parser
+// Parsecmd - recursive descent parser, also means Top-Down Parser
 // ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
 // runcmd - walk the tree recursively. "execute" the nodes, create child processes as needed
 
@@ -35,113 +35,142 @@ void signal_handler(int sig)
     }
 }
 
-void replace_substring(char *str, char *newsub, char *oldsub)
+char *replace_substring(char *str, char *newsub, char *oldsub)
 {
-    char *pos;
-    size_t oldlen;
-    size_t newlen;
-    size_t taillen;
+    char *ret;
+    char *ptr;
+    size_t len;
+    size_t newsub_len;
+    size_t oldsub_len;
 
-    pos = ft_strstr(str, oldsub);
-    if (pos == NULL)
-        return ;
-    oldlen = ft_strlen(oldsub);
-    newlen = ft_strlen(newsub);
-    taillen = ft_strlen(pos + oldlen);
-    if (newlen != oldlen)
-        ft_memmove(pos + newlen, pos + oldlen, taillen + 1);
-    ft_memcpy(pos, newsub, newlen);
+    newsub_len = ft_strlen(newsub);
+    oldsub_len = ft_strlen(oldsub);
+    len = ft_strlen(str) - oldsub_len + newsub_len;
+    ret = ft_malloc(NULL, len + 1);
+    ptr = ret;
+    while (*str != '\0' && *str != '$')
+        *ret++ = *str++;
+    str = str + oldsub_len;
+    while (*newsub != '\0')
+        *ret++ = *newsub++;
+    while (*str != '\0')
+        *ret++ = *str++;
+    *ret = '\0';
+    return (ptr);
 }
 
-// expansion_handling $ -> use getenv
 char *expansion_handling(char *str)
 {
-    char *ret_env;
-    char *s;
-    char *path;
     size_t len;
+    char *s;
     unsigned int start;
+    char *path;
+    char *ret_env;
+    char *ptr;
 
-    len = 0;
-    s = ft_strchr(str, '$'); // TODO -> FREE
+    s = ft_strchr(str, '$');
+    if (s == NULL || (str[0] == '\'' && str[strlen(str) - 1] == '\'')) 
+        return str;
     start = s - str;
-    while (*s != '\0' && *s != ' ' && *s != '\'' && *s != '\"')
+    len = 0;
+    while (*s != '\0' && *s != ' ' && *s != '\'' && *s != '\"') 
     {
         len++;
         s++;
     }
-    path = ft_substr(str, start, len); //TODO -> FREE
-    if (getenv(path + 1) != NULL)
-        ret_env = getenv(path+ 1);
-    else
+    path = ft_substr(str, start, len);
+    ret_env = getenv(path + 1);
+    if (ret_env == NULL) 
         ret_env = "";
-    if (ft_strchr(str, '\"') != NULL)
-        replace_substring(str, ret_env, path);
-    else
-        replace_substring(str, ret_env, path);
-    free (path);
-    // free(ret_env);
-    return (str);
-}   
+    ptr = replace_substring(str, ret_env, path);
+    free(path);
+    free(str);
+    return ptr;
+}
 
-void quote_handling(char **token)
+char *quote_handling(char *token)
 {
-    char *ptr;
     char *squote_str;
-    int i;
-    
-    i = 0;
-    while (token[i] != NULL)
+    char *ptr;
+
+    ptr = token;
+    squote_str = ft_strchr(token, '\''); 
+    if (squote_str != NULL && ft_strcmp(squote_str, token) == 0)
     {
-        ptr = token[i];
-        squote_str = ft_strchr(token[i], '\''); 
-        if (squote_str != NULL && ft_strcmp(squote_str, token[i]) == 0)
-        {
-            token[i] = ft_strtrim(token[i], "\'\'");
-            free(ptr);
-        }
-        else if (ft_strchr(token[i], '\"') != NULL)
-        {
-            token[i] = ft_strtrim(token[i], "\"\"");
-            if (ft_strchr(token[i], '$') != NULL)
-            {
-                token[i] = expansion_handling(token[i]);
-                free(ptr);
-            }
-        }
-        else
-        {
-            ;        
-        }
-        i++;
+        token = ft_strtrim(token, "\'\'");
+        free(ptr);
     }
+    else if (ft_strchr(token, '\"') != NULL)
+    {
+        token = ft_strtrim(token, "\"\"");
+        free(ptr);
+    }
+    else
+    {
+        ;        
+    }
+    return(token);
+}
+
+void parse_token(char **tok)
+{
+    t_redir **redirs;
+    int i;
+    int redir_idx;
+    int nbr_redir;
+    int nbr_pipes;
+
+    i = 0;
+    redir_idx = 0;
+    nbr_pipes = 0;
+    while (tok[i] != NULL)
+    {
+        if (ft_strcmp(tok[i], "<") == 0 || ft_strcmp(tok[i], ">") || ft_strcmp(tok[i], ">>") == 0)
+        {
+            redirs[redir_idx] = populate_struct_cmd(tok, i);
+            redir_idx++;
+        }
+        else if (ft_strcmp(tok[i], "|") == 0)
+        {
+            
+        }
+
+
+    }
+    populate_struct_redir(tok);
 }
 
 int main(void) 
 {
     char *input;
     char **tok;
-
-    signal(SIGINT, signal_handler);  // Set the SIGINT (Ctrl+C) signal handler
-    signal(SIGQUIT, signal_handler); // Set the SIGINT (Ctrl+\) signal handler
+    int i;
+ 
+    signal(SIGINT, signal_handler);
+    signal(SIGQUIT, signal_handler);
     while(1)
     {
-        input = readline("$> "); // Read input from the user
+        input = readline("$> ");
         if (input == NULL) // Check for Ctrl-D (EOF)
         {
             printf("EOF, exiting shell\n");
-            break; // Exit the shell loop
+            break;
         }
         if (input && *input)
         {
             // printf("%li\n", count_tokens(input));
             add_history(input); // Add input to the history
-            tok = trim_cmd(input);
-            int i = 0;
-            quote_handling(tok);
+            tok = get_tokens(input);
+            i = 0;
             while (tok[i] != NULL)
-                printf("%s\n", tok[i++]);
-
+            {
+                tok[i] = expansion_handling(tok[i]);
+                tok[i] = quote_handling(tok[i]);
+                printf("%s\n", tok[i]);
+                i++;
+            }
+            parse_tokens(tok);
+            free_tokens(tok);
         }
         free(input);
     }
@@ -158,11 +187,17 @@ int main(void)
 //                                                                   fd = open("output file"), flag=O_WRONLY, O_CREAT
 // // cat "'my file.txt'" | grep 'hello "$USER"' >> "$HOME/user_log.txt" "'$PATH'/user_log.txt"
 
-// // cat Makefile>>grep 'hello'|wc -l 
+// // cat Makefile >> grep 'NAME' | wc -l 
 // Node 1        cat Makefile | grep 'hello'
 // Node 2        grep 'hello'| wc -l
 // ....
 
 // ls -l
 
-// echo |"$USER" <'$USER' "Hello,>> '$USER' is me" 
+// echo |"$PATH" << '$USER' "Hello,>> '$USER' is me" 
+// sort < Makefile | grep "FLAG" | uniq > output.txt
+// sort < Makefile| grep "FLAG" | grep 'FLAGS' > output.txt
+// sort < Makefile | grep "FLAG" | grep 'FLAGS' >> output.txt
+// cat <<EOF | grep "pattern" > output.txt
+// grep 'pattern' << EOF > output.txt
+// echo "'$USER'" $PATH '$USER' $?

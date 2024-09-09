@@ -24,3 +24,20 @@ char *ft_malloc(char *str, size_t size)
     }
     return (str);
 }
+
+void free_tokens(char **tokens)
+{
+    size_t i = 0;
+    while (tokens[i])
+    {
+        free(tokens[i]);
+        i++;
+    }
+    free(tokens);
+}
+
+void panic_sms(char *s)
+{
+    perror(s);
+    exit (1);
+}
