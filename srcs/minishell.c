@@ -112,38 +112,32 @@ char *quote_handling(char *token)
     return(token);
 }
 
-void parse_token(char **tok)
-{
-    t_redir **redirs;
-    int i;
-    int redir_idx;
-    int nbr_redir;
-    int nbr_pipes;
+// void init_syntax_tree(t_cmd *ast)
+// {
+//     ast->type = ft_malloc(ast->type, 3);
+//     ast->execcmd = NULL;
+//     ast->pipecmd = NULL;
+//     ast->redircmd = NULL;
+// }
 
-    i = 0;
-    redir_idx = 0;
-    nbr_pipes = 0;
-    while (tok[i] != NULL)
-    {
-        if (ft_strcmp(tok[i], "<") == 0 || ft_strcmp(tok[i], ">") || ft_strcmp(tok[i], ">>") == 0)
-        {
-            redirs[redir_idx] = populate_struct_cmd(tok, i);
-            redir_idx++;
-        }
-        else if (ft_strcmp(tok[i], "|") == 0)
-        {
-            
-        }
-
-
-    }
-    populate_struct_redir(tok);
-}
+// void print_struct(t_cmd *ast)
+// {
+//     if (ast->type == PIPE)
+//     {
+//         printf("left = %s\n",ast->cmd.pipe->left);
+//         print_struct(ast->cmd.pipe->left);
+//         printf("right = %s\n",ast->cmd.pipe->right);
+//         print_struct(ast->cmd.pipe->right);
+//     }
+//     else
+//         printf("Fail to print pipe");
+// }
 
 int main(void) 
 {
     char *input;
     char **tok;
+    // t_cmd *ast;
     int i;
  
     signal(SIGINT, signal_handler);
@@ -158,8 +152,7 @@ int main(void)
         }
         if (input && *input)
         {
-            // printf("%li\n", count_tokens(input));
-            add_history(input); // Add input to the history
+            add_history(input);
             tok = get_tokens(input);
             i = 0;
             while (tok[i] != NULL)
@@ -169,7 +162,8 @@ int main(void)
                 printf("%s\n", tok[i]);
                 i++;
             }
-            parse_tokens(tok);
+            parse_cmd(tok);
+            // print_struct(ast);
             free_tokens(tok);
         }
         free(input);
@@ -178,22 +172,6 @@ int main(void)
 }
 
 // cmd < infile > outfile
-
-//         echo    "Path is '$PATH'"   ''          |           grep -o       "/usr[^']*"        >           path_output.txt
-// left   1.node   2.node           3.skip     int type 2
-// right                                                    1.node            2.node          
-
-//                                                                   command              int type 3           file_name        
-//                                                                   fd = open("output file"), flag=O_WRONLY, O_CREAT
-// // cat "'my file.txt'" | grep 'hello "$USER"' >> "$HOME/user_log.txt" "'$PATH'/user_log.txt"
-
-// // cat Makefile >> grep 'NAME' | wc -l 
-// Node 1        cat Makefile | grep 'hello'
-// Node 2        grep 'hello'| wc -l
-// ....
-
-// ls -l
-
 // echo |"$PATH" << '$USER' "Hello,>> '$USER' is me" 
 // sort < Makefile | grep "FLAG" | uniq > output.txt
 // sort < Makefile| grep "FLAG" | grep 'FLAGS' > output.txt

@@ -14,15 +14,15 @@ int ft_strcmp(char *s1, char *s2)
 	return (0);
 }
 
-char *ft_malloc(char *str, size_t size)
+void *ft_malloc(void *data, size_t size)
 {
-    str = malloc((size + 1) * sizeof(char));
-    if (str == NULL)
+    data = malloc((size + 1) * sizeof(data));
+    if (data == NULL)
     {
         perror("Malloc failed to allocate memmory\n");
         return NULL;
     }
-    return (str);
+    return (data);
 }
 
 void free_tokens(char **tokens)
