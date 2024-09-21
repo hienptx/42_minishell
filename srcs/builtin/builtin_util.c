@@ -1,5 +1,5 @@
-#include "builtin.h"
-#include "includes/minishell.h"
+#include "../../includes/builtin.h"
+// #include "includes/minishell.h"
 
 char	*get_env_key(const char *env)
 {
@@ -22,21 +22,24 @@ char *get_key_or_value(char *key_or_val, const char *env)
 	delim = ft_strchr(env, '=');
 	if (!delim)
 		return (ft_strdup(env));
-	key_len = delim - env;
-	if (*key_or_val == 'k')
+	else
 	{
-		key = ft_substr(env, 0, key_len);
-		return (key);
-	}
-	else if (*key_or_val == 'v')
-	{
-		val_len = ft_strlen(env) - key_len - 1;
-		val = ft_substr(env, key_len + 1, val_len);
-		return (val);
+		key_len = delim - env;
+		if (*key_or_val == 'k')
+		{
+			key = ft_substr(env, 0, key_len);
+			return (key);
+		}
+		else
+		{
+			val_len = ft_strlen(env) - key_len - 1;
+			val = ft_substr(env, key_len + 1, val_len);
+			return (val);
+		}
 	}
 }
 
-int	update_env(t_list *env_list, const char *key, const char *new_env)
+int	update_env(t_list *env_list, const char *key, char *new_env)
 {
 	char	*cur_key;
 	t_list	*node;
@@ -63,7 +66,7 @@ int	update_env(t_list *env_list, const char *key, const char *new_env)
 	return (0);
 }
 
-int	add_env(t_list **env_list, const char *new_env)
+int	add_env(t_list **env_list, char *new_env)
 {
 	t_list	*new_node;
 

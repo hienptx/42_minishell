@@ -1,5 +1,5 @@
-#include "builtin.h"
-#include "includes/minishell.h"
+#include "../../includes/builtin.h"
+#include "../../includes/minishell.h"
 
 extern char **environ;
 
@@ -9,9 +9,7 @@ t_list	*cp_env_list()
 	t_list	*env_list;
 	t_list	*new_node;
 	char	*env_malloc;
-	int		i;
 
-	i = 0;
 	env_list = NULL;
 	while (*env)
 	{
@@ -25,7 +23,7 @@ t_list	*cp_env_list()
 	return (env_list);
 }
 
-void print_env_arr(char **env_arr)
+void	print_env_arr(char **env_arr)
 {
 	size_t	i;
 
@@ -37,6 +35,7 @@ void print_env_arr(char **env_arr)
 	}
 }
 
+/*
 int main()
 {
 	t_list	*env_list;
@@ -62,6 +61,7 @@ int main()
 	execve("/bin/bash", argv, envp);
     return 0;
 }
+*/
 
 int	cd_external(const char *path, char **cwd)
 {
@@ -149,7 +149,7 @@ int	echo(char **x)
 	return (0);
 }
 
-int	pwd(char **x)
+int	pwd()
 {
 	char	*cwd;
 
@@ -164,10 +164,10 @@ int	pwd(char **x)
 	return (0);
 }
 
-int	export(t_list *env_list, const char *x[])
+int	export(t_list *env_list, char *x[])
 {
-	size_t		i;
-	const char	*key;
+	size_t	i;
+	char	*key;
 
 	i = 1;
 	if (x[i] == NULL)

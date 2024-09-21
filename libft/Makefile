@@ -12,7 +12,7 @@ SRC_PATH = srcs
 OBJ_PATH = objs
 
 SOURCES = ft_isalnum.c ft_isalpha.c ft_isascii.c ft_isdigit.c ft_isprint.c \
-ft_memset.c ft_strchr.c ft_strrchr.c ft_strlen.c ft_tolower.c ft_toupper.c \
+ft_memset.c ft_strchr.c ft_strrchr.c ft_strlen.c ft_tolower.c ft_toupper.c ft_strcmp.c\
 ft_strncmp.c ft_bzero.c ft_memcpy.c ft_memchr.c ft_memcmp.c ft_memmove.c ft_strlcpy.c \
 ft_strlcat.c ft_strnstr.c ft_atoi.c ft_calloc.c ft_strdup.c ft_substr.c ft_strjoin.c \
 ft_itoa.c ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
@@ -24,8 +24,7 @@ ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c
 OBJ_O = $(SOURCES:.c=.o)
 BONUS_O = $(BONUS:.c=.o)
 
-OBJS = $(addprefix $(OBJ_PATH)/, $(OBJ_O))
-BONUS_OBJCS = $(addprefix $(OBJ_PATH)/, $(BONUS_O))
+OBJS = $(addprefix $(OBJ_PATH)/, $(OBJ_O) $(BONUS_O))
 
 all: $(NAME)
 
@@ -38,9 +37,6 @@ $(OBJ_PATH):
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c | $(OBJ_PATH)
 	@$(CC) $(CFLAGS) -o $@ -c $<
-
-bonus: $(BONUS_OBJCS)
-	ar -rcs $(NAME) $(BONUS_OBJCS)
 
 clean: 
 	rm -rf $(OBJ_PATH)
