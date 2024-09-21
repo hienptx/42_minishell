@@ -112,36 +112,16 @@ char *quote_handling(char *token)
     return(token);
 }
 
-// void init_syntax_tree(t_cmd *ast)
-// {
-//     ast->type = ft_malloc(ast->type, 3);
-//     ast->execcmd = NULL;
-//     ast->pipecmd = NULL;
-//     ast->redircmd = NULL;
-// }
-
-// void print_struct(t_cmd *ast)
-// {
-//     if (ast->type == PIPE)
-//     {
-//         printf("left = %s\n",ast->cmd.pipe->left);
-//         print_struct(ast->cmd.pipe->left);
-//         printf("right = %s\n",ast->cmd.pipe->right);
-//         print_struct(ast->cmd.pipe->right);
-//     }
-//     else
-//         printf("Fail to print pipe");
-// }
-
 int main(void) 
 {
     char *input;
     char **tok;
-    // t_cmd *ast;
+    t_cmd *ast;
     int i;
  
     signal(SIGINT, signal_handler);
     signal(SIGQUIT, signal_handler);
+    ast = NULL;
     while(1)
     {
         input = readline("$> ");
@@ -162,8 +142,8 @@ int main(void)
                 printf("%s\n", tok[i]);
                 i++;
             }
-            parse_cmd(tok);
-            // print_struct(ast);
+            ast = parse_cmd(tok);
+            print_command_tree(ast, 0); //print abstract syntax tree from root
             free_tokens(tok);
         }
         free(input);
@@ -171,11 +151,13 @@ int main(void)
     return 0;
 }
 
+// cat <<EOF | grep "hello"
 // cmd < infile > outfile
+// cmd 1 | cmd 2 | cmd 3
 // echo |"$PATH" << '$USER' "Hello,>> '$USER' is me" 
-// sort < Makefile | grep "FLAG" | uniq > output.txt
 // sort < Makefile| grep "FLAG" | grep 'FLAGS' > output.txt
 // sort < Makefile | grep "FLAG" | grep 'FLAGS' >> output.txt
+// sort < Makefile | grep "FLAG" | uniq > output.txt
 // cat <<EOF | grep "pattern" > output.txt
 // grep 'pattern' << EOF > output.txt
 // echo "'$USER'" $PATH '$USER' $?

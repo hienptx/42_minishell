@@ -19,7 +19,6 @@ typedef struct redir
 {
     t_exec *cmd;
     char *file_name;
-    int flag;
     int fd;
 } t_redir;
 
@@ -27,7 +26,6 @@ typedef struct pipe
 {
     char *left;
     char *right;
-    void *next;
 } t_pipe;
 
 typedef struct s_cmd 
@@ -71,7 +69,7 @@ t_cmd *parse_simple_command(char **tokens)
     {
         if (strcmp(tokens[i], "<") == 0 || strcmp(tokens[i], ">") == 0) 
         {
-            int redir_type = (strcmp(tokens[i], ">") == 0) ? O_WRONLY : O_RDONLY;
+            int fd = (strcmp(tokens[i], "<") == 0) ? 00 : 01;
             char *file_name = tokens[i + 1];
             tokens[i] = NULL;
             if (!command) 
@@ -85,8 +83,7 @@ t_cmd *parse_simple_command(char **tokens)
                 exit(EXIT_FAILURE);            
             redir_cmd->cmd.redircmd->cmd = (t_exec *)command;
             redir_cmd->cmd.redircmd->file_name = strdup(file_name);
-            redir_cmd->cmd.redircmd->flag = redir_type;
-            redir_cmd->cmd.redircmd->fd = (redir_type == O_WRONLY) ? 1 : 0;
+            redir_cmd->cmd.redircmd->fd = (fd == 01) ? 1 : 0;
             command = redir_cmd; // Update the command to reflect the latest redirection
             i++; // Skip the file name token
         }
@@ -144,7 +141,7 @@ void print_command_tree(t_cmd *cmd, int level)
     {
         t_redir *redir_cmd = cmd->cmd.redircmd;
         printf("Redirection file name: %s\n", redir_cmd->file_name);
-        printf("Redirection Type: %s\n", (redir_cmd->flag == O_WRONLY) ? "Output" : "Input");
+        printf("Fd: %s\n", (redir_cmd->fd == 0) ? "0" : "1");
         print_command_tree((t_cmd *)redir_cmd->cmd, level + 1);
     } 
     else if (cmd->type == EXEC) 
@@ -161,8 +158,8 @@ void print_command_tree(t_cmd *cmd, int level)
 
 int main() 
 {
-    // char *tokens[] = {"sort", "-r", "<", "Makefile", "|", "wc -c", "|", "sleep 3", "|", "awk", ">","output.txt", NULL};
-    char *tokens[] = {"cat", "Makefile", "<", "1 infile.txt", "<", "2 infile.txt",NULL};
+    char *tokens[] = {"sort", "-r", "<", "Makefile", "|", "wc -c", "|", "sleep 3", "|", "awk", ">","output.txt", NULL};
+    // char *tokens[] = {"cat", "Makefile", "<", "infile1.txt", "<", "infile2.txt", ">", "outfile.txt",NULL};
     t_cmd *cmd_tree = parse_command(tokens);
     printf("Command structure:\n");
     print_command_tree(cmd_tree, 0);
