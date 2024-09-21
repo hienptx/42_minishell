@@ -28,7 +28,6 @@ typedef struct redir
 {
     t_exec *cmd;
     char *file_name;
-    int flag; //O_WRONLY, O_CREATE
     int fd; // 0=stdin, 1=stdout
 }               t_redir;
 
@@ -68,6 +67,15 @@ void *ft_malloc(void *data, size_t size);
 void free_tokens(char **tokens);
 void panic_sms(char *s);
 
+//constructor.c
+t_cmd *construct_pipe(char *left, char *right);
+t_cmd *construct_redir(t_cmd *command, int fd, char *file_name);
+t_exec *construct_exec(char **tokens, t_exec *data);
+
+//parser.c
 t_cmd *parse_cmd(char **tokens);
+t_cmd *parse_redir(char **tokens);
+t_cmd *parse_construct_exec(char **tokens);
+void print_command_tree(t_cmd *cmd, int level); 
 
 #endif

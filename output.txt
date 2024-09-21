@@ -1,0 +1,9 @@
+$> CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR) -I$(shell brew --prefix readline)/include
+CFLAGS
+$> CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR)
+CFLAGS
+$> LDFLAGS = -lreadline 
+LDFLAGS
+$> $(CC) $(CFLAGS) $(OBJS) $(LIBFT) -L$(shell brew --prefix readline)/lib $(LDFLAGS) -o $(NAME); \
+$> $(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME); \
+$> $(CC) $(CFLAGS) -c $< -o $@
