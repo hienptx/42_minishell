@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 //  SIGNAL
 // Ctrl-D exit shell -> 
@@ -112,8 +112,40 @@ char *quote_handling(char *token)
     return(token);
 }
 
+// void init_syntax_tree(t_cmd *ast)
+// {
+//     ast->type = ft_malloc(ast->type, 3);
+//     ast->execcmd = NULL;
+//     ast->pipecmd = NULL;
+//     ast->redircmd = NULL;
+// }
+
+// void print_struct(t_cmd *ast)
+// {
+//     if (ast->type == PIPE)
+//     {
+//         printf("left = %s\n",ast->cmd.pipe->left);
+//         print_struct(ast->cmd.pipe->left);
+//         printf("right = %s\n",ast->cmd.pipe->right);
+//         print_struct(ast->cmd.pipe->right);
+//     }
+//     else
+//         printf("Fail to print pipe");
+// }
+
+extern char **environ;
+
+void	set_env(t_list **env_list)
+{
+
+	*env_list = cp_env_list();
+	ft_getenv = getenv;
+	return ;
+}
+
 int main(void) 
 {
+    t_list  *env_list;
     char *input;
     char **tok;
     t_cmd *ast;
@@ -122,6 +154,7 @@ int main(void)
     signal(SIGINT, signal_handler);
     signal(SIGQUIT, signal_handler);
     ast = NULL;
+    set_env(&env_list);
     while(1)
     {
         input = readline("$> ");
