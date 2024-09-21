@@ -69,7 +69,7 @@ t_cmd *parse_redir(char **tokens)
             command = construct_redir(command, fd, file_name);
             i++; //skip file_name token
         }
-        if(ft_strcmp(tokens[i], "<<"))
+        if(ft_strcmp(tokens[i], "<<") == 0)
             printf("here_doc_handling function\n");
         i++;
     }
