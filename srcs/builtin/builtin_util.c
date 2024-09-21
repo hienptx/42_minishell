@@ -149,3 +149,4 @@ char **mk_env_list(t_list *env_list)
 	env_arr[i] = NULL;
 	return (env_arr);
 }
+

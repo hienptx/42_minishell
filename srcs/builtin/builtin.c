@@ -189,3 +189,4 @@ int	export(t_list *env_list, const char *x[])
 	ft_getenv = get_env_value;
 	return (0);
 }
+

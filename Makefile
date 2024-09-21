@@ -17,7 +17,7 @@ LDFLAGS = -lreadline
 
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRCS = $(wildcard $(SRCS_DIR)/*.c)
+SRCS += $(wildcard $(SRCS_DIR)/*.c) $(wildcard builtin/*.c) 
 OBJS = $(patsubst $(SRCS_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))
 
 all: $(OBJS_DIR) $(NAME)
