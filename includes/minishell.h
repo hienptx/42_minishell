@@ -62,7 +62,6 @@ size_t count_tokens(char *str);
 char *walk_string(char *str, char c);
 
 //minishell_utils.c
-int ft_strcmp(char *s1, char *s2);
 void *ft_malloc(void *data, size_t size);
 void free_tokens(char **tokens);
 void panic_sms(char *s);

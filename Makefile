@@ -17,15 +17,16 @@ LDFLAGS = -lreadline
 
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRCS += $(wildcard $(SRCS_DIR)/*.c) $(wildcard builtin/*.c) 
-OBJS = $(patsubst $(SRCS_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))
+SRCS += $(wildcard $(SRCS_DIR)/*.c) $(wildcard $(SRCS_DIR)/builtin/*.c) 
+# OBJS = $(patsubst $(SRCS_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))
+OBJS = $(SRCS:.c=.o)
 
 all: $(OBJS_DIR) $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
 	@echo "Creating $(NAME)"
 	@if [ "$(shell uname)" = "Darwin" ]; then \
-		$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -L$(shell brew --prefix readline)/lib $(LDFLAGS) -o $(NAME); \
+		$(CC) -v $(CFLAGS) $(OBJS) $(LIBFT) -L$(shell brew --prefix readline)/lib $(LDFLAGS) -o $(NAME); \
 	else \
 		$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME); \
 	fi
