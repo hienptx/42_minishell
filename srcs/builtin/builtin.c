@@ -3,6 +3,16 @@
 
 extern char **environ;
 
+static char *(*ft_getenv)(const char *key);
+
+void	set_env(t_list **env_list)
+{
+
+	*env_list = cp_env_list();
+	ft_getenv = getenv;
+	return ;
+}
+
 t_list	*cp_env_list()
 {
 	char **env = environ;

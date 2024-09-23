@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
-#include "builtin.h"
+#include "../includes/builtin.h"
 // #include "../libft/includes/libft.h"
 
 typedef enum cmd_type
@@ -29,13 +29,14 @@ typedef struct redir
     t_exec *cmd;
     char *file_name;
     int fd; // 0=stdin, 1=stdout
+    // int here_doc;
 }               t_redir;
 
 typedef struct pipe
 {
 
-    char  *left;
-    char *right;
+    void  *left;
+    void *right;
 }               t_pipe;
 
 typedef struct s_cmd
@@ -70,11 +71,16 @@ void panic_sms(char *s);
 t_cmd *construct_pipe(char *left, char *right);
 t_cmd *construct_redir(t_cmd *command, int fd, char *file_name);
 t_exec *construct_exec(char **tokens, t_exec *data);
+void free_ast(t_cmd *ast);
 
 //parser.c
 t_cmd *parse_cmd(char **tokens);
 t_cmd *parse_redir(char **tokens);
 t_cmd *parse_construct_exec(char **tokens);
-void print_command_tree(t_cmd *cmd, int level); 
+void print_command_tree(t_cmd *cmd, int level);
+int heredoc_process(char *arg2); 
+
+void	set_env(t_list **env_list);
+// char *(*ft_getenv)(const char *key);
 
 #endif

@@ -1,5 +1,30 @@
 #include "minishell.h"
 
+int heredoc_process(char *arg)
+{
+	char *str;
+	int		i;
+
+	i = ft_strlen(arg);
+    int hd_fd = open("here_doc.txt", O_CREAT);
+	while (1)
+	{
+		ft_putstr_fd("> ", 0);
+		str = get_next_line(0);
+		if (str != NULL)
+		{
+			if (ft_strncmp(str, arg, ft_strlen(arg)) == 0 && str[i] == '\n')
+			{
+				free(str);
+				break;
+			}
+			ft_putstr_fd(str, hd_fd);
+			free(str);
+		}
+	}
+    return(hd_fd);
+}
+
 void print_command_tree(t_cmd *cmd, int level) 
 {
     if (cmd == NULL) 
@@ -16,7 +41,7 @@ void print_command_tree(t_cmd *cmd, int level)
     {
         t_redir *redir_cmd = cmd->cmd.redir;
         printf("Redirection file name: %s\n", redir_cmd->file_name);
-        printf("Fd: %s\n", (redir_cmd->fd == 0) ? "0" : "1");
+        printf("Fd: %i\n", (redir_cmd->fd == 0) ? 0 : 1);
         print_command_tree((t_cmd *)redir_cmd->cmd, level + 1);
     } 
     else if (cmd->type == EXEC) 
@@ -36,6 +61,8 @@ t_cmd *parse_exec(char **tokens)
     t_cmd *ast;
     t_exec *data;
 
+    if(tokens == NULL)
+        return (NULL);
     ast = malloc(sizeof(t_cmd));
     if (ast == NULL)
         panic_sms("Malloc failed to allocate memory");
@@ -58,7 +85,6 @@ t_cmd *parse_redir(char **tokens)
     command = NULL;
     while(tokens[i] != NULL)
     {
-        // printf("test\n");
         if(ft_strcmp(tokens[i], "<") == 0 || ft_strcmp(tokens[i], ">") == 0)
         {
             fd = ft_strcmp(tokens[i], "<") == 0 ? 00 : 01;
@@ -67,10 +93,18 @@ t_cmd *parse_redir(char **tokens)
             if (!command)
                 command = parse_exec(tokens);
             command = construct_redir(command, fd, file_name);
-            i++; //skip file_name token
         }
-        if(ft_strcmp(tokens[i], "<<") == 0)
-            printf("here_doc_handling function\n");
+        else if(ft_strcmp(tokens[i], "<<") == 0)
+        {
+            file_name = tokens[i + 1];
+            if (file_name == NULL || ft_strcmp(file_name, "NULL") == 0)
+            {
+                printf("Bad syntax\n");
+                exit(1);
+            }
+        //    fd = heredoc_process(file_name);
+           tokens[i] = NULL;
+        }
         i++;
     }
     if (!command) // if there is no redirection -> parse a simple exec command
@@ -90,14 +124,16 @@ t_cmd *parse_cmd(char **tokens)
     {
         if (ft_strcmp(tokens[i], "|") == 0)
         {
+            if (ft_strcmp(tokens[i + 1], "|") == 0)
+            {
+                printf("Bad syntax, out of scope of minishell\n");
+                return (NULL);
+            }
             tokens[i] = NULL;
             left = parse_cmd(tokens);
             right = parse_cmd(&tokens[i + 1]);
             if (!left || !right)
-            {
-                printf("Invalid Pipe\n");
                 return NULL;
-            }
             ast = construct_pipe((char *)left, (char *)right);
             return(ast);
         }

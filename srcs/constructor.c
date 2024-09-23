@@ -1,5 +1,35 @@
 #include "minishell.h"
 
+void free_ast(t_cmd *ast)
+{
+    int i;
+
+    if (ast->type == PIPE)
+    {
+        free_ast(ast->cmd.pipe->left);
+        free_ast(ast->cmd.pipe->right);
+        free(ast->cmd.pipe);
+    }
+    else if (ast->type == REDIR)
+    {
+        free_ast((t_cmd *)ast->cmd.redir->cmd);
+        free(ast->cmd.redir->file_name);
+        free(ast->cmd.redir);
+    }
+    else if (ast->type == EXEC)
+    {
+        i = 0;
+        while(ast->cmd.exec->arg[i] != NULL)
+        {
+            free(ast->cmd.exec->arg[i]);
+            i++;
+        }
+        free(ast->cmd.exec->arg);
+        free(ast->cmd.exec);
+    }
+    free(ast);
+}
+
 t_cmd *construct_pipe(char *left, char *right)
 {
     t_cmd *ast;

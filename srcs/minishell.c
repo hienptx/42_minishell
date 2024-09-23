@@ -90,26 +90,35 @@ char *expansion_handling(char *str)
 
 char *quote_handling(char *token)
 {
-    char *squote_str;
+    char *str;
+    int i;
+    char *non_quote;
     char *ptr;
 
+    i = 0;
     ptr = token;
-    squote_str = ft_strchr(token, '\''); 
-    if (squote_str != NULL && ft_strcmp(squote_str, token) == 0)
+    if (!ft_strchr(ptr, '\'') && !ft_strchr(ptr, '\"'))
+        return(ptr);
+    while(*ptr != '\0')
     {
-        token = ft_strtrim(token, "\'\'");
-        free(ptr);
+        if (*ptr != '\'' && *ptr != '\"')
+            i++;
+        ptr++;
     }
-    else if (ft_strchr(token, '\"') != NULL)
+    str = malloc(i + 1);
+    non_quote = str;
+    ptr = token;
+    while(*ptr != '\0')
     {
-        token = ft_strtrim(token, "\"\"");
-        free(ptr);
+        if(*ptr != '\'' && *ptr != '\"')
+        {
+            *str = *ptr;
+            str++;
+        }
+        ptr++;
     }
-    else
-    {
-        ;        
-    }
-    return(token);
+    *str = '\0';
+    return(non_quote);
 }
 
 // void init_syntax_tree(t_cmd *ast)
@@ -120,28 +129,16 @@ char *quote_handling(char *token)
 //     ast->redircmd = NULL;
 // }
 
-// void print_struct(t_cmd *ast)
-// {
-//     if (ast->type == PIPE)
-//     {
-//         printf("left = %s\n",ast->cmd.pipe->left);
-//         print_struct(ast->cmd.pipe->left);
-//         printf("right = %s\n",ast->cmd.pipe->right);
-//         print_struct(ast->cmd.pipe->right);
-//     }
-//     else
-//         printf("Fail to print pipe");
-// }
 
 extern char **environ;
 
-void	set_env(t_list **env_list)
-{
+// void	set_env(t_list **env_list)
+// {
 
-	*env_list = cp_env_list();
-	ft_getenv = getenv;
-	return ;
-}
+// 	*env_list = cp_env_list();
+// 	ft_getenv = getenv;
+// 	return ;
+// }
 
 int main(void) 
 {
@@ -172,22 +169,24 @@ int main(void)
             {
                 tok[i] = expansion_handling(tok[i]);
                 tok[i] = quote_handling(tok[i]);
-                printf("%s\n", tok[i]);
+                // printf("%s\n", tok[i]);
                 i++;
             }
             ast = parse_cmd(tok);
             print_command_tree(ast, 0); //print abstract syntax tree from root
             free_tokens(tok);
+            free_ast(ast);
         }
         free(input);
     }
     return 0;
 }
 
+// cat <<|EOF | grep "hello" -> test this case
 // cat <<EOF | grep "hello"
-// cmd < infile > outfile
+// cmd < filename1 | cmd1 > filename2
 // cmd 1 | cmd 2 | cmd 3
-// echo |"$PATH" << '$USER' "Hello,>> '$USER' is me" 
+// e'c'ho |"$PATH" << '$USER' "Hello,>> '$USER' is me" 
 // sort < Makefile| grep "FLAG" | grep 'FLAGS' > output.txt
 // sort < Makefile | grep "FLAG" | grep 'FLAGS' >> output.txt
 // sort < Makefile | grep "FLAG" | uniq > output.txt

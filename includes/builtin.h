@@ -10,7 +10,7 @@ int	cd(t_list *env_list, char **x);
 int	change_dir(t_list *env_list, const char *path, const char *oldpwd);
 void print_env_arr(char **env_arr);
 char **mk_env_list(t_list *env_list);
-char *(*ft_getenv)(const char *key);
+// char *(*ft_getenv)(const char *key);
 t_list	*cp_env_list();
 
 

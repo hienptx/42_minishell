@@ -13,7 +13,7 @@ char *walk_string(char *str, char c)
 size_t count_tokens(char *str)
 {
     int count = 0;
-    char *sep = "\'\"<>|";
+    char *sep = "<>|";
 
     while (*str != '\0')
     {
@@ -24,11 +24,7 @@ size_t count_tokens(char *str)
         if (ft_strchr(sep, *str) != NULL)
         {
             count++;
-            if (*str == '\"')
-                str = walk_string(str, '\"');
-            else if (*str == '\'')
-                str = walk_string(str, '\'');
-            else if ((*str == '>' && *(str + 1) == '>') || (*str == '<' && *(str + 1) == '<'))
+            if ((*str == '>' && *(str + 1) == '>') || (*str == '<' && *(str + 1) == '<'))
                 str += 2; // Skip the '>>' or '<<'
             else
                 str++; // Skip the single special character
@@ -36,7 +32,13 @@ size_t count_tokens(char *str)
         else
         {
             while (*str != '\0' && *str != ' ' && ft_strchr(sep, *str) == NULL)
+            {
+                if (*str == '\"')
+                    str = walk_string(str, '\"');
+                else if (*str == '\'')
+                    str = walk_string(str, '\'');
                 str++;
+            }    
             count++;
         }
     }
@@ -47,7 +49,7 @@ char *cpy_str(char **ret, char *str, size_t *pos)
 {
     char *ptr;
     size_t wordlen;
-    char *sep = "\'\"<>|";
+    char *sep = "<>|";
     
     while (*str != '\0' && *str == ' ')
         str++;
@@ -56,11 +58,7 @@ char *cpy_str(char **ret, char *str, size_t *pos)
     ptr = str;
     if (ft_strchr(sep, *str) != NULL)
     {
-        if (*str == '\"')
-            str = walk_string(str, '\"');
-        else if (*str == '\'')
-            str = walk_string(str, '\'');
-        else if ((*str == '>' && *(str + 1) == '>') || (*str == '<' && *(str + 1) == '<'))
+        if ((*str == '>' && *(str + 1) == '>') || (*str == '<' && *(str + 1) == '<'))
             str = str + 2;
         else
             str++; // Length of single operator like '>', '<', '|'
@@ -69,7 +67,13 @@ char *cpy_str(char **ret, char *str, size_t *pos)
     else
     {
         while (*str != '\0' && *str != ' ' && ft_strchr(sep, *str) == NULL)
+        {
+            if (*str == '\"')
+                str = walk_string(str, '\"');
+            else if (*str == '\'')
+                str = walk_string(str, '\'');
             str++;
+        }
         wordlen = str - ptr;  // Calculate the word length
     }
     ret[*pos] = ft_malloc(ret[*pos], wordlen);
@@ -88,6 +92,7 @@ char **get_tokens(char *str)
 
     ptr = str;
     nbr_tokens = count_tokens(str);
+    printf("Nbr of tokens = %li\n", nbr_tokens);
     ret = malloc((nbr_tokens + 1) * sizeof(char *));
     if (ret == NULL)
     {
