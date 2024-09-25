@@ -4,16 +4,21 @@ int heredoc_process(char *arg)
 {
 	char *str;
 	int		i;
+    int hd_fd;
 
+    hd_fd = open("../minishell/here_doc.txt", O_CREAT | O_WRONLY | O_TRUNC, 0777);
+    if(hd_fd < 0)
+    {
+        panic_sms("Open failed");
+    }
 	i = ft_strlen(arg);
-    int hd_fd = open("here_doc.txt", O_CREAT);
-	while (1)
+	while(1)
 	{
 		ft_putstr_fd("> ", 0);
 		str = get_next_line(0);
 		if (str != NULL)
 		{
-			if (ft_strncmp(str, arg, ft_strlen(arg)) == 0 && str[i] == '\n')
+			if (ft_strncmp(str, arg, i) == 0 && str[i] == '\n')
 			{
 				free(str);
 				break;
@@ -22,6 +27,7 @@ int heredoc_process(char *arg)
 			free(str);
 		}
 	}
+    close(hd_fd);
     return(hd_fd);
 }
 
@@ -41,7 +47,7 @@ void print_command_tree(t_cmd *cmd, int level)
     {
         t_redir *redir_cmd = cmd->cmd.redir;
         printf("Redirection file name: %s\n", redir_cmd->file_name);
-        printf("Fd: %i\n", (redir_cmd->fd == 0) ? 0 : 1);
+        printf("Fd: %i\n", redir_cmd->fd);
         print_command_tree((t_cmd *)redir_cmd->cmd, level + 1);
     } 
     else if (cmd->type == EXEC) 
@@ -87,7 +93,10 @@ t_cmd *parse_redir(char **tokens)
     {
         if(ft_strcmp(tokens[i], "<") == 0 || ft_strcmp(tokens[i], ">") == 0 || ft_strcmp(tokens[i], ">>") == 0)
         {
-            fd = ft_strcmp(tokens[i], "<") == 0 ? 00 : 01;
+            if (ft_strcmp(tokens[i], ">>") != 0)
+                fd = ft_strcmp(tokens[i], "<") == 0 ? 0 : 1;
+            else
+                fd = 2;
             file_name = tokens[i + 1];
             tokens[i] = NULL; //set string "<" to NULL
             if (!command)
@@ -102,7 +111,7 @@ t_cmd *parse_redir(char **tokens)
                 printf("Bad syntax\n");
                 exit(1);
             }
-        //    fd = heredoc_process(file_name);
+           fd = heredoc_process(file_name);
            tokens[i] = NULL;
         }
         i++;
