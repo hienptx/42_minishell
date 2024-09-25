@@ -13,8 +13,12 @@ void *ft_malloc(void *data, size_t size)
 
 void free_tokens(char **tokens)
 {
-    size_t i = 0;
-    while (tokens[i])
+    size_t i;
+    
+    i = 0;
+    if (!tokens)
+        return;
+    while (tokens[i] != NULL)
     {
         free(tokens[i]);
         i++;

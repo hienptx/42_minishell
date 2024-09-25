@@ -84,7 +84,6 @@ char *expansion_handling(char *str)
         ret_env = "";
     ptr = replace_substring(str, ret_env, path);
     free(path);
-    free(str);
     return ptr;
 }
 
@@ -97,6 +96,7 @@ char *quote_handling(char *token)
 
     i = 0;
     ptr = token;
+    str = NULL;
     if (!ft_strchr(ptr, '\'') && !ft_strchr(ptr, '\"'))
         return(ptr);
     while(*ptr != '\0')
@@ -105,7 +105,7 @@ char *quote_handling(char *token)
             i++;
         ptr++;
     }
-    str = malloc(i + 1);
+    str = ft_malloc(str, i);
     non_quote = str;
     ptr = token;
     while(*ptr != '\0')
@@ -145,6 +145,7 @@ int main(void)
     t_list  *env_list;
     char *input;
     char **tok;
+    char *ptr;
     t_cmd *ast;
     int i;
  
@@ -167,15 +168,21 @@ int main(void)
             i = 0;
             while (tok[i] != NULL)
             {
+                ptr = tok[i];
                 tok[i] = expansion_handling(tok[i]);
+                if (ptr != tok[i])
+                    free(ptr);
+                ptr = tok[i];
                 tok[i] = quote_handling(tok[i]);
-                // printf("%s\n", tok[i]);
+                if (ptr != tok[i])
+                    free(ptr);
+                printf("%s\n", tok[i]);
                 i++;
             }
             ast = parse_cmd(tok);
             print_command_tree(ast, 0); //print abstract syntax tree from root
-            free_tokens(tok);
             free_ast(ast);
+            free_tokens(tok);
         }
         free(input);
     }

@@ -53,7 +53,7 @@ t_cmd *construct_redir(t_cmd *command, int fd, char *file_name)
 
     ast = malloc(sizeof(t_cmd));
     if (ast == NULL)
-        panic_sms("Malloco failed to callocate memory");
+        panic_sms("Malloc failed to callocate memory");
     ast->type = REDIR;
     ast->cmd.redir = malloc(sizeof(t_redir));
     if (ast->cmd.redir == NULL)

@@ -85,7 +85,7 @@ t_cmd *parse_redir(char **tokens)
     command = NULL;
     while(tokens[i] != NULL)
     {
-        if(ft_strcmp(tokens[i], "<") == 0 || ft_strcmp(tokens[i], ">") == 0)
+        if(ft_strcmp(tokens[i], "<") == 0 || ft_strcmp(tokens[i], ">") == 0 || ft_strcmp(tokens[i], ">>") == 0)
         {
             fd = ft_strcmp(tokens[i], "<") == 0 ? 00 : 01;
             file_name = tokens[i + 1];

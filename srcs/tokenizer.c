@@ -1,5 +1,8 @@
 #include "minishell.h"
 
+// << here_doc
+// >> output with appending option
+
 char *walk_string(char *str, char c)
 {
     str++;
@@ -8,6 +11,22 @@ char *walk_string(char *str, char c)
     if (*str == c)
         str++;
     return str;
+}
+
+char *get_word(char *str)
+{
+    char *exceptor = "<>|";
+ 
+    while (*str != '\0' && *str != ' ' && ft_strchr(exceptor, *str) == NULL)
+    {
+        if (*str == '\"')
+            str = walk_string(str, '\"');
+        else if (*str == '\'')
+            str = walk_string(str, '\'');   
+        else
+            str++;
+    }
+    return(str);
 }
 
 size_t count_tokens(char *str)
@@ -31,14 +50,7 @@ size_t count_tokens(char *str)
         }
         else
         {
-            while (*str != '\0' && *str != ' ' && ft_strchr(sep, *str) == NULL)
-            {
-                if (*str == '\"')
-                    str = walk_string(str, '\"');
-                else if (*str == '\'')
-                    str = walk_string(str, '\'');
-                str++;
-            }    
+            str = get_word(str);    
             count++;
         }
     }
@@ -59,30 +71,24 @@ char *cpy_str(char **ret, char *str, size_t *pos)
     if (ft_strchr(sep, *str) != NULL)
     {
         if ((*str == '>' && *(str + 1) == '>') || (*str == '<' && *(str + 1) == '<'))
-            str = str + 2;
+            str += 2;
         else
             str++; // Length of single operator like '>', '<', '|'
         wordlen = str - ptr;  
     }
     else
     {
-        while (*str != '\0' && *str != ' ' && ft_strchr(sep, *str) == NULL)
-        {
-            if (*str == '\"')
-                str = walk_string(str, '\"');
-            else if (*str == '\'')
-                str = walk_string(str, '\'');
-            str++;
-        }
+        str = get_word(str);
         wordlen = str - ptr;  // Calculate the word length
     }
-    ret[*pos] = ft_malloc(ret[*pos], wordlen);
+    ret[*pos] = ft_malloc(ret[*pos], wordlen); //TO FREE
     ft_strncpy(ret[*pos], ptr, wordlen);
     ret[*pos][wordlen] = '\0';  // Null-terminate the string
     *pos += 1;
     return str;
 }
 
+// TODO check when input has redirection and pipe 
 char **get_tokens(char *str)
 {
     char **ret;
@@ -92,7 +98,7 @@ char **get_tokens(char *str)
 
     ptr = str;
     nbr_tokens = count_tokens(str);
-    printf("Nbr of tokens = %li\n", nbr_tokens);
+    // printf("Nbr of tokens = %li\n", nbr_tokens);
     ret = malloc((nbr_tokens + 1) * sizeof(char *));
     if (ret == NULL)
     {
