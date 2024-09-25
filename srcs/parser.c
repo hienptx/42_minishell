@@ -60,6 +60,84 @@ void    set_redir(t_redir *redir_cmd)
         dup2(redir_cmd->fd, STDOUT_FILENO);
         close(redir_cmd->fd);
     }
+    else if (redir_cmd->fd == 2)
+    {
+        redir_cmd->fd = open(redir_cmd->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
+        if (redir_cmd->fd == -1)
+            exit(1);
+        dup2(redir_cmd->fd, STDOUT_FILENO);
+        close(redir_cmd->fd);
+    }
+}
+
+char    **get_all_path(char *env_path)
+{
+    if (env_path == NULL)
+        return (NULL);
+    env_path += 5;
+    return(ft_split(env_path, ":"));
+}
+
+char    *get_executable_path(char *env_path, char *prog_name)
+{
+    char    **cur_dir;
+    char    *executable_path;
+    char    *ret;
+    size_t  i;
+
+    i = 0;
+    cur_dir = get_all_path(env_path);
+    if (cur_dir == NULL)
+        return (NULL);
+    while (cur_dir[i])
+    {
+        executable_path = ft_strjoin(cur_dir[i], "/", prog_name);
+        if (executable_path == NULL)
+            return (NULL);
+        if (access(executable_path, X_OK) == 0)
+        {
+            ret = ft_strdup(executable_path);
+            free_2d_arr(cur_dir);
+            return (ret);
+        }
+        i++;
+    }
+    return (NULL);
+}
+
+// void    run_exec(t_exec *exec_cmd, t_list *env_list)
+// {
+//     fork_prcs();
+//     call_exec();
+// }
+
+int call_exec(t_exec *exec_cmd, t_list *env_list)
+{
+    extern char **environ;
+    char        *path;
+    int         path_exist;
+
+    path_exist = find_env(env_list, "PATH");
+    if (path_exist == 1)
+    {
+        path = get_executable_path(get_env_key("PATH"), exec_cmd->arg[0]);
+        if (path == NULL)
+            return ();
+        environ = mk_env_list(*env_list);
+        execve(path, argv, environ)
+    }
+    else if (path_exist == 0)
+        return (0);
+    else
+        return (-1);
+
+
+}
+
+void    fork_prcs(t_exec *exec_cmd, t_list **env_list)
+{
+    //fork()
+
 }
 
 void print_command_tree(t_cmd *cmd, int level) 
@@ -85,6 +163,10 @@ void print_command_tree(t_cmd *cmd, int level)
     {
         t_exec *exec_cmd = cmd->cmd.exec;
         printf("    Exec Command: ");
+        if (ck_builtin(exec_cmd->arg[0]) == 1)
+            call_builtin(exec_cmd);
+        else
+            // run_exec(exec_cmd, env_list);
         for (int i = 0; exec_cmd->arg[i] != NULL; i++)
             printf("%s ", exec_cmd->arg[i]);
         printf("\n");
