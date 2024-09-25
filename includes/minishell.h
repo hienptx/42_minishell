@@ -76,9 +76,12 @@ void free_ast(t_cmd *ast);
 //parser.c
 t_cmd *parse_cmd(char **tokens);
 t_cmd *parse_redir(char **tokens);
-t_cmd *parse_construct_exec(char **tokens);
+t_cmd *parse_exec(char **tokens);
 void print_command_tree(t_cmd *cmd, int level);
-int heredoc_process(char *arg2); 
+
+//here_doc.c
+int heredoc_process(char *arg2);
+t_cmd *parse_here_doc(t_cmd *command, char **tokens, int i);
 
 void	set_env(t_list **env_list);
 // char *(*ft_getenv)(const char *key);

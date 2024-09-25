@@ -1,36 +1,5 @@
 #include "minishell.h"
 
-int heredoc_process(char *arg)
-{
-	char *str;
-	int		i;
-    int hd_fd;
-
-    hd_fd = open("../minishell/here_doc.txt", O_CREAT | O_WRONLY | O_TRUNC, 0777);
-    if(hd_fd < 0)
-    {
-        panic_sms("Open failed");
-    }
-	i = ft_strlen(arg);
-	while(1)
-	{
-		ft_putstr_fd("> ", 0);
-		str = get_next_line(0);
-		if (str != NULL)
-		{
-			if (ft_strncmp(str, arg, i) == 0 && str[i] == '\n')
-			{
-				free(str);
-				break;
-			}
-			ft_putstr_fd(str, hd_fd);
-			free(str);
-		}
-	}
-    close(hd_fd);
-    return(hd_fd);
-}
-
 void print_command_tree(t_cmd *cmd, int level) 
 {
     if (cmd == NULL) 
@@ -83,43 +52,32 @@ t_cmd *parse_exec(char **tokens)
 t_cmd *parse_redir(char **tokens)
 {
     int i;
-    t_cmd *command;
+    t_cmd *command = NULL;
     int fd;
     char *file_name;
 
     i = 0;
-    command = NULL;
     while(tokens[i] != NULL)
     {
         if(ft_strcmp(tokens[i], "<") == 0 || ft_strcmp(tokens[i], ">") == 0 || ft_strcmp(tokens[i], ">>") == 0)
         {
-            if (ft_strcmp(tokens[i], ">>") != 0)
-                fd = ft_strcmp(tokens[i], "<") == 0 ? 0 : 1;
-            else
-                fd = 2;
+            fd = ft_strcmp(tokens[i], "<") == 0 ? 0 : 1;
             file_name = tokens[i + 1];
-            tokens[i] = NULL; //set string "<" to NULL
+            tokens[i] = NULL; // set string "<", ">", or ">>" to NULL
             if (!command)
-                command = parse_exec(tokens);
-            command = construct_redir(command, fd, file_name);
+                command = parse_exec(tokens); // Parse the command if it's not done yet
+            if (command)
+                command = construct_redir(command, fd, file_name); // Add redirection
         }
         else if(ft_strcmp(tokens[i], "<<") == 0)
-        {
-            file_name = tokens[i + 1];
-            if (file_name == NULL || ft_strcmp(file_name, "NULL") == 0)
-            {
-                printf("Bad syntax\n");
-                exit(1);
-            }
-           fd = heredoc_process(file_name);
-           tokens[i] = NULL;
-        }
+            command = parse_here_doc(command, tokens, i);
         i++;
     }
-    if (!command) // if there is no redirection -> parse a simple exec command
+    if (!command) // If there is no redirection -> parse a simple exec command
         command = parse_exec(tokens);
-    return (command);
+    return command;
 }
+
 
 t_cmd *parse_cmd(char **tokens)
 {
