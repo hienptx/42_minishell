@@ -39,6 +39,27 @@ char *get_key_or_value(char *key_or_val, const char *env)
 	}
 }
 
+
+int	find_env(t_list *env_list, char *key)
+{
+	char	*cur_key;
+
+	while (env_list)
+	{
+		cur_key = get_env_key((char *)env_list->content);
+		if(cur_key == NULL)
+		{
+			perror("malloc");
+			return (-1);
+		}
+		if (ft_strcmp(cur_key, key) == 0)
+			return (1);
+		env_list = env_list->next;
+	}
+	return (0);
+}
+
+
 int	update_env(t_list *env_list, const char *key, char *new_env)
 {
 	char	*cur_key;
