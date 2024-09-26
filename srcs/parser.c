@@ -1,22 +1,91 @@
 #include "../includes/minishell.h"
+#include <stdarg.h>
 
-void    left_pipe(t_pipe *pipe_cmd, int *fd)
+void    left_pipe(t_pipe *pipe_cmd, int *fd, t_list *env_list)
 {
     close(fd[0]);
     dup2(fd[1], STDOUT_FILENO);
     close(fd[1]);
-    iterate_ast((t_cmd *)pipe_cmd->left);
+    iterate_ast((t_cmd *)pipe_cmd->left, env_list);
 }
 
-void    right_pipe(t_pipe *pipe_cmd, int *fd)
+void    right_pipe(t_pipe *pipe_cmd, int *fd, t_list *env_list)
 {
     close(fd[1]);
     dup2(fd[0], STDIN_FILENO);
     close(fd[0]);
-    iterate_ast((t_cmd *)pipe_cmd->right);
+    iterate_ast((t_cmd *)pipe_cmd->right, env_list);
 }
 
-int set_pipe(t_pipe *pipe_cmd)
+int get_full_len(va_list args, const char *delimiter)
+{
+    const char  *str;
+    int         total_len;
+
+    va_list args_copy;
+    va_copy(args_copy, args);
+
+    int first = 1;
+    total_len = 0;
+    while (1)
+    {
+        str = va_arg(args_copy, const char *);
+        if (str == NULL)
+            break;
+        if (!first && delimiter != NULL) {
+            total_len += ft_strlen(delimiter);
+        }
+        total_len += ft_strlen(str);
+        first = 0;
+    }
+    va_end(args_copy);
+    return (total_len);
+}
+
+char    *cp_strs(char *result, va_list args, const char *delimiter)
+{
+    const char *str;
+    char *ptr = result;
+    int first = 1;
+
+    while (1)
+    {
+        str = va_arg(args, const char *);
+        if (str == NULL)
+            return (NULL);
+        if (!first && delimiter != NULL)
+        {
+            strcpy(ptr, delimiter);     //
+            ptr += strlen(delimiter);
+        }
+        strcpy(ptr, str);   //
+        ptr += ft_strlen(str);
+        first = 0;
+    }
+    *ptr = 0;
+}
+
+char    *ft_strsjoin(const char *delimiter, ...)
+{
+    va_list args;
+    int     full_len;
+    char    *ret;
+
+    va_start(args, delimiter);
+    full_len = get_full_len(args, delimiter);
+    if (full_len == -1)
+        return (NULL);
+    ret = (char *)malloc(full_len + 1);
+    if (ret == NULL) {
+        va_end(args);
+        return NULL;
+    }
+    cp_strs(ret, args, delimiter);
+    va_end(args);
+    return (ret);
+}
+
+int set_pipe(t_pipe *pipe_cmd, t_list *env_list)
 {
     int     fd[2];
     pid_t   pid_l;
@@ -28,12 +97,12 @@ int set_pipe(t_pipe *pipe_cmd)
     pid_l = fork();
     if (pid_l == 0)
     {
-        left_pipe(pipe_cmd, fd);
+        left_pipe(pipe_cmd, fd, env_list);
     }
     pid_r = fork();
     if (pid_r == 0)
     {
-        right_pipe(pipe_cmd, fd);
+        right_pipe(pipe_cmd, fd, env_list);
     }
     close(fd[0]);
     close(fd[1]);
@@ -42,7 +111,7 @@ int set_pipe(t_pipe *pipe_cmd)
     return (0);
 }
 
-void    set_redir(t_redir *redir_cmd)
+void    set_redir(t_redir *redir_cmd, t_list *env_list)
 {
     if (redir_cmd->fd == 0)     //input_redir
     {
@@ -68,6 +137,7 @@ void    set_redir(t_redir *redir_cmd)
         dup2(redir_cmd->fd, STDOUT_FILENO);
         close(redir_cmd->fd);
     }
+    run_exec(redir_cmd->cmd, env_list);
 }
 
 char    **get_all_path(char *env_path)
@@ -75,7 +145,7 @@ char    **get_all_path(char *env_path)
     if (env_path == NULL)
         return (NULL);
     env_path += 5;
-    return(ft_split(env_path, ":"));
+    return(ft_split(env_path, ':'));
 }
 
 char    *get_executable_path(char *env_path, char *prog_name)
@@ -91,25 +161,19 @@ char    *get_executable_path(char *env_path, char *prog_name)
         return (NULL);
     while (cur_dir[i])
     {
-        executable_path = ft_strjoin(cur_dir[i], "/", prog_name);
+        executable_path = ft_strsjoin(cur_dir[i], "/", prog_name);
         if (executable_path == NULL)
             return (NULL);
         if (access(executable_path, X_OK) == 0)
         {
             ret = ft_strdup(executable_path);
-            free_2d_arr(cur_dir);
+            // free_2d_arr(cur_dir);
             return (ret);
         }
         i++;
     }
     return (NULL);
 }
-
-// void    run_exec(t_exec *exec_cmd, t_list *env_list)
-// {
-//     fork_prcs();
-//     call_exec();
-// }
 
 int call_exec(t_exec *exec_cmd, t_list *env_list)
 {
@@ -122,57 +186,67 @@ int call_exec(t_exec *exec_cmd, t_list *env_list)
     {
         path = get_executable_path(get_env_key("PATH"), exec_cmd->arg[0]);
         if (path == NULL)
-            return ();
-        environ = mk_env_list(*env_list);
-        execve(path, argv, environ)
+            return (-1);
+        exec_cmd->arg[0] = path;
+        environ = mk_env_list(env_list);
+        execve(path, exec_cmd->arg, environ);
+        return (-2);
     }
     else if (path_exist == 0)
         return (0);
     else
         return (-1);
-
-
 }
 
-void    fork_prcs(t_exec *exec_cmd, t_list **env_list)
+void    run_exec(t_exec *exec_cmd, t_list *env_list)
 {
-    //fork()
+    pid_t   pid;
+    int     status;
 
+    pid = fork();
+    if (pid == 0)
+    {
+        call_exec(exec_cmd, env_list);
+    }
+    waitpid(pid, &status, 0);
+    return ;
 }
 
-void print_command_tree(t_cmd *cmd, int level) 
+void iterate_ast(t_cmd *cmd, t_list *env_list) 
 {
     if (cmd == NULL) 
         return;
     if (cmd->type == PIPE)
     {
         t_pipe *pipe_cmd = cmd->cmd.pipe;
-        printf("Left pipe, level %d \n", level);
-        print_command_tree((t_cmd *)pipe_cmd->left, level + 1);
-        printf("Right pipe, level %d \n", level);
-        print_command_tree((t_cmd *)pipe_cmd->right, level + 1);
+        set_pipe(pipe_cmd, env_list);
+        // printf("Left pipe, level %d \n", level);
+        // print_command_tree((t_cmd *)pipe_cmd->left, level + 1);
+        // printf("Right pipe, level %d \n", level);
+        // print_command_tree((t_cmd *)pipe_cmd->right, level + 1);
     } 
     else if (cmd->type == REDIR) 
     {
         t_redir *redir_cmd = cmd->cmd.redir;
-        printf("Redirection file name: %s\n", redir_cmd->file_name);
-        printf("Fd: %i\n", redir_cmd->fd);
-        print_command_tree((t_cmd *)redir_cmd->cmd, level + 1);
+        set_redir(redir_cmd, env_list);
+        // printf("Redirection file name: %s\n", redir_cmd->file_name);
+        // printf("Fd: %i\n", redir_cmd->fd);
+        // print_command_tree((t_cmd *)redir_cmd->cmd, level + 1);
     } 
     else if (cmd->type == EXEC) 
     {
         t_exec *exec_cmd = cmd->cmd.exec;
-        printf("    Exec Command: ");
+        // printf("    Exec Command: ");
         if (ck_builtin(exec_cmd->arg[0]) == 1)
-            call_builtin(exec_cmd);
+            call_builtin(exec_cmd, env_list);
         else
-            // run_exec(exec_cmd, env_list);
-        for (int i = 0; exec_cmd->arg[i] != NULL; i++)
-            printf("%s ", exec_cmd->arg[i]);
-        printf("\n");
+            run_exec(exec_cmd, env_list);
+        // for (int i = 0; exec_cmd->arg[i] != NULL; i++)
+        //     printf("%s ", exec_cmd->arg[i]);
+        // printf("\n");
     } 
-    else 
-        printf("Unknown Command Level %d:\n", level);
+    // else 
+        // printf("Unknown Command Level %d:\n", level);
 }
 
 t_cmd *parse_exec(char **tokens)

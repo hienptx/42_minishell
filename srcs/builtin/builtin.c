@@ -5,6 +5,44 @@ extern char **environ;
 
 static char *(*ft_getenv)(const char *key);
 
+int	ck_builtin(char *executable_name)
+{
+	// const char	*builtins[8];
+	size_t		i;
+
+	i = 0;
+	const char *builtins[8] = {"echo", "cd", "pwd", "export", "unset", "env", "exit", NULL};
+	while (builtins[i])
+	{
+		if (ft_strcmp(builtins[i], executable_name) == 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int	call_builtin(t_exec *exec_cmd, t_list *env_list)
+{
+    char **args = exec_cmd->arg;
+
+    if (strcmp(args[0], "echo") == 0)
+        echo(args);
+    else if (strcmp(args[0], "cd") == 0) 
+        cd(env_list, args);  // Change directory
+    else if (strcmp(args[0], "pwd") == 0) 
+        pwd();  // Print working directory
+    else if (strcmp(args[0], "export") == 0) 
+        export(env_list, args);  // Export environment variable
+    // else if (strcmp(args[0], "unset") == 0) 
+    //     ft_unset(args);  // Unset environment variable
+    // else if (strcmp(args[0], "env") == 0) 
+    //     ft_env();  // Display environment variables
+    // else if (strcmp(args[0], "exit") == 0) 
+    //     ft_exit(args);  // Exit shell
+	return (1);
+}
+
+
 void	set_env(t_list **env_list)
 {
 
