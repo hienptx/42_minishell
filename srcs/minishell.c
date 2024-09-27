@@ -153,6 +153,11 @@ int main(void)
     signal(SIGQUIT, signal_handler);
     ast = NULL;
     set_env(&env_list);
+    // while (env_list != NULL)
+    // {
+    //     printf("initial env %s\n", (char *)env_list->content);
+    //     env_list = env_list->next;
+    // }
     while(1)
     {
         input = readline("$> ");

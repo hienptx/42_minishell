@@ -14,9 +14,10 @@ char **mk_env_list(t_list *env_list);
 t_list	*cp_env_list();
 
 
-char	*get_env_key(const char *env_var);
-char	*get_env_value(const char *env);
-char	*get_key_or_value(char *key_or_val, const char *env);
+char	*get_env_key(char *env);
+char	*get_env(char *env_key, t_list *env_list);
+char	*get_env_value(char *env_key, t_list *env_list);
+char	*get_key_or_value(char *key_or_val, char *env);
 int		update_env(t_list *env_list, const char *key, char *new_env);
 int		add_env(t_list **env_list, char *env);
 void	mod_env(t_list *env_list, const char *new_env);

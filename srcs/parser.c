@@ -52,17 +52,18 @@ char    *cp_strs(char *result, va_list args, const char *delimiter)
     {
         str = va_arg(args, const char *);
         if (str == NULL)
-            return (NULL);
+            break;
         if (!first && delimiter != NULL)
         {
             strcpy(ptr, delimiter);     //
-            ptr += strlen(delimiter);
+            ptr += ft_strlen(delimiter);
         }
         strcpy(ptr, str);   //
         ptr += ft_strlen(str);
         first = 0;
     }
     *ptr = 0;
+    return (ptr);
 }
 
 char    *ft_strsjoin(const char *delimiter, ...)
@@ -145,6 +146,8 @@ char    **get_all_path(char *env_path)
     if (env_path == NULL)
         return (NULL);
     env_path += 5;
+
+    // printf("gap %s\n", env_path);
     return(ft_split(env_path, ':'));
 }
 
@@ -156,12 +159,16 @@ char    *get_executable_path(char *env_path, char *prog_name)
     size_t  i;
 
     i = 0;
+    // printf("gep %s\n", env_path);
     cur_dir = get_all_path(env_path);
     if (cur_dir == NULL)
         return (NULL);
+    // printf("%d\n", 2);
     while (cur_dir[i])
     {
-        executable_path = ft_strsjoin(cur_dir[i], "/", prog_name);
+        // printf("%s\n", cur_dir[i]);
+        executable_path = ft_strsjoin(NULL, cur_dir[i], "/", prog_name, NULL);
+        // printf("the path %s\n", executable_path);
         if (executable_path == NULL)
             return (NULL);
         if (access(executable_path, X_OK) == 0)
@@ -182,9 +189,12 @@ int call_exec(t_exec *exec_cmd, t_list *env_list)
     int         path_exist;
 
     path_exist = find_env(env_list, "PATH");
+    // printf("path_exist %d\n", path_exist);
     if (path_exist == 1)
     {
-        path = get_executable_path(get_env_key("PATH"), exec_cmd->arg[0]);
+        // printf("call exec%s\n", get_env_value("PATH", env_list));
+        path = get_executable_path(get_env_value("PATH", env_list), exec_cmd->arg[0]);
+        printf("%s\n", path);
         if (path == NULL)
             return (-1);
         exec_cmd->arg[0] = path;
@@ -203,12 +213,12 @@ void    run_exec(t_exec *exec_cmd, t_list *env_list)
     pid_t   pid;
     int     status;
 
+    // printf("%s\n", "run_exec\n");
     pid = fork();
     if (pid == 0)
-    {
         call_exec(exec_cmd, env_list);
-    }
-    waitpid(pid, &status, 0);
+    else
+        waitpid(pid, &status, 0);
     return ;
 }
 
