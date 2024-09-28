@@ -29,28 +29,50 @@
 //     return(hd_fd);
 // }
 
-char *store_input(char *str, char *buffer, size_t *buffer_size, size_t *total_size)
+void *ft_realloc(void *ptr, size_t new_size)
+{
+    size_t old_size;
+    size_t size_to_copy;
+    void *new_ptr;
+
+    if (new_size == 0)
+    {
+        free(ptr);
+        return (NULL);
+    }
+    if (ptr == NULL)
+    {
+        ptr = malloc(new_size);
+        if (ptr == NULL)
+            panic_sms("Malloc failed");
+        return (ptr);
+    }
+    old_size = ft_strlen(ptr);
+    new_ptr = malloc(new_size + 1);
+    if (new_ptr == NULL)
+        panic_sms("Malloc failed");
+    if(old_size > new_size)
+        size_to_copy = old_size;
+    else
+        size_to_copy = new_size;
+    ft_memcpy(new_ptr, ptr, size_to_copy);
+    return (new_ptr);
+}
+
+char *store_input(char *str, char *buffer, size_t *total_size)
 {
     size_t len;
-    size_t new_size;
     char *new_buffer;
 
     len = ft_strlen(str);
-    if (*total_size + len >= *buffer_size)
+    new_buffer = realloc(buffer, *total_size + len + 1);
+    if (!new_buffer)
     {
-        new_size = *buffer_size * 2;
-        new_buffer = ft_malloc(NULL, new_size);
-        if (!new_buffer)
-        {
-            free(buffer);
-            panic_sms("Memory allocation failed");
-        }
-        ft_memcpy(new_buffer, buffer, *total_size);
         free(buffer);
-        buffer = new_buffer;
-        *buffer_size = new_size;
+        panic_sms("Realloc failed");
     }
-    ft_memcpy(buffer + *total_size, str, len);
+    buffer = new_buffer;
+    ft_strcpy(buffer + *total_size, str);
     *total_size += len;
     free(str);
     return(buffer);
@@ -60,11 +82,11 @@ int heredoc_process(char *arg)
 {
     char *str;
     char *buffer;
-    size_t buffer_size;
+    // size_t buffer_size;
     size_t total_size;
     int pipe_fd[2];
 
-    buffer_size = 0;
+    // buffer_size = 0;
     total_size = 0;
     buffer = NULL;
     if (pipe(pipe_fd) == -1)
@@ -80,16 +102,16 @@ int heredoc_process(char *arg)
                 free(str);
                 break;
             }
-            buffer = store_input(str, buffer, &buffer_size, &total_size);
+            buffer = store_input(str, buffer,  &total_size);
         }
     }
-    // int i = 0;
-    // while(buffer[i] != '\0')
-    // {
-    //     write(1, &buffer[i], 1);
-    //     i++;
-    // }
-    write(pipe_fd[1], buffer, buffer_size);
+    int i = 0;
+    while(buffer[i] != '\0')
+    {
+        write(1, &buffer[i], 1);
+        i++;
+    }
+    write(pipe_fd[1], buffer, total_size);
     close(pipe_fd[1]);
     free(buffer); 
     return (pipe_fd[0]); 
