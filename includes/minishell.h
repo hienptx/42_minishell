@@ -77,12 +77,28 @@ void free_ast(t_cmd *ast);
 t_cmd *parse_cmd(char **tokens);
 t_cmd *parse_redir(char **tokens);
 t_cmd *parse_exec(char **tokens);
-// void print_command_tree(t_cmd *cmd, int level);
+void print_command_tree(t_cmd *cmd, int level);
 void iterate_ast(t_cmd *cmd, t_list *env_list);
 
 //here_doc.c
 int heredoc_process(char *arg2);
 t_cmd *parse_here_doc(t_cmd *command, char **tokens, int i);
+
+//pipe.c
+void    left_pipe(t_pipe *pipe_cmd, int *fd, t_list *env_list);
+void    right_pipe(t_pipe *pipe_cmd, int *fd, t_list *env_list);
+int set_pipe(t_pipe *pipe_cmd, t_list *env_list);
+
+//redirect.c
+void    set_redir(t_redir *redir_cmd, t_list *env_list);
+
+//execution.c
+int call_exec(t_exec *exec_cmd, t_list *env_list);
+void    run_exec(t_exec *exec_cmd, t_list *env_list);
+int set_exec(t_exec *exec_cmd, t_list *env_list);
+char    *get_executable_path(char *env_path, char *prog_name);
+char    **get_all_path(char *env_path);
+
 
 void	set_env(t_list **env_list);
 void    run_exec(t_exec *exec_cmd, t_list *env_list);
@@ -90,4 +106,11 @@ int     ck_builtin(char *executable_name);
 // char *(*ft_getenv)(const char *key);
 int	find_env(t_list *env_list, char *key);
 int call_builtin(t_exec *exec_cmd, t_list *env_list);
+
+int set_exec(t_exec *exec_cmd, t_list *env_list);
+
+char    *ft_strsjoin(const char *delimiter, ...);
+int get_full_len(va_list args, const char *delimiter);
+char    *cp_strs(char *result, va_list args, const char *delimiter);
+
 #endif

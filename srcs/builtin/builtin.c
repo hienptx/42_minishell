@@ -234,7 +234,7 @@ int	export(t_list *env_list, char *x[])
 		key = NULL;
 		i++;		
 	}
-	ft_getenv = get_env_value;
+	// ft_getenv = get_env_value;
 	return (0);
 }
 

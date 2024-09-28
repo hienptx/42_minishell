@@ -185,7 +185,7 @@ int main(void)
                 i++;
             }
             ast = parse_cmd(tok);
-            // print_command_tree(ast, env_list); //print abstract syntax tree from root
+            // print_command_tree(ast, 0); //print abstract syntax tree from root
             iterate_ast(ast, env_list);
             free_ast(ast);
             free_tokens(tok);
