@@ -8,7 +8,7 @@ LIBFT_H =
 
 CC = gcc
 ifeq ($(shell uname -s), Darwin)
-	CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR) -I$(shell brew --prefix readline)/include
+	CFLAGS = -g -Wall -Wextra -Werror -I$(INCL_DIR) -I$(shell brew --prefix readline)/include
 else
 	CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR)
 endif

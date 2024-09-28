@@ -1,17 +1,22 @@
 #include "../../includes/builtin.h"
 // #include "includes/minishell.h"
 
-char	*get_env_key(const char *env)
+char	*get_env_key(char *env)
 {
 	return (get_key_or_value("key", env));
 }
 
-char	*get_env_value(const char *env)
+char	*get_env_value(char *env_key, t_list *env_list)
 {
+	char	*env;
+
+	env = get_env(env_key, env_list);
+	if (env == NULL)
+		return (NULL);
 	return (get_key_or_value("value", env));
 }
 
-char *get_key_or_value(char *key_or_val, const char *env)
+char *get_key_or_value(char *key_or_val, char *env)
 {
 	char	*delim;
 	size_t	key_len;
@@ -27,18 +32,38 @@ char *get_key_or_value(char *key_or_val, const char *env)
 		key_len = delim - env;
 		if (*key_or_val == 'k')
 		{
+			// printf("key len %zu\n", key_len);
 			key = ft_substr(env, 0, key_len);
 			return (key);
 		}
 		else
 		{
+			// printf("%s\n", key_or_val);
 			val_len = ft_strlen(env) - key_len - 1;
+			// printf("value len %zu\n", val_len);
 			val = ft_substr(env, key_len + 1, val_len);
 			return (val);
 		}
 	}
 }
 
+char	*get_env(char *env_key, t_list *env_list)
+{
+	size_t	key_len;
+	char	*cur_env;
+
+	key_len = ft_strlen(env_key);
+	while (env_list)
+	{
+		cur_env = (char *)env_list->content;
+		if (ft_strncmp(env_key, cur_env, key_len) == 0)
+		{
+			return (cur_env);
+		}
+		env_list = env_list->next;
+	}
+	return (NULL);
+}
 
 int	find_env(t_list *env_list, char *key)
 {

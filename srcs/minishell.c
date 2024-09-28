@@ -153,6 +153,11 @@ int main(void)
     signal(SIGQUIT, signal_handler);
     ast = NULL;
     set_env(&env_list);
+    // while (env_list != NULL)
+    // {
+    //     printf("initial env %s\n", (char *)env_list->content);
+    //     env_list = env_list->next;
+    // }
     while(1)
     {
         input = readline("$> ");
@@ -180,7 +185,7 @@ int main(void)
                 i++;
             }
             ast = parse_cmd(tok);
-            // print_command_tree(ast, env_list); //print abstract syntax tree from root
+            // print_command_tree(ast, 0); //print abstract syntax tree from root
             iterate_ast(ast, env_list);
             free_ast(ast);
             free_tokens(tok);
