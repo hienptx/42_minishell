@@ -65,7 +65,7 @@ char *store_input(char *str, char *buffer, size_t *total_size)
     char *new_buffer;
 
     len = ft_strlen(str);
-    new_buffer = realloc(buffer, *total_size + len + 1);
+    new_buffer = ft_realloc(buffer, *total_size + len + 1);
     if (!new_buffer)
     {
         free(buffer);
@@ -102,7 +102,7 @@ int heredoc_process(char *arg)
                 free(str);
                 break;
             }
-            buffer = store_input(str, buffer,  &total_size);
+            buffer = store_input(str, buffer, &total_size);
         }
     }
     int i = 0;

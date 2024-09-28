@@ -43,12 +43,6 @@ void process_tokens(char **tok, t_list *env_list)
     iterate_ast(ast, env_list);
     free_ast(ast);
 }
-// int check_validation(char *input)
-// {
-//     if (only_space(input) || unclosed_quote(input))
-//         return(1);
-//     return(0);
-// }
 
 int main(void) 
 {
