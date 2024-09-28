@@ -95,7 +95,7 @@ t_cmd *parse_cmd(char **tokens)
                 printf("Bad syntax, out of scope of minishell\n");
                 return (NULL);
             }
-            free(tokens[i]);
+            // free(tokens[i]);
             tokens[i] = NULL;
             left = parse_cmd(tokens);
             right = parse_cmd(&tokens[i + 1]);

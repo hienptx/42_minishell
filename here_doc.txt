@@ -1,0 +1,5 @@
+hi
+hello
+cat <<EOF | grep "hello"
+hi 
+hello 

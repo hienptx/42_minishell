@@ -97,7 +97,6 @@ char **get_tokens(char *str)
 
     ptr = str;
     nbr_tokens = count_tokens(str);
-    // printf("Nbr of tokens = %li\n", nbr_tokens);
     ret = malloc((nbr_tokens + 1) * sizeof(char *));
     if (ret == NULL)
     {

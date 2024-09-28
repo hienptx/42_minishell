@@ -18,15 +18,14 @@ void free_tokens(char **tokens)
     i = 0;
     if (!tokens)
         return;
-    while (1)
+    while (tokens[i] != NULL)
     {
-        if (tokens[i] != NULL)
-            free(tokens[i]);
-        if (tokens[i] == NULL && tokens[i + 1] != NULL)
-            i++;
-        else
-            break;
+        free(tokens[i]);
         i++;
+        // if (tokens[i] == NULL && tokens[i + 1] != NULL)
+        //     ;
+        // else
+        //     break;
     }
     free(tokens);
 }
