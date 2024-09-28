@@ -18,9 +18,14 @@ void free_tokens(char **tokens)
     i = 0;
     if (!tokens)
         return;
-    while (tokens[i] != NULL)
+    while (1)
     {
-        free(tokens[i]);
+        if (tokens[i] != NULL)
+            free(tokens[i]);
+        if (tokens[i] == NULL && tokens[i + 1] != NULL)
+            i++;
+        else
+            break;
         i++;
     }
     free(tokens);
@@ -30,4 +35,15 @@ void panic_sms(char *s)
 {
     perror(s);
     exit (1);
+}
+
+int only_space(char *input)
+{
+    while (*input != '\0')
+    {
+        if (*input != ' ')  
+            return (0);
+        input++;
+    }
+    return(1);
 }

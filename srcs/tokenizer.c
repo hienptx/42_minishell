@@ -45,8 +45,7 @@ size_t count_tokens(char *str)
             count++;
             if ((*str == '>' && *(str + 1) == '>') || (*str == '<' && *(str + 1) == '<'))
                 str += 2; // Skip the '>>' or '<<'
-            else
-                str++; // Skip the single special character
+            str++; // Skip the single special character
         }
         else
         {

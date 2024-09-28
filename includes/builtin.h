@@ -13,7 +13,6 @@ char **mk_env_list(t_list *env_list);
 // char *(*ft_getenv)(const char *key);
 t_list	*cp_env_list();
 
-
 char	*get_env_key(char *env);
 char	*get_env(char *env_key, t_list *env_list);
 char	*get_env_value(char *env_key, t_list *env_list);

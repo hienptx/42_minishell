@@ -7,6 +7,7 @@
 #include <readline/history.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include "../includes/builtin.h"
 // #include "../libft/includes/libft.h"
@@ -53,8 +54,16 @@ typedef struct s_cmd
 
 // minishell_utils.c
 char *quote_handling(char *token);
+void signal_handler(int sig);
+
+// expansion.c
 char *expansion_handling(char *str);
 char *replace_substring(char *str, char *newsub, char *oldsub);
+
+// quotes.c
+char *quote_handling(char *token);
+size_t get_strlen(char *token);
+int unclosed_quote(char **token);
 
 // tokenizer_input.c
 char **get_tokens(char *str);
@@ -66,6 +75,7 @@ char *walk_string(char *str, char c);
 void *ft_malloc(void *data, size_t size);
 void free_tokens(char **tokens);
 void panic_sms(char *s);
+int only_space(char *input);
 
 //constructor.c
 t_cmd *construct_pipe(char *left, char *right);
@@ -106,8 +116,6 @@ int     ck_builtin(char *executable_name);
 // char *(*ft_getenv)(const char *key);
 int	find_env(t_list *env_list, char *key);
 int call_builtin(t_exec *exec_cmd, t_list *env_list);
-
-int set_exec(t_exec *exec_cmd, t_list *env_list);
 
 char    *ft_strsjoin(const char *delimiter, ...);
 int get_full_len(va_list args, const char *delimiter);

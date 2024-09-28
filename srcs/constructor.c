@@ -2,7 +2,7 @@
 
 void free_ast(t_cmd *ast)
 {
-    int i;
+    // int i;
 
     if (ast->type == PIPE)
     {
@@ -13,17 +13,14 @@ void free_ast(t_cmd *ast)
     else if (ast->type == REDIR)
     {
         free_ast((t_cmd *)ast->cmd.redir->cmd);
-        free(ast->cmd.redir->file_name);
+        free_ast((t_cmd *)ast->cmd.redir->file_name);
         free(ast->cmd.redir);
     }
     else if (ast->type == EXEC)
     {
-        i = 0;
-        while(ast->cmd.exec->arg[i] != NULL)
-        {
-            free(ast->cmd.exec->arg[i]);
-            i++;
-        }
+        // i = 0;
+        // while(ast->cmd.exec->arg[i++] != NULL)
+        //     free(ast->cmd.exec->arg[i]);
         free(ast->cmd.exec->arg);
         free(ast->cmd.exec);
     }
@@ -78,7 +75,7 @@ t_exec *construct_exec(char **tokens, t_exec *data)
     i  = 0;
     while (i < arg_count)
     {
-        data->arg[i] = ft_strdup(tokens[i]);
+        data->arg[i] = tokens[i];
         i++;
     }
     data->arg[arg_count] = NULL;

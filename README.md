@@ -1,3 +1,24 @@
+//  SIGNAL
+// Ctrl-D exit shell -> 
+// Ctrl-C Signal Interrupt - signum=SIGINT
+// Ctrl-\ does nothing - signum=SIGQUIT
+
+// BUILT-IN
+// ◦echo with option -n
+// ◦cd with only a relative or absolute path
+// ◦pwd with no options
+// ◦export with no options
+// ◦unset with no options
+// ◦env with no options or arguments
+// ◦exit with no options
+
+// APPROACH
+// Parsecmd - recursive descent parser, also means Top-Down Parser
+// ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
+// runcmd - walk the tree recursively. "execute" the nodes, create child processes as needed
+
+// Signal handler for SIGINT (^C)
+
 How does Shell execute a normal program (Linux, Shell, SH, and development)?
 
 the shell scans the command line and breaks it up into tokens, making substitutions as it goes
@@ -43,3 +64,19 @@ ex) echo hello | grep hello
    {type : word, data : grep}
    {type : word, data : grep}
 
+Test:
+
+// sort < here_doc.txt < Makefile > outfile.txt
+
+// cat <<|EOF | grep "hello" -> test this case
+// cat <<EOF | grep "hello"
+// cmd < filename1 | cmd1 > filename2
+// cmd 1 | cmd 2 | cmd 3
+// e'c'ho |"$PATH" << '$USER' "Hello,>> '$USER' is me" 
+// sort < Makefile| grep "FLAG" | grep 'FLAGS' > output.tx
+// sort < Makefile | grep "FLAG" | grep 'FLAGS' >> output.txt
+// sort < Makefile | grep "FLAG" | uniq > output.txt
+// cat <<EOF | grep "pattern" > output.txt
+// grep 'pattern' << EOF > output.txt
+// echo "'$USER'" $PATH '$USER' $?
+// sort < here_doc.txt < test.c >| outfile.txt -> this example works in shell

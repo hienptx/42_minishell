@@ -54,13 +54,19 @@ t_cmd *parse_redir(char **tokens)
     {
         if(ft_strcmp(tokens[i], "<") == 0 || ft_strcmp(tokens[i], ">") == 0 || ft_strcmp(tokens[i], ">>") == 0)
         {
-            fd = ft_strcmp(tokens[i], "<") == 0 ? 0 : 1;
-            file_name = tokens[i + 1];
+
+            fd = ft_strcmp(tokens[i], "<") == 0 ? 0 :
+            ft_strcmp(tokens[i], ">>") == 0 ? 2 : 1;
+            free(tokens[i]);
             tokens[i] = NULL; // set string "<", ">", or ">>" to NULL
+            file_name = ft_strdup(tokens[i + 1]);
+            free (tokens[i + 1]);
+            i += 1;
             if (!command)
                 command = parse_exec(tokens); // Parse the command if it's not done yet
             if (command)
                 command = construct_redir(command, fd, file_name); // Add redirection
+            free(file_name);
         }
         else if(ft_strcmp(tokens[i], "<<") == 0)
             command = parse_here_doc(command, tokens, i);
@@ -89,6 +95,7 @@ t_cmd *parse_cmd(char **tokens)
                 printf("Bad syntax, out of scope of minishell\n");
                 return (NULL);
             }
+            free(tokens[i]);
             tokens[i] = NULL;
             left = parse_cmd(tokens);
             right = parse_cmd(&tokens[i + 1]);
