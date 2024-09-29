@@ -25,6 +25,11 @@ void    set_redir(t_redir *redir_cmd, t_list *env_list)
             exit(1);
         dup2(redir_cmd->fd, STDOUT_FILENO);
     }
+    else
+    {
+        dup2(redir_cmd->fd, STDIN_FILENO);
+    }
+    sleep(1000000);
     close(redir_cmd->fd);
     iterate_ast((t_cmd *)redir_cmd->cmd, env_list);
     dup2(saved_stdin, STDIN_FILENO);

@@ -13,13 +13,10 @@ void iterate_ast(t_cmd *cmd, t_list *env_list)
     {
         t_redir *redir_cmd = cmd->cmd.redir;
         set_redir(redir_cmd, env_list);
-        // printf("redir %d\n", ((t_cmd *)redir_cmd->cmd)->type);
     }
     else if (cmd->type == EXEC)
     {
-        // printf("exec node\n");
         t_exec *exec_cmd = cmd->cmd.exec;
-        // printf("cmd is %s\n", exec_cmd->arg[0]);
         set_exec(exec_cmd, env_list);
     } 
 }

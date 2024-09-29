@@ -1,49 +1,53 @@
 #include "../../includes/builtin.h"
-// #include "includes/minishell.h"
+#include "../../includes/minishell.h"
 
 char	*get_env_key(char *env)
 {
-	return (get_key_or_value("key", env));
+	char	*delim;
+
+	delim = ft_strchr(env, '=');
+	if (delim == NULL)
+		return (ft_strdup(env));
+	return (get_key_or_value("key", env, env - delim));
 }
 
 char	*get_env_value(char *env_key, t_list *env_list)
 {
 	char	*env;
+	char	*delim;
 
 	env = get_env(env_key, env_list);
+	// printf("gev env%s\n", env);
 	if (env == NULL)
 		return (NULL);
-	return (get_key_or_value("value", env));
+	delim = ft_strchr(env, '=');
+	if (delim == NULL)
+		return (NULL);
+	return (get_key_or_value("value", env, delim - env));
 }
 
-char *get_key_or_value(char *key_or_val, char *env)
+char *get_key_or_value(char *key_or_val, char *env, size_t key_len)
 {
-	char	*delim;
-	size_t	key_len;
 	size_t	val_len;
 	char	*key;
 	char	*val;
 
-	delim = ft_strchr(env, '=');
-	if (!delim)
-		return (ft_strdup(env));
+	if (*key_or_val == 'k')
+	{
+		key = ft_substr(env, 0, key_len);
+		if (key == NULL)
+			panic_sms("malloc");
+		return (key);
+	}
 	else
 	{
-		key_len = delim - env;
-		if (*key_or_val == 'k')
-		{
-			// printf("key len %zu\n", key_len);
-			key = ft_substr(env, 0, key_len);
-			return (key);
-		}
-		else
-		{
-			// printf("%s\n", key_or_val);
-			val_len = ft_strlen(env) - key_len - 1;
-			// printf("value len %zu\n", val_len);
-			val = ft_substr(env, key_len + 1, val_len);
-			return (val);
-		}
+		// printf("%s\n", key_or_val);
+		val_len = ft_strlen(env) - key_len - 1;
+		// printf("value len %zu\n", val_len);
+		val = ft_substr(env, key_len + 1, val_len);
+		if (val == NULL)
+			panic_sms("malloc");
+		return (val);
 	}
 }
 
@@ -53,9 +57,11 @@ char	*get_env(char *env_key, t_list *env_list)
 	char	*cur_env;
 
 	key_len = ft_strlen(env_key);
+	// printf("key len %zu\n", key_len);
 	while (env_list)
 	{
 		cur_env = (char *)env_list->content;
+		// printf("%s\n", cur_env);
 		if (ft_strncmp(env_key, cur_env, key_len) == 0)
 		{
 			return (cur_env);
@@ -91,6 +97,8 @@ int	update_env(t_list *env_list, const char *key, char *new_env)
 	t_list	*node;
 
 	node = env_list;
+	if (new_env == NULL)
+		return (1);
 	while (env_list)
 	{
 		cur_key = get_env_key((char *)env_list->content);
@@ -120,12 +128,11 @@ int	add_env(t_list **env_list, char *new_env)
 	if (new_node == NULL)
 		return (1);
 	ft_lstadd_back(env_list, new_node);
-	// while (*env_list)
-	// {
-	// 	// printf("testss\n");
-	// 	printf("%s\n", (*env_list)->content);
-	// 	(*env_list) = (*env_list)->next;
-	// }
+	while (*env_list)
+	{
+		printf("%s\n", (char *)(*env_list)->content);
+		(*env_list) = (*env_list)->next;
+	}
 	return (0);
 }
 

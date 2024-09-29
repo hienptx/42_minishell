@@ -24,7 +24,7 @@ char *replace_substring(char *str, char *newsub, char *oldsub)
     return (ptr);
 }
 
-char *expansion_handling(char *str)
+char *expansion_handling(char *str, t_list *env_list)
 {
     size_t len;
     char *s;
@@ -44,7 +44,7 @@ char *expansion_handling(char *str)
         s++;
     }
     path = ft_substr(str, start, len);
-    ret_env = getenv(path + 1);
+    ret_env = get_env_value(path + 1, env_list);
     if (ret_env == NULL) 
         ret_env = "";
     ptr = replace_substring(str, ret_env, path);

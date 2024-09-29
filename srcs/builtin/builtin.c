@@ -3,7 +3,7 @@
 
 extern char **environ;
 
-static char *(*ft_getenv)(const char *key);
+// static char *(*ft_getenv)(const char *key);
 
 int	ck_builtin(char *executable_name)
 {
@@ -28,9 +28,9 @@ int	call_builtin(t_exec *exec_cmd, t_list *env_list)
     if (strcmp(args[0], "echo") == 0)
         echo(args);
     else if (strcmp(args[0], "cd") == 0) 
-        cd(env_list, args);  // Change directory
+        cd(env_list, args);
     else if (strcmp(args[0], "pwd") == 0) 
-        pwd();  // Print working directory
+        pwd();
     else if (strcmp(args[0], "export") == 0) 
         export(env_list, args);  // Export environment variable
     // else if (strcmp(args[0], "unset") == 0) 
@@ -47,7 +47,7 @@ void	set_env(t_list **env_list)
 {
 
 	*env_list = cp_env_list();
-	ft_getenv = getenv;
+	// ft_getenv = getenv;
 	return ;
 }
 
@@ -80,6 +80,15 @@ void	print_env_arr(char **env_arr)
 	{
 		printf("%s\n", env_arr[i]);
 		i++;
+	}
+}
+
+void	print_env_list(t_list *env_list)
+{
+	while (env_list != NULL)
+	{
+		printf("%s\n", (char *)env_list->content);
+		env_list = env_list->next;
 	}
 }
 
@@ -153,7 +162,8 @@ int	cd(t_list *env_list, char *x[]) //{"cd", "tmp", NULL}
 
 	path = x[1];
 	if (path == NULL)	//just 'cd'
-		path = ft_getenv("HOME");
+		// path = ft_getenv("HOME");
+		path = getenv("HOME");
 	if (path)
 	{
 		oldpwd = getcwd(NULL, 0);
@@ -174,9 +184,14 @@ int	cd(t_list *env_list, char *x[]) //{"cd", "tmp", NULL}
 
 void	echo_n_option(char **x, int start_idx)
 {
-	int	i;
+	size_t	i;
 
 	i = start_idx + 1;
+	if (x[1] == NULL)
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		return ;
+	}
 	while (x[i])
 	{
 		write(STDOUT_FILENO, x[i], ft_strlen(x[i]));
@@ -190,7 +205,7 @@ void	echo_n_option(char **x, int start_idx)
 
 int	echo(char **x)
 {
-	if (ft_strcmp("-n", x[1]) == 0)
+	if (x[1] != NULL && ft_strcmp("-n", x[1]) == 0)
 		echo_n_option(x, 1);
 	else
 		echo_n_option(x, 0);
@@ -225,16 +240,16 @@ int	export(t_list *env_list, char *x[])
 	}
 	while (x[i])
 	{
+		print_env_list(env_list);
 		key = get_env_key(x[i]);
 		if (key == NULL)
-			return (1);
-		if (update_env(env_list, key, x[i]) == 1)
+			return (1);	//malloc fail
+		if (update_env(env_list, key, ft_strdup(x[i])) == 1)
 			return (1);
 		free(key);
 		key = NULL;
 		i++;		
 	}
-	// ft_getenv = get_env_value;
 	return (0);
 }
 

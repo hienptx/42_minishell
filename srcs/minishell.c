@@ -28,7 +28,7 @@ void process_tokens(char **tok, t_list *env_list)
     {
         // printf("%s\n", tok[i]);
         ptr = tok[i];
-        tok[i] = expansion_handling(tok[i]);
+        tok[i] = expansion_handling(tok[i], env_list);
         if (ptr != tok[i])
             free(ptr);
         ptr = tok[i];

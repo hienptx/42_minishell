@@ -57,7 +57,7 @@ char *quote_handling(char *token);
 void signal_handler(int sig);
 
 // expansion.c
-char *expansion_handling(char *str);
+char *expansion_handling(char *str, t_list *env_list);
 char *replace_substring(char *str, char *newsub, char *oldsub);
 
 // quotes.c
