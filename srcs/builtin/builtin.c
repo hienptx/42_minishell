@@ -3,7 +3,8 @@
 
 extern char **environ;
 
-// static char *(*ft_getenv)(const char *key);
+void	unset(char **args, t_list *env_list);
+void	env(t_list *env_list);
 
 int	ck_builtin(char *executable_name)
 {
@@ -27,27 +28,32 @@ int	call_builtin(t_exec *exec_cmd, t_list *env_list)
 
     if (strcmp(args[0], "echo") == 0)
         echo(args);
-    else if (strcmp(args[0], "cd") == 0) 
+    else if (strcmp(args[0], "cd") == 0)
         cd(env_list, args);
     else if (strcmp(args[0], "pwd") == 0) 
         pwd();
     else if (strcmp(args[0], "export") == 0) 
-        export(env_list, args);  // Export environment variable
-    // else if (strcmp(args[0], "unset") == 0) 
-    //     ft_unset(args);  // Unset environment variable
-    // else if (strcmp(args[0], "env") == 0) 
-    //     ft_env();  // Display environment variables
-    // else if (strcmp(args[0], "exit") == 0) 
-    //     ft_exit(args);  // Exit shell
+        export(env_list, args);
+    else if (strcmp(args[0], "unset") == 0) 
+        unset(args, env_list);
+    else if (strcmp(args[0], "env") == 0) 
+		env(env_list);
+    else if (strcmp(args[0], "exit") == 0) 
+        exit(0);
 	return (1);
 }
 
+void	unset(char **args, t_list *env_list)
+{
+	while (*++args)
+	{
+		rm_env(&env_list, *args);
+	}
+}
 
 void	set_env(t_list **env_list)
 {
-
 	*env_list = cp_env_list();
-	// ft_getenv = getenv;
 	return ;
 }
 
@@ -83,7 +89,7 @@ void	print_env_arr(char **env_arr)
 	}
 }
 
-void	print_env_list(t_list *env_list)
+void	env(t_list *env_list)
 {
 	while (env_list != NULL)
 	{
@@ -240,7 +246,6 @@ int	export(t_list *env_list, char *x[])
 	}
 	while (x[i])
 	{
-		print_env_list(env_list);
 		key = get_env_key(x[i]);
 		if (key == NULL)
 			return (1);	//malloc fail

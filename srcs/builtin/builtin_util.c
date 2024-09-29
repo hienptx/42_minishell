@@ -8,7 +8,7 @@ char	*get_env_key(char *env)
 	delim = ft_strchr(env, '=');
 	if (delim == NULL)
 		return (ft_strdup(env));
-	return (get_key_or_value("key", env, env - delim));
+	return (get_key_or_value("key", env, delim - env));
 }
 
 char	*get_env_value(char *env_key, t_list *env_list)
@@ -17,7 +17,6 @@ char	*get_env_value(char *env_key, t_list *env_list)
 	char	*delim;
 
 	env = get_env(env_key, env_list);
-	// printf("gev env%s\n", env);
 	if (env == NULL)
 		return (NULL);
 	delim = ft_strchr(env, '=');
@@ -57,11 +56,9 @@ char	*get_env(char *env_key, t_list *env_list)
 	char	*cur_env;
 
 	key_len = ft_strlen(env_key);
-	// printf("key len %zu\n", key_len);
 	while (env_list)
 	{
 		cur_env = (char *)env_list->content;
-		// printf("%s\n", cur_env);
 		if (ft_strncmp(env_key, cur_env, key_len) == 0)
 		{
 			return (cur_env);
@@ -89,7 +86,6 @@ int	find_env(t_list *env_list, char *key)
 	}
 	return (0);
 }
-
 
 int	update_env(t_list *env_list, const char *key, char *new_env)
 {
@@ -128,11 +124,11 @@ int	add_env(t_list **env_list, char *new_env)
 	if (new_node == NULL)
 		return (1);
 	ft_lstadd_back(env_list, new_node);
-	while (*env_list)
-	{
-		printf("%s\n", (char *)(*env_list)->content);
-		(*env_list) = (*env_list)->next;
-	}
+	// while (*env_list)
+	// {
+	// 	printf("%s\n", (char *)(*env_list)->content);
+	// 	(*env_list) = (*env_list)->next;
+	// }
 	return (0);
 }
 

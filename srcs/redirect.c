@@ -8,7 +8,10 @@ void    set_redir(t_redir *redir_cmd, t_list *env_list)
     {
         redir_cmd->fd = open(redir_cmd->file_name, O_RDONLY);
         if (redir_cmd->fd == -1)
-            exit(1);
+        {
+            perror(redir_cmd->file_name);
+            return ;    //make difference?
+        }
         dup2(redir_cmd->fd, STDIN_FILENO);
     }
     else if (redir_cmd->fd == 1)
@@ -29,7 +32,7 @@ void    set_redir(t_redir *redir_cmd, t_list *env_list)
     {
         dup2(redir_cmd->fd, STDIN_FILENO);
     }
-    sleep(1000000);
+    // sleep(1000000);
     close(redir_cmd->fd);
     iterate_ast((t_cmd *)redir_cmd->cmd, env_list);
     dup2(saved_stdin, STDIN_FILENO);

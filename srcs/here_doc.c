@@ -105,12 +105,12 @@ int heredoc_process(char *arg)
             buffer = store_input(str, buffer, &total_size);
         }
     }
-    int i = 0;
-    while(buffer[i] != '\0')
-    {
-        write(1, &buffer[i], 1);
-        i++;
-    }
+    // int i = 0;
+    // while(buffer[i] != '\0')
+    // {
+    //     write(1, &buffer[i], 1);
+    //     i++;
+    // }
     write(pipe_fd[1], buffer, total_size);
     close(pipe_fd[1]);
     free(buffer); 
