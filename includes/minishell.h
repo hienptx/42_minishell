@@ -66,14 +66,14 @@ size_t get_strlen(char *token);
 int unclosed_quote(char **token);
 
 // tokenizer_input.c
-char **get_tokens(char *str);
+char **get_tokens(char *str, size_t *nbr_tokens);
 char *cpy_str(char **ret, char *str, size_t *pos);
 size_t count_tokens(char *str);
 char *walk_string(char *str, char c);
 
 //minishell_utils.c
 void *ft_malloc(void *data, size_t size);
-void free_tokens(char **tokens);
+void free_tokens(char **tokens, size_t nbr_tokens);
 void panic_sms(char *s);
 int only_space(char *input);
 

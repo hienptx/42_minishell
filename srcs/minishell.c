@@ -16,7 +16,7 @@ void signal_handler(int sig)
         ;
     }
 }
-void process_tokens(char **tok, t_list *env_list)
+t_cmd *process_tokens(char **tok, t_list *env_list)
 {
     int i;
     char *ptr;
@@ -38,26 +38,32 @@ void process_tokens(char **tok, t_list *env_list)
         i++;
     }
     ast = parse_cmd(tok);
-    print_command_tree(ast, 0); //print abstract syntax tree from root
+    if (ast == NULL)
+        return (NULL);
+    // print_command_tree(ast, 0); //print abstract syntax tree from root
     iterate_ast(ast, env_list);
-    free_tokens(tok);
-    free_ast(ast);
+    return(ast);
+    // free_tokens(tok);
 }
 
 int main(void) 
 {
     t_list  *env_list;
+    size_t nbr_tokens;
     char *input;
     char **tok;
  
     signal(SIGINT, signal_handler);
     signal(SIGQUIT, signal_handler);
     set_env(&env_list);
+    t_cmd *ast;
     // while (env_list != NULL)
     // {
     //     printf("initial env %s\n", (char *)env_list->content);
     //     env_list = env_list->next;
     // }
+    ast = NULL;
+    nbr_tokens = 0;
     while(1)
     {
         input = readline("$> ");
@@ -69,20 +75,37 @@ int main(void)
         if (only_space(input))
         {
             free(input);
-            continue;
+            // continue;
         }
         if (input && *input)
         {
             add_history(input);
-            tok = get_tokens(input);
-            if (unclosed_quote(tok))
+            tok = get_tokens(input, &nbr_tokens);
+            if (tok == NULL)
             {
-                free_tokens(tok);
                 free(input);
                 continue;
             }
+            if (unclosed_quote(tok))
+            {
+                free_tokens(tok, nbr_tokens);
+                free(input);
+                // continue;
+            }
             else
-                process_tokens(tok, env_list);
+            {
+                ast = process_tokens(tok, env_list);
+                if (ast == NULL)
+                {
+                    free_tokens(tok, nbr_tokens);
+                    free(input);
+                    continue;
+                }
+                free_ast(ast);
+                free_tokens(tok, nbr_tokens);
+                // continue;
+            }
+            continue;
         }
         free(input);
     }

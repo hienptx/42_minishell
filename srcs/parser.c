@@ -42,22 +42,26 @@ t_cmd *parse_exec(char **tokens)
 t_cmd *parse_redir(char **tokens)
 {
     int i;
-    t_cmd *command = NULL;
+    t_cmd *command;
     int fd;
     char *file_name;
 
     i = 0;
+    command = NULL;
     while(tokens[i] != NULL)
     {
         if(ft_strcmp(tokens[i], "<") == 0 || ft_strcmp(tokens[i], ">") == 0 || ft_strcmp(tokens[i], ">>") == 0)
         {
-
             fd = ft_strcmp(tokens[i], "<") == 0 ? 0 :
             ft_strcmp(tokens[i], ">>") == 0 ? 2 : 1;
             free(tokens[i]);
-            tokens[i] = NULL; // set string "<", ">", or ">>" to NULL
+            tokens[i] = NULL;
             file_name = ft_strdup(tokens[i + 1]);
-            free (tokens[i + 1]);
+            if (file_name == NULL)
+            {
+                printf("syntax error near unexpected token '|'\n");
+                return (NULL);
+            }
             i += 1;
             if (!command)
                 command = parse_exec(tokens); // Parse the command if it's not done yet
@@ -74,6 +78,33 @@ t_cmd *parse_redir(char **tokens)
     return command;
 }
 
+int check_invalid_syntax(char **tokens, int i)
+{
+    if (tokens[i + 1] == NULL)
+    {
+        printf("syntax error near unexpected token '|'\n");
+        return (1);
+    }
+    if (ft_strcmp(tokens[i + 1], "|") == 0)
+    {
+        printf("Bad syntax, out of scope of minishell\n");
+        return (1);
+    }
+    else if (tokens[i - 1] != NULL && 
+        (ft_strcmp(tokens[i - 1], "<") == 0 || ft_strcmp(tokens[i - 1], ">") == 0))
+    {
+        printf("Syntax error near unexpected token '|' \n");
+        return (1);
+    }
+    else if (tokens[i - 1] != NULL && 
+        (ft_strcmp(tokens[i - 1], "<<") == 0 || ft_strcmp(tokens[i - 1], ">>") == 0))
+    {
+        printf("Syntax error near unexpected token '|' \n");
+        return (1);
+    }
+    return 0;
+}
+
 
 t_cmd *parse_cmd(char **tokens)
 {
@@ -87,12 +118,9 @@ t_cmd *parse_cmd(char **tokens)
     {
         if (ft_strcmp(tokens[i], "|") == 0)
         {
-            if (ft_strcmp(tokens[i + 1], "|") == 0)
-            {
-                printf("Bad syntax, out of scope of minishell\n");
-                return (NULL);
-            }
-            // free(tokens[i]);
+            if(check_invalid_syntax(tokens, i))
+                return NULL;
+            free(tokens[i]);
             tokens[i] = NULL;
             left = parse_cmd(tokens);
             right = parse_cmd(&tokens[i + 1]);
@@ -103,7 +131,8 @@ t_cmd *parse_cmd(char **tokens)
         }
         i++;
     }
-    return(parse_redir(tokens));
+    ast = parse_redir(tokens);
+    return(ast);
 }       
 
 void print_command_tree(t_cmd *cmd, int level) 
@@ -122,7 +151,6 @@ void print_command_tree(t_cmd *cmd, int level)
     {
         t_redir *redir_cmd = cmd->cmd.redir;
         printf("Redirection file name: %s\n", redir_cmd->file_name);
-        // printf("Redirection cmd name: %s\n", redir_cmd->cmd->arg[0]);
         printf("Fd: %i\n", redir_cmd->fd);
         print_command_tree((t_cmd *)redir_cmd->cmd, level + 1);
     } 
@@ -137,5 +165,3 @@ void print_command_tree(t_cmd *cmd, int level)
     else 
         printf("Unknown Command Level %d:\n", level);
 }
-
-

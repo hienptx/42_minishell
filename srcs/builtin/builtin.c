@@ -40,6 +40,10 @@ int	call_builtin(t_exec *exec_cmd, t_list *env_list)
 		env(env_list);
     else if (strcmp(args[0], "exit") == 0) 
         exit(0);
+	else
+	{
+		;
+	}
 	return (1);
 }
 

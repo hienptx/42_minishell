@@ -81,14 +81,14 @@ char *store_input(char *str, char *buffer, size_t *total_size)
 int heredoc_process(char *arg)
 {
     char *str;
-    char *buffer;
+    // char *buffer;
     // size_t buffer_size;
-    size_t total_size;
+    // size_t total_size;
     int pipe_fd[2];
 
     // buffer_size = 0;
-    total_size = 0;
-    buffer = NULL;
+    // total_size = 0;
+    // buffer = NULL;
     if (pipe(pipe_fd) == -1)
         panic_sms("Pipe failed");
     while (1)
@@ -102,8 +102,10 @@ int heredoc_process(char *arg)
                 free(str);
                 break;
             }
-            buffer = store_input(str, buffer, &total_size);
+            write(pipe_fd[1], str, ft_strlen(str));
+            // buffer = store_input(str, buffer, &total_size);
         }
+        free(str);
     }
     // int i = 0;
     // while(buffer[i] != '\0')
@@ -111,32 +113,29 @@ int heredoc_process(char *arg)
     //     write(1, &buffer[i], 1);
     //     i++;
     // }
-    write(pipe_fd[1], buffer, total_size);
+    // write(pipe_fd[1], buffer, total_size);
     close(pipe_fd[1]);
-    free(buffer); 
+    // free(buffer); 
     return (pipe_fd[0]); 
 }
 
 
 t_cmd *parse_here_doc(t_cmd *command, char **tokens, int i)
 {
-    char *file_name;
+    char *delimiters;
     int fd;
     
     if (tokens[i + 1] == NULL)
         panic_sms("Bad syntax: missing heredoc delimiter");
-    file_name = tokens[i + 1]; // File name is the delimiter
-    fd = heredoc_process(file_name); // Process the heredoc input
-    if (fd < 0)
-        panic_sms("Error processing heredoc");
-    // printf("hd_fd = %i\n", fd);
+    delimiters = tokens[i + 1]; // File name is the delimiter
     free(tokens[i]);
     tokens[i] = NULL; // Set "<<"
-    free(tokens[i + 1]);
-    tokens[i + 1] = NULL; // Set heredoc delimiter
+    fd = heredoc_process(delimiters);
+    if (fd < 0)
+        panic_sms("Error processing heredoc");
     if (!command)
-        command = parse_exec(tokens); // Parse the command if it's not done yet
+        command = parse_exec(tokens);
     if (command)
-        command = construct_redir(command, fd, "here_doc"); // Redirect stdin (fd 0) to heredoc file
+        command = construct_redir(command, fd, "here_doc");
     return (command);
 }

@@ -11,21 +11,20 @@ void *ft_malloc(void *data, size_t size)
     return (data);
 }
 
-void free_tokens(char **tokens)
+void free_tokens(char **tokens, size_t nbr_tokens)
 {
     size_t i;
-    
+
     i = 0;
     if (!tokens)
         return;
-    while (tokens[i] != NULL)
+    while (i < nbr_tokens)
     {
-        free(tokens[i]);
+        if (tokens[i] != NULL)
+        {
+            free(tokens[i]);
+        }
         i++;
-        // if (tokens[i] == NULL && tokens[i + 1] != NULL)
-        //     ;
-        // else
-        //     break;
     }
     free(tokens);
 }

@@ -88,24 +88,24 @@ char *cpy_str(char **ret, char *str, size_t *pos)
 }
 
 // TODO check when input has redirection and pipe 
-char **get_tokens(char *str)
+char **get_tokens(char *str, size_t *nbr_tokens)
 {
     char **ret;
     char *ptr;
-    size_t nbr_tokens;
+    // size_t nbr_tokens;
     size_t pos;
 
     ptr = str;
-    nbr_tokens = count_tokens(str);
-    ret = malloc((nbr_tokens + 1) * sizeof(char *));
+    *nbr_tokens = count_tokens(str);
+    ret = malloc((*nbr_tokens + 1) * sizeof(char *));
     if (ret == NULL)
     {
         perror("Malloc failed to allocate memory\n");
         return NULL;
     }
     pos = 0;
-    while (pos < nbr_tokens)
+    while (pos < *nbr_tokens)
         ptr = cpy_str(ret, ptr, &pos);
-    ret[nbr_tokens] = NULL;
+    ret[*nbr_tokens] = NULL;
     return (ret);
 }

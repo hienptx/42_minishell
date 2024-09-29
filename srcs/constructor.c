@@ -2,7 +2,7 @@
 
 void free_ast(t_cmd *ast)
 {
-    int i ;
+    // int i ;
 
     if (ast->type == PIPE)
     {
@@ -18,9 +18,9 @@ void free_ast(t_cmd *ast)
     }
     else if (ast->type == EXEC)
     {
-        i = 0;
-        while(ast->cmd.exec->arg[i++] != NULL)
-            free(ast->cmd.exec->arg[i]);
+        // i = 0;
+        // while(ast->cmd.exec->arg[i++] != NULL)
+        //     free(ast->cmd.exec->arg[i]);
         free(ast->cmd.exec->arg);
         free(ast->cmd.exec);
     }
@@ -75,7 +75,7 @@ t_exec *construct_exec(char **tokens, t_exec *data)
     i  = 0;
     while (i < arg_count)
     {
-        data->arg[i] = ft_strdup(tokens[i]);
+        data->arg[i] = tokens[i];
         i++;
     }
     data->arg[arg_count] = NULL;
