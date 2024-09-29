@@ -38,9 +38,9 @@ void process_tokens(char **tok, t_list *env_list)
         i++;
     }
     ast = parse_cmd(tok);
-    // print_command_tree(ast, 0); //print abstract syntax tree from root
-    // free_tokens(tok);
+    print_command_tree(ast, 0); //print abstract syntax tree from root
     iterate_ast(ast, env_list);
+    free_tokens(tok);
     free_ast(ast);
 }
 
