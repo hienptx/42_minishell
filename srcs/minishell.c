@@ -26,7 +26,7 @@ t_cmd *process_tokens(char **tok, t_list *env_list)
     i = 0;
     while (tok[i] != NULL)
     {
-        // printf("%s\n", tok[i]);
+        // printf("process tokens %s\n", tok[i]);
         ptr = tok[i];
         tok[i] = expansion_handling(tok[i], env_list);
         if (ptr != tok[i])

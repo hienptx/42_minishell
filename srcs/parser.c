@@ -52,8 +52,8 @@ t_cmd *parse_redir(char **tokens)
     {
         if(ft_strcmp(tokens[i], "<") == 0 || ft_strcmp(tokens[i], ">") == 0 || ft_strcmp(tokens[i], ">>") == 0)
         {
-            fd = ft_strcmp(tokens[i], "<") == 0 ? 0 :
-            ft_strcmp(tokens[i], ">>") == 0 ? 2 : 1;
+            fd = ft_strcmp(tokens[i], "<") == 0 ? 0 : 1;
+            // fd = ft_strcmp(tokens[i], ">>") == 0 ? 2 : 1;
             free(tokens[i]);
             tokens[i] = NULL;
             file_name = ft_strdup(tokens[i + 1]);
@@ -63,6 +63,8 @@ t_cmd *parse_redir(char **tokens)
                 return (NULL);
             }
             i += 1;
+            printf("%s %d\n", tokens[i], fd);
+
             if (!command)
                 command = parse_exec(tokens); // Parse the command if it's not done yet
             if (command)

@@ -17,14 +17,23 @@ int call_exec(t_exec *exec_cmd, t_list *env_list)
     {
         path = get_executable_path(get_env_value("PATH", env_list), exec_cmd->arg[0]);
         if (path == NULL)
+        {
+            errno = ENOENT;
+            perror(exec_cmd->arg[0]);
+            exit(1);
+        }
             return (-1);
         exec_cmd->arg[0] = path;
         environ = mk_env_list(env_list);
         execve(path, exec_cmd->arg, environ);
+        perror(exec_cmd->arg[0]);
         exit(1);
     }
     else if (path_exist == 0)
+    {
+
         return (0);
+    }
     else
         return (-1);
 }
@@ -72,12 +81,12 @@ char    *get_executable_path(char *env_path, char *prog_name)
     i = 0;
     cur_dir = get_all_path(env_path);
     if (cur_dir == NULL)
-        return (NULL);
+        panic_sms("malloc fails");
     while (cur_dir[i])
     {
         executable_path = ft_strsjoin(NULL, cur_dir[i], "/", prog_name, NULL);
         if (executable_path == NULL)
-            return (NULL);
+            panic_sms("malloc fails");
         if (access(executable_path, X_OK) == 0)
         {
             ret = ft_strdup(executable_path);

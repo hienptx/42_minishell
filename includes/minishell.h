@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include "../includes/builtin.h"
 // #include "../libft/includes/libft.h"
+#include <errno.h>
 
 typedef enum cmd_type
 {

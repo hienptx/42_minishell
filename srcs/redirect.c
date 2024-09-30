@@ -28,7 +28,7 @@ void    set_redir(t_redir *redir_cmd, t_list *env_list)
             exit(1);
         dup2(redir_cmd->fd, STDOUT_FILENO);
     }
-    else
+    else    //heredoc
     {
         dup2(redir_cmd->fd, STDIN_FILENO);
     }

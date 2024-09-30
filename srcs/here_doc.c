@@ -93,8 +93,8 @@ int heredoc_process(char *arg)
         panic_sms("Pipe failed");
     while (1)
     {
-        ft_putstr_fd("> ", 0);
-        str = get_next_line(0);
+        ft_putstr_fd("> ", STDIN_FILENO);
+        str = get_next_line(STDIN_FILENO);
         if (str != NULL)
         {
             if (ft_strncmp(str, arg, ft_strlen(arg)) == 0 && str[ft_strlen(arg)] == '\n')
@@ -103,7 +103,6 @@ int heredoc_process(char *arg)
                 break;
             }
             write(pipe_fd[1], str, ft_strlen(str));
-            // buffer = store_input(str, buffer, &total_size);
         }
         free(str);
     }
