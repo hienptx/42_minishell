@@ -62,54 +62,54 @@ int main(void)
     //     printf("initial env %s\n", (char *)env_list->content);
     //     env_list = env_list->next;
     // }
-    ast = NULL;
-    nbr_tokens = 0;
-    while(1)
-    {
-        input = readline("$> ");
-        if (input == NULL) // Check for Ctrl-D (EOF)
-        {
-            printf("EOF, exiting shell\n");
-            break;
-        }
-        if (only_space(input))
-        {
-            free(input);
-            // continue;
-        }
-        if (input && *input)
-        {
-            add_history(input);
-            tok = get_tokens(input, &nbr_tokens);
-            if (tok == NULL)
-            {
-                free(input);
-                continue;
-            }
-            if (unclosed_quote(tok))
-            {
-                free_tokens(tok, nbr_tokens);
-                free(input);
-                // continue;
-            }
-            else
-            {
-                ast = process_tokens(tok, env_list);
-                if (ast == NULL)
-                {
-                    free_tokens(tok, nbr_tokens);
-                    free(input);
-                    continue;
-                }
-                free_ast(ast);
-                free_tokens(tok, nbr_tokens);
-                // continue;
-            }
-            continue;
-        }
-        free(input);
-    }
-    return 0;
+	ast = NULL;
+	nbr_tokens = 0;
+	while(1)
+	{
+		input = readline("$> ");
+		if (input == NULL) // Check for Ctrl-D (EOF)
+		{
+			printf("EOF, exiting shell\n");
+			break;
+		}
+		if (only_space(input))
+		{
+			free(input);
+			continue;
+		}
+		if (input && *input)
+		{
+			add_history(input);
+			tok = get_tokens(input, &nbr_tokens);
+			if (tok == NULL)
+			{
+				free(input);
+				continue;
+			}
+			if (unclosed_quote(tok))
+			{
+				free_tokens(tok, nbr_tokens);
+				free(input);
+				// continue;
+			}
+			else
+			{
+				ast = process_tokens(tok, env_list);
+				if (ast == NULL)
+				{
+					free_tokens(tok, nbr_tokens);
+					free(input);
+					continue;
+				}
+				free_ast(ast);
+				free_tokens(tok, nbr_tokens);
+				// continue;
+			}
+			continue;
+		}
+		free(input);
+	}
+	return 0;
 }
 
 // void	set_env(t_list **env_list)
