@@ -93,8 +93,8 @@ int	update_env(t_list *env_list, const char *key, char *new_env)
 	t_list	*node;
 
 	node = env_list;
-	if (new_env == NULL)
-		return (1);
+	// if (new_env == NULL)	//alread checked before called
+	// 	return (1);
 	while (env_list)
 	{
 		cur_key = get_env_key((char *)env_list->content);
@@ -162,7 +162,7 @@ int	rm_env(t_list **env_list, const char *key_to_remove)
 	{
 		cur_key = get_env_key((char *)cur->content);
 		if (cur_key == NULL)
-			return (1);
+			panic_sms("malloc");
 		if (ft_strcmp(cur_key, key_to_remove) == 0)
 		{
 			rm_node(env_list, &prev, &cur);
