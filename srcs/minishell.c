@@ -40,7 +40,7 @@ t_cmd *process_tokens(char **tok, t_list *env_list)
     ast = parse_cmd(tok);
     if (ast == NULL)
         return (NULL);
-    // print_command_tree(ast, 0); //print abstract syntax tree from root
+    print_command_tree(ast, 0); //print abstract syntax tree from root
     iterate_ast(ast, env_list);
     return(ast);
     // free_tokens(tok);

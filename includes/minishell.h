@@ -26,12 +26,20 @@ typedef struct exec
     char **arg;
 }               t_exec;
 
+// typedef struct redir
+// {
+//     t_exec *cmd;
+//     char *file_name;
+//     int fd; // 0=stdin, 1=stdout
+//     // int here_doc;
+// }               t_redir;
+
 typedef struct redir
 {
     t_exec *cmd;
     char *file_name;
     int fd; // 0=stdin, 1=stdout
-    // int here_doc;
+    struct redir *next;
 }               t_redir;
 
 typedef struct pipe
@@ -80,7 +88,9 @@ int only_space(char *input);
 
 //constructor.c
 t_cmd *construct_pipe(char *left, char *right);
-t_cmd *construct_redir(t_cmd *command, int fd, char *file_name);
+t_cmd *construct_redir(char **tokens, int fd, char *file_name);
+// t_cmd *construct_redir(t_exec *command, int fd, char *file_name);
+t_redir *append_redir_list(t_redir *ast, char **tokens, char *filename, int fd);
 t_exec *construct_exec(char **tokens, t_exec *data);
 void free_ast(t_cmd *ast);
 
@@ -88,6 +98,7 @@ void free_ast(t_cmd *ast);
 t_cmd *parse_cmd(char **tokens);
 t_cmd *parse_redir(char **tokens);
 t_cmd *parse_exec(char **tokens);
+// t_exec *parse_exec(char **tokens);
 void print_command_tree(t_cmd *cmd, int level);
 void iterate_ast(t_cmd *cmd, t_list *env_list);
 

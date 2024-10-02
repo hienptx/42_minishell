@@ -26,11 +26,11 @@ all: $(OBJS_DIR) $(NAME)
 $(NAME): $(OBJS) $(LIBFT)
 	@echo "Creating $(NAME)"
 	@if [ "$(shell uname)" = "Darwin" ]; then \
-		$(CC) -v $(CFLAGS) $(OBJS) $(LIBFT) -L$(shell brew --prefix readline)/lib $(LDFLAGS) -o $(NAME); \
+		$(CC) -v $(CFLAGS) $(OBJS) $(LIBFT)  $(LDFLAGS) -o $(NAME); \
 	else \
 		$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME); \
 	fi
-
+# -L$(shell brew --prefix readline)/lib
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 

@@ -44,22 +44,59 @@ t_cmd *construct_pipe(char *left, char *right)
     return (ast);
 }
 
-t_cmd *construct_redir(t_cmd *command, int fd, char *file_name)
+t_redir *append_redir_list(t_redir *redir_list, char **tokens, char *filename, int fd)
 {
-    t_cmd *ast;
+    t_redir *newnode;
+    t_redir *tmp;
 
-    ast = malloc(sizeof(t_cmd));
-    if (ast == NULL)
-        panic_sms("Malloc failed to callocate memory");
-    ast->type = REDIR;
-    ast->cmd.redir = malloc(sizeof(t_redir));
-    if (ast->cmd.redir == NULL)
-        panic_sms("Malloc failed to allocate memory");
-    ast->cmd.redir->cmd = (t_exec *)command;
-    ast->cmd.redir->file_name = ft_strdup(file_name);
-    ast->cmd.redir->fd = fd;
-    return (ast);
+    newnode = malloc(sizeof(t_redir));
+    if (newnode == NULL)
+        return NULL;
+
+    newnode->fd = fd;
+    newnode->file_name = ft_strdup(filename);
+    newnode->cmd = (t_exec *)parse_exec(tokens);
+    newnode->next = NULL;
+    if (redir_list == NULL)
+        return newnode;
+    tmp = redir_list;
+    while (tmp->next != NULL)
+        tmp = tmp->next;
+
+    tmp->next = newnode; // Append new node at the end
+
+    return redir_list;
 }
+
+t_cmd *construct_redir(char **tokens, int fd, char *file_name)
+{
+    t_cmd *ast = malloc(sizeof(t_cmd));
+    if (ast == NULL)
+        panic_sms("Malloc failed to allocate memory");
+
+    ast->type = REDIR;
+    ast->cmd.redir = append_redir_list(ast->cmd.redir, tokens, file_name, fd);
+    if (ast->cmd.redir == NULL)
+        return NULL;
+    return ast;
+}
+
+// t_cmd *construct_redir(t_exec *command, int fd, char *file_name)
+// {
+//     t_cmd *ast;
+
+//     ast = malloc(sizeof(t_cmd));
+//     if (ast == NULL)
+//         panic_sms("Malloc failed to callocate memory");
+//     ast->type = REDIR;
+//     ast->cmd.redir = malloc(sizeof(t_redir));
+//     if (ast->cmd.redir == NULL)
+//         panic_sms("Malloc failed to allocate memory");
+//     ast->cmd.redir->cmd = command;
+//     ast->cmd.redir->file_name = ft_strdup(file_name);
+//     ast->cmd.redir->fd = fd;
+//     return (ast);
+// }
 
 t_exec *construct_exec(char **tokens, t_exec *data)
 {
@@ -72,12 +109,12 @@ t_exec *construct_exec(char **tokens, t_exec *data)
     data->arg = malloc(sizeof(char *) * (arg_count + 1));
     if (data->arg == NULL)
         panic_sms("Malloc failed to allocate memory");
-    i  = 0;
+    i = 0;
     while (i < arg_count)
     {
         data->arg[i] = tokens[i];
         i++;
     }
     data->arg[arg_count] = NULL;
-    return(data);
+    return (data);
 }

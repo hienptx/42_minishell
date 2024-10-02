@@ -132,9 +132,16 @@ t_cmd *parse_here_doc(t_cmd *command, char **tokens, int i)
     fd = heredoc_process(delimiters);
     if (fd < 0)
         panic_sms("Error processing heredoc");
-    if (!command)
-        command = parse_exec(tokens);
-    if (command)
-        command = construct_redir(command, fd, "here_doc");
+    // if (!command)
+    //     command = parse_exec(tokens);
+    // if (command)
+    if (command == NULL)
+    {
+        command = construct_redir(tokens, fd, "here_doc");
+    } 
+    else
+    {
+        command->cmd.redir = append_redir_list(command->cmd.redir, tokens, "here_doc", fd); 
+    }
     return (command);
 }
