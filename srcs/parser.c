@@ -6,7 +6,7 @@
 /*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 21:51:31 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/03 00:23:20 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/03 00:41:53 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,12 +141,12 @@ t_cmd *parse_redir(char **tokens)
 			i += 1;
 			if (command == NULL)
 			{
-                command = construct_redir(tokens, fd, file_name);
-            } 
+				command = construct_redir(tokens, fd, file_name);
+			} 
 			else
 			{
-                command->cmd.redir = append_redir_list(command->cmd.redir, tokens, file_name, fd); 
-            }
+				command->cmd.redir = append_redir_list(command->cmd.redir, tokens, file_name, fd); 
+			}
 			free(file_name);
 		}
 		else if(ft_strcmp(tokens[i], "<<") == 0)
