@@ -3,34 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 21:51:31 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/02 21:52:38 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/03 00:23:20 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../includes/minishell.h"
 
-void iterate_ast(t_cmd *cmd, t_list *env_list)
+void iterate_ast(t_cmd *cmd, t_param *param)
 {
 	if (cmd == NULL)
 		return;
 	if (cmd->type == PIPE)
 	{
 		t_pipe *pipe_cmd = cmd->cmd.pipe;
-		set_pipe(pipe_cmd, env_list);
+		set_pipe(pipe_cmd, param);
 	} 
 	else if (cmd->type == REDIR)
 	{
 		t_redir *redir_cmd = cmd->cmd.redir;
-		set_redir(redir_cmd, env_list);
+		set_redir(redir_cmd, param);
 	}
 	else if (cmd->type == EXEC)
 	{
 		t_exec *exec_cmd = cmd->cmd.exec;
-		set_exec(exec_cmd, env_list);
+		set_exec(exec_cmd, param);
 	} 
 }
 

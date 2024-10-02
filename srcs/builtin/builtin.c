@@ -19,7 +19,7 @@ int	ck_builtin(char *executable_name)
 	return (0);
 }
 
-int	call_builtin(t_exec *exec_cmd, t_list *env_list)
+int	call_builtin(t_exec *exec_cmd, t_param *param)
 {
 	char	**args;
 	int		ret;
@@ -28,15 +28,15 @@ int	call_builtin(t_exec *exec_cmd, t_list *env_list)
 	if (strcmp(args[0], "echo") == 0)
 		ret = echo(args);
 	else if (strcmp(args[0], "cd") == 0)
-		ret = cd(env_list, args);
+		ret = cd(param->env_list, args);
 	else if (strcmp(args[0], "pwd") == 0)
 		ret = pwd();
 	else if (strcmp(args[0], "export") == 0)
-		ret = export(env_list, args);
+		ret = export(param->env_list, args);
 	else if (strcmp(args[0], "unset") == 0)
-		ret = unset(args, env_list);
+		ret = unset(args, param->env_list);
 	else if (strcmp(args[0], "env") == 0)
-		ret = env(env_list);
+		ret = env(param->env_list);
 	else if (strcmp(args[0], "exit") == 0)
 		exit(0);
 	else
@@ -61,18 +61,19 @@ void	set_env(t_list **env_list)
 
 t_list	*cp_env_list()
 {
-	char **env = environ;
+	char	**env;
 	t_list	*env_list;
 	t_list	*new_node;
 	char	*env_malloc;
 
 	env_list = NULL;
+	env = environ;
 	while (*env)
 	{
 		env_malloc = ft_strdup(*env);
 		new_node = ft_lstnew(env_malloc);
 		if (new_node == NULL || env_malloc == NULL)
-			return (NULL);
+			panic_sms("malloc");
 		ft_lstadd_back(&env_list, new_node);
 		env++;
 	}

@@ -24,7 +24,7 @@ char *replace_substring(char *str, char *newsub, char *oldsub)
     return (ptr);
 }
 
-char *expansion_handling(char *str, t_list *env_list)
+char *expansion_handling(char *str, t_param *param)
 {
     size_t len;
     char *s;
@@ -44,10 +44,26 @@ char *expansion_handling(char *str, t_list *env_list)
         s++;
     }
     path = ft_substr(str, start, len);
-    ret_env = get_env_value(path + 1, env_list);
+    ret_env = expand_str(path + 1, param);
+    // ret_env = get_env_value(path + 1, env_list);
     if (ret_env == NULL) 
         ret_env = "";
     ptr = replace_substring(str, ret_env, path);
     free(path);
     return ptr;
+}
+
+char	*expand_str(char *str, t_param *param)
+{
+	char	*ret;
+
+	if (ft_strcmp(str, "?") == 0)
+	{
+		ret = ft_itoa(param->special->question_mark);
+		if (ret == NULL)
+			panic_sms("malloc");
+		return (ret);
+	}
+	else
+		return (get_env_value(str, param->env_list));
 }

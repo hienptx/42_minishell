@@ -16,7 +16,9 @@ char	*get_env_value(char *env_key, t_list *env_list)
 	char	*env;
 	char	*delim;
 
+	// printf("env_key %s\n", env_key);
 	env = get_env(env_key, env_list);
+	// printf("gev %s\n", env);
 	if (env == NULL)
 		return (NULL);
 	delim = ft_strchr(env, '=');
@@ -59,7 +61,7 @@ char	*get_env(char *env_key, t_list *env_list)
 	while (env_list)
 	{
 		cur_env = (char *)env_list->content;
-		if (ft_strncmp(env_key, cur_env, key_len) == 0)
+		if (ft_strncmp(env_key, cur_env, key_len) == 0 && (cur_env[key_len] == '=' || cur_env[key_len] == '\0'))
 		{
 			return (cur_env);
 		}
