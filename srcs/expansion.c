@@ -59,7 +59,7 @@ char	*expand_str(char *str, t_param *param)
 
 	if (ft_strcmp(str, "?") == 0)
 	{
-		ret = ft_itoa(param->special->question_mark);
+		ret = ft_itoa(param->special.question_mark);
 		if (ret == NULL)
 			panic_sms("malloc");
 		return (ret);

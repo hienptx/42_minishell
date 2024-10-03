@@ -49,7 +49,7 @@ t_cmd *process_tokens(char **tok, t_param *param)
 void	init_param(t_param *param)
 {
 	param->env_list = NULL;
-	param->special->question_mark = 0;
+	param->special.question_mark = 0;
 	set_env(&param->env_list);
 	return ;
 }
@@ -63,7 +63,6 @@ int main(void)
 
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
-	// param = NULL;
 	init_param(&param);
 	t_cmd *ast;
 	ast = NULL;

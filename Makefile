@@ -13,7 +13,7 @@ else
 	CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR)
 endif
 
-LDFLAGS = -lreadline 
+LDFLAGS = -L$(shell brew --prefix readline)/lib -lreadline 
 
 LIBFT = $(LIBFT_DIR)/libft.a
 

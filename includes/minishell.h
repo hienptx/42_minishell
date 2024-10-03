@@ -68,7 +68,7 @@ typedef struct	s_special_param
 typedef struct	s_param
 {
 	t_list			*env_list;
-	t_special_param *special;
+	t_special_param special;
 }				t_param;
 
 // minishell_utils.c

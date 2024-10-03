@@ -51,7 +51,7 @@ void	run_exec(t_exec *exec_cmd, t_param *param)
 	{
 		waitpid(pid, &status, 0);
 		// update_env(env_list, "?", ft_strjoin("?=", ft_itoa(WEXITSTATUS(status))));
-		param->special->question_mark = WEXITSTATUS(status);
+		param->special.question_mark = WEXITSTATUS(status);
 	}
 	return ;
 }
@@ -63,7 +63,7 @@ int	set_exec(t_exec *exec_cmd, t_param *param)
 	if (ck_builtin(exec_cmd->arg[0]) == 1)
 	{
 		builtin_ret = call_builtin(exec_cmd, param);
-		param->special->question_mark = builtin_ret;
+		param->special.question_mark = builtin_ret;
 	}
 	else
 		run_exec(exec_cmd, param);
