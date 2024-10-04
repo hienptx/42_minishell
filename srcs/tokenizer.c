@@ -1,7 +1,16 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/03 16:35:48 by hipham            #+#    #+#             */
+/*   Updated: 2024/10/03 16:36:12 by hipham           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// << here_doc
-// >> output with appending option
+#include "minishell.h"
 
 char *walk_string(char *str, char c)
 {

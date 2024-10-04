@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/03 15:59:22 by hipham            #+#    #+#             */
+/*   Updated: 2024/10/03 17:28:09 by hipham           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 extern char **environ;
@@ -75,25 +87,25 @@ int main(void)
 			printf("EOF, exiting shell\n");
 			exit(0);
 		}
-		if (only_space(input))
-		{
-			free(input);
-			continue;
-		}
+		// if (only_space(input))
+		// {
+		// 	free(input);
+		// 	continue;
+		// }
 		if (input && *input)
 		{
 			add_history(input);
 			tok = get_tokens(input, &nbr_tokens);
-			if (tok == NULL)
+			if (tok == NULL || only_space(input))
 			{
 				free(input);
+                free(tok);
 				continue;
 			}
 			if (unclosed_quote(tok))
 			{
 				free_tokens(tok, nbr_tokens);
 				free(input);
-				// continue;
 			}
 			else
 			{
@@ -106,7 +118,6 @@ int main(void)
 				}
 				free_ast(ast);
 				free_tokens(tok, nbr_tokens);
-				// continue;
 			}
 			continue;
 		}
