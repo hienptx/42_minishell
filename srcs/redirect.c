@@ -2,40 +2,51 @@
 
 void	set_redir(t_redir *redir_cmd, t_param *param)
 {
-	int saved_stdin = dup(STDIN_FILENO);
-	int saved_stdout = dup(STDOUT_FILENO);
-	if (redir_cmd->fd == 0)     //input_redir
+	t_redir *predir_cmd;
+	int	saved_stdin;
+	int	saved_stdout;
+	
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+	predir_cmd = redir_cmd;
+	while(predir_cmd)
 	{
-		redir_cmd->fd = open(redir_cmd->file_name, O_RDONLY);
-		if (redir_cmd->fd == -1)
-		{
-			perror(redir_cmd->file_name);
-			return ;    //make difference?
-		}
-		dup2(redir_cmd->fd, STDIN_FILENO);
+		dup_fd(predir_cmd);
+		close(predir_cmd->fd);
+		predir_cmd = predir_cmd->next;
 	}
-	else if (redir_cmd->fd == 1)
-	{
-		redir_cmd->fd = open(redir_cmd->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (redir_cmd->fd == -1)
-			exit(1);
-		dup2(redir_cmd->fd, STDOUT_FILENO);
-	}
-	else if (redir_cmd->fd == 2)
-	{
-		redir_cmd->fd = open(redir_cmd->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (redir_cmd->fd == -1)
-			exit(1);
-		dup2(redir_cmd->fd, STDOUT_FILENO);
-	}
-	else    //heredoc
-	{
-		dup2(redir_cmd->fd, STDIN_FILENO);
-	}
-	close(redir_cmd->fd);
 	iterate_ast((t_cmd *)redir_cmd->cmd, param);
 	dup2(saved_stdin, STDIN_FILENO);
 	dup2(saved_stdout, STDOUT_FILENO);
 	close(saved_stdin);
 	close(saved_stdout);
+}
+
+void	dup_fd(t_redir *redir_cmd)
+{
+	if ((redir_cmd->fd == 0) || (redir_cmd->fd == 1) || (redir_cmd->fd == 2))
+	{
+		get_file_fd(redir_cmd);
+		if (redir_cmd->fd == 0)
+			dup2(redir_cmd->fd, STDIN_FILENO);
+		else
+			dup2(redir_cmd->fd, STDOUT_FILENO);
+	}
+	else
+		dup2(redir_cmd->fd, STDIN_FILENO);
+}
+
+void	get_file_fd(t_redir *redir_cmd)
+{
+	int	oflag;
+
+	if (redir_cmd->fd == 0)
+		oflag = O_RDONLY;
+	else if (redir_cmd->fd == 1)
+		oflag = (O_WRONLY | O_CREAT | O_TRUNC);
+	else
+		oflag = (O_WRONLY | O_CREAT | O_APPEND);
+	redir_cmd->fd = open(redir_cmd->file_name, oflag, 0644);
+	if (redir_cmd->fd == -1)
+		panic_sms("open");
 }

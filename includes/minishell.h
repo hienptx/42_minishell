@@ -124,6 +124,8 @@ int		set_pipe(t_pipe *pipe_cmd, t_param *param);
 
 //redirect.c
 void	set_redir(t_redir *redir_cmd, t_param *param);
+void	get_file_fd(t_redir *redir_cmd);
+void	dup_fd(t_redir *redir_cmd);
 
 //execution.c
 int call_exec(t_exec *exec_cmd, t_list *env_list);

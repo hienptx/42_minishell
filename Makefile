@@ -6,7 +6,7 @@ LIBFT_DIR = ./libft
 INCL_DIR = ./includes
 LIBFT_H = 
 
-CC = gcc
+CC = cc
 ifeq ($(shell uname -s), Darwin)
 	CFLAGS = -g -Wall -Wextra -Werror -I$(INCL_DIR) -I$(shell brew --prefix readline)/include
 else

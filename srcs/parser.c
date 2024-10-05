@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 21:51:31 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/03 17:28:41 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/05 22:35:47 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,6 @@ int check_invalid_syntax(char **tokens, int i)
 	}
 	return 0;
 }
-
 
 t_cmd *parse_cmd(char **tokens)
 {
