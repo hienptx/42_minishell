@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int call_exec(t_exec *exec_cmd, t_list *env_list)
+int	call_exec(t_exec *exec_cmd, t_list *env_list)
 {
 	extern char	**environ;
 	char		*path;
@@ -15,7 +15,8 @@ int call_exec(t_exec *exec_cmd, t_list *env_list)
 	path_exist = find_env(env_list, "PATH");
 	if (path_exist == 1)
 	{
-		path = get_executable_path(get_env_value("PATH", env_list), exec_cmd->arg[0]);
+		path = get_executable_path(get_env_value("PATH", env_list),
+				exec_cmd->arg[0]);
 		if (path == NULL)
 		{
 			errno = ENOENT;
@@ -45,12 +46,13 @@ void	run_exec(t_exec *exec_cmd, t_param *param)
 	if (pid == 0)
 	{
 		call_exec(exec_cmd, param->env_list);
-		(void) status;
+		(void)status;
 	}
 	else
 	{
 		waitpid(pid, &status, 0);
-		// update_env(env_list, "?", ft_strjoin("?=", ft_itoa(WEXITSTATUS(status))));
+		// update_env(env_list, "?", ft_strjoin("?=",
+		ft_itoa(WEXITSTATUS(status));
 		param->special.question_mark = WEXITSTATUS(status);
 	}
 	return ;
@@ -75,7 +77,7 @@ char	**get_all_path(char *env_path)
 	if (env_path == NULL)
 		return (NULL);
 	env_path += 5;
-	return(ft_split(env_path, ':'));
+	return (ft_split(env_path, ':'));
 }
 
 char	*get_executable_path(char *env_path, char *prog_name)

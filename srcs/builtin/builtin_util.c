@@ -27,7 +27,7 @@ char	*get_env_value(char *env_key, t_list *env_list)
 	return (get_key_or_value("value", env, delim - env));
 }
 
-char *get_key_or_value(char *key_or_val, char *env, size_t key_len)
+char	*get_key_or_value(char *key_or_val, char *env, size_t key_len)
 {
 	size_t	val_len;
 	char	*key;
@@ -61,7 +61,8 @@ char	*get_env(char *env_key, t_list *env_list)
 	while (env_list)
 	{
 		cur_env = (char *)env_list->content;
-		if (ft_strncmp(env_key, cur_env, key_len) == 0 && (cur_env[key_len] == '=' || cur_env[key_len] == '\0'))
+		if (ft_strncmp(env_key, cur_env, key_len) == 0
+			&& (cur_env[key_len] == '=' || cur_env[key_len] == '\0'))
 		{
 			return (cur_env);
 		}
@@ -77,7 +78,7 @@ int	find_env(t_list *env_list, char *key)
 	while (env_list)
 	{
 		cur_key = get_env_key((char *)env_list->content);
-		if(cur_key == NULL)
+		if (cur_key == NULL)
 		{
 			perror("malloc");
 			return (-1);
@@ -180,7 +181,7 @@ int	rm_env(t_list **env_list, const char *key_to_remove)
 	return (0);
 }
 
-char **mk_env_list(t_list *env_list)
+char	**mk_env_list(t_list *env_list)
 {
 	t_list	*cur;
 	size_t	len_env_list;
@@ -195,7 +196,7 @@ char **mk_env_list(t_list *env_list)
 		return (NULL);
 	while (cur != NULL)
 	{
-		env_arr[i] = (char *)cur->content;			//
+		env_arr[i] = (char *)cur->content; //
 		// printf("%s\n", (char *)cur->content);	//
 		cur = cur->next;
 		i++;
@@ -203,4 +204,3 @@ char **mk_env_list(t_list *env_list)
 	env_arr[i] = NULL;
 	return (env_arr);
 }
-

@@ -1,15 +1,16 @@
 #include "../../includes/builtin.h"
 #include "../../includes/minishell.h"
 
-extern char **environ;
+extern char	**environ;
 
 int	ck_builtin(char *executable_name)
 {
-	// const char	*builtins[8];
 	size_t		i;
+	const char	*builtins[8] = {"echo", "cd", "pwd", "export", "unset", "env",
+			"exit", NULL};
 
+	// const char	*builtins[8];
 	i = 0;
-	const char *builtins[8] = {"echo", "cd", "pwd", "export", "unset", "env", "exit", NULL};
 	while (builtins[i])
 	{
 		if (ft_strcmp(builtins[i], executable_name) == 0)
@@ -59,7 +60,7 @@ void	set_env(t_list **env_list)
 	return ;
 }
 
-t_list	*cp_env_list()
+t_list	*cp_env_list(void)
 {
 	char	**env;
 	t_list	*env_list;
@@ -103,30 +104,37 @@ int	env(t_list *env_list)
 }
 
 /*
-int main()
+int	main(void)
 {
 	t_list	*env_list;
+	char	*cmd;
+	char	*arg;
+	char	*cd_arg[] = {cmd, NULL};
+	char	*arg1;
+	char	*arg2;
+	char	*arg4;
+	char	*arg3;
+	char	*new_env[] = {cmd, arg, arg1, arg2, arg3, arg4, NULL};
+	char	**envp;
 
 	env_list = cp_env_list();
 	ft_getenv = getenv;
-	char	*cmd = ft_strdup("cd");
-	char	*arg = ft_strdup("./tmp");
+	cmd = ft_strdup("cd");
+	arg = ft_strdup("./tmp");
 	// char *cd_arg[] = {cmd, arg, NULL};
-	char *cd_arg[] = {cmd, NULL};
 	cd(env_list, cd_arg);
 	cmd = ft_strdup("export");
 	arg = ft_strdup("e=r");
-	char	*arg1 = ft_strdup("e=r");
-	char	*arg2 = ft_strdup("o=i");
-	char	*arg4 = ft_strdup("e=pp");
-	char	*arg3 = ft_strdup("b");
-	char *new_env[] = {cmd, arg, arg1, arg2, arg3, arg4, NULL};
+	arg1 = ft_strdup("e=r");
+	arg2 = ft_strdup("o=i");
+	arg4 = ft_strdup("e=pp");
+	arg3 = ft_strdup("b");
 	export(env_list, new_env);
-	char **envp = mk_env_list(env_list);
+	envp = mk_env_list(env_list);
 	print_env_arr(envp);
 	char *argv[] = {"/bin/bash", NULL};	//diff char *[], char **
 	execve("/bin/bash", argv, envp);
-    return 0;
+	return (0);
 }
 */
 
@@ -157,8 +165,8 @@ int	change_dir(t_list *env_list, const char *path, const char *oldpwd)
 	env_pwd = ft_strjoin("PWD=", cwd);
 	if (env_pwd == NULL || env_oldpwd == NULL)
 		panic_sms("malloc failed");
-	if (update_env(env_list, "OLDPWD", env_oldpwd) != 0 || \
-		update_env(env_list, "PWD", env_pwd) != 0)
+	if (update_env(env_list, "OLDPWD", env_oldpwd) != 0 || update_env(env_list,
+			"PWD", env_pwd) != 0)
 		return (1);
 	free(cwd);
 	cwd = NULL;
@@ -167,11 +175,11 @@ int	change_dir(t_list *env_list, const char *path, const char *oldpwd)
 
 int	cd(t_list *env_list, char *x[]) //{"cd", "tmp", NULL}
 {
-	const char	*path;
-	char		*oldpwd;
+	const char *path;
+	char *oldpwd;
 
 	path = x[1];
-	if (path == NULL)	//just 'cd'
+	if (path == NULL) // just 'cd'
 		path = getenv("HOME");
 	if (path)
 	{
@@ -222,14 +230,14 @@ int	echo(char **x)
 	return (0);
 }
 
-int	pwd()
+int	pwd(void)
 {
 	char	*cwd;
 
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
 		return (2);
-		// perror("pwd error");
+	// perror("pwd error");
 	write(1, cwd, strlen(cwd));
 	write(1, "\n", 1);
 	free(cwd);
@@ -252,13 +260,12 @@ int	export(t_list *env_list, char *x[])
 	{
 		key = get_env_key(x[i]);
 		if (key == NULL)
-			return (1);	//malloc fail
+			return (1); // malloc fail
 		if (update_env(env_list, key, ft_strdup(x[i])) == 1)
 			return (1);
 		free(key);
 		key = NULL;
-		i++;		
+		i++;
 	}
 	return (0);
 }
-

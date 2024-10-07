@@ -6,21 +6,22 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:22 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/07 18:12:56 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/07 20:31:17 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-extern char **environ;
+extern char	**environ;
 
-void signal_handler(int sig)
+void	signal_handler(int sig)
 {
 	if (sig == SIGINT)
 	{
 		rl_replace_line("", 1); // Replace current input with empty string
-		rl_on_new_line(); // Signal that we are on a new line
-		printf("\n"); // Redisplay to show the updated (empty) input prompt
+		rl_on_new_line();       // Signal that we are on a new line
+		printf("\n");          
+			// Redisplay to show the updated (empty) input prompt
 		rl_redisplay();
 	}
 	if (sig == SIGQUIT)
@@ -28,11 +29,11 @@ void signal_handler(int sig)
 		;
 	}
 }
-t_cmd *process_tokens(char **tok, t_param *param)
+t_cmd	*process_tokens(char **tok, t_param *param)
 {
-	int i;
-	char *ptr;
-	t_cmd *ast;
+	int		i;
+	char	*ptr;
+	t_cmd	*ast;
 
 	ast = NULL;
 	i = 0;
@@ -54,7 +55,7 @@ t_cmd *process_tokens(char **tok, t_param *param)
 		return (NULL);
 	// print_command_tree(ast, 0); //print abstract syntax tree from root
 	iterate_ast(ast, param);
-	return(ast);
+	return (ast);
 	// free_tokens(tok);
 }
 
@@ -66,23 +67,23 @@ void	init_param(t_param *param)
 	return ;
 }
 
-int main(void)
+int	main(void)
 {
 	t_param	param;
 	size_t	nbr_tokens;
 	char	*input;
 	char	**tok;
+	t_cmd	*ast;
 
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
 	init_param(&param);
-	t_cmd *ast;
 	ast = NULL;
 	nbr_tokens = 0;
-	while(1)
+	while (1)
 	{
 		input = readline("$> ");
-		if (input == NULL)		// Check for Ctrl-D (EOF)
+		if (input == NULL) // Check for Ctrl-D (EOF)
 		{
 			printf("EOF, exiting shell\n");
 			exit(0);
@@ -90,7 +91,7 @@ int main(void)
 		// if (only_space(input))
 		// {
 		// 	free(input);
-		// 	continue;
+		// 	continue ;
 		// }
 		if (input && *input)
 		{
@@ -99,8 +100,8 @@ int main(void)
 			if (tok == NULL || only_space(input))
 			{
 				free(input);
-                free(tok);
-				continue;
+				free(tok);
+				continue ;
 			}
 			if (unclosed_quote(tok))
 			{
@@ -114,16 +115,16 @@ int main(void)
 				{
 					free_tokens(tok, nbr_tokens);
 					free(input);
-					continue;
+					continue ;
 				}
 				free_ast(ast);
 				free_tokens(tok, nbr_tokens);
 			}
-			continue;
+			continue ;
 		}
 		free(input);
 	}
-	return 0;
+	return (0);
 }
 
 // void	set_env(t_list **env_list)

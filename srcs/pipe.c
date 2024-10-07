@@ -20,10 +20,10 @@ void	right_pipe(t_pipe *pipe_cmd, int *fd, t_param *param)
 
 int	set_pipe(t_pipe *pipe_cmd, t_param *param)
 {
-	int     fd[2];
-	pid_t   pid_l;
-	pid_t   pid_r;
-	int     status;
+	int fd[2];
+	pid_t pid_l;
+	pid_t pid_r;
+	int status;
 
 	if (pipe(fd) == -1)
 		return (-1);
