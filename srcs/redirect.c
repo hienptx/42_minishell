@@ -38,23 +38,27 @@ void	set_redir(t_redir *redir_cmd, t_param *param)
 
 void	dup_fd(t_redir *redir_cmd)
 {
+	int fd;
+
 	if (redir_cmd->fd == 0)
 	{
-		get_file_fd(redir_cmd);
-		if (redir_cmd->fd == -1)
+		fd = get_file_fd(redir_cmd);
+		if (fd == -1)
 			return ;
-		dup2(redir_cmd->fd, STDIN_FILENO);
+		dup2(fd, STDIN_FILENO);
 	}
 	else if ((redir_cmd->fd == 1) || (redir_cmd->fd == 2))
 	{
-		get_file_fd(redir_cmd);
-		if (redir_cmd->fd == -1)
+		fd = get_file_fd(redir_cmd);
+		if (fd == -1)
 			return ;
-		dup2(redir_cmd->fd, STDIN_FILENO);
+		dup2(fd, STDOUT_FILENO);
 	}
+	else
+		dup2(redir_cmd->fd, STDIN_FILENO);
 }
 
-void	get_file_fd(t_redir *redir_cmd)
+int	get_file_fd(t_redir *redir_cmd)
 {
 	int	oflag;
 
@@ -65,9 +69,8 @@ void	get_file_fd(t_redir *redir_cmd)
 		oflag = (O_WRONLY | O_CREAT | O_TRUNC);
 	else if (redir_cmd->fd == 2)
 		oflag = (O_WRONLY | O_CREAT | O_APPEND);
-	else
-		;
 	redir_cmd->fd = open(redir_cmd->file_name, oflag, 0644);
 	if (redir_cmd->fd == -1)
-		panic_sms("open");
+		panic_sms("open", 1);
+	return(redir_cmd->fd);
 }

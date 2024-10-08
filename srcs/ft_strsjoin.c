@@ -63,10 +63,10 @@ char	*cp_strs(char *result, va_list args, const char *delimiter)
 			break ;
 		if (!first && delimiter != NULL)
 		{
-			strcpy(ptr, delimiter); //
+			ft_strcpy(ptr, delimiter);
 			ptr += ft_strlen(delimiter);
 		}
-		strcpy(ptr, str); //
+		ft_strcpy(ptr, str);
 		ptr += ft_strlen(str);
 		first = 0;
 	}

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/08 18:28:01 by hipham            #+#    #+#             */
+/*   Updated: 2024/10/08 19:38:31 by hipham           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	*ft_malloc(void *data, size_t size)
@@ -11,41 +23,21 @@ void	*ft_malloc(void *data, size_t size)
 	return (data);
 }
 
-void	free_tokens(char **tokens, size_t nbr_tokens)
+void	*panic_sms(char *s, int i)
 {
-	size_t	i;
-
-	i = 0;
-	if (!tokens)
-		return ;
-	while (i < nbr_tokens)
+	if(i == 0)
+		perror(s);
+	else if (i == 1)
 	{
-		if (tokens[i] != NULL)
-		{
-			free(tokens[i]);
-		}
-		i++;
+		perror(s);
+		exit(1);
 	}
-	free(tokens);
-}
-
-void	panic_sms(char *s)
-{
-	perror(s);
-	exit(1);
-}
-
-static int	ft_isspace(const int c)
-{
-	const char	*space;
-
-	space = "\t\n\v\f\r ";
-	while (*space)
+	else if (i == 2)
 	{
-		if (c == *space++)
-			return (1);
+		printf("%s\n", s);
+		exit (0);
 	}
-	return (0);
+	return (NULL);
 }
 
 int	only_space(char *input)
@@ -53,9 +45,21 @@ int	only_space(char *input)
 	while (*input != '\0')
 	{
 		if (ft_isspace(*input) == 0)
-			// if (*input != ' ')
 			return (0);
 		input++;
 	}
 	return (1);
+}
+
+int	get_fd(char *token)
+{
+	int	fd;
+
+	if (ft_strcmp(token, "<") == 0)
+		fd = 0;
+	if (ft_strcmp(token, ">") == 0)
+		fd = 1;
+	if (ft_strcmp(token, ">>") == 0)
+		fd = 2;
+	return (fd);
 }

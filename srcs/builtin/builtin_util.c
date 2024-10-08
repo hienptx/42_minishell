@@ -37,7 +37,7 @@ char	*get_key_or_value(char *key_or_val, char *env, size_t key_len)
 	{
 		key = ft_substr(env, 0, key_len);
 		if (key == NULL)
-			panic_sms("malloc");
+			panic_sms("malloc", 1);
 		return (key);
 	}
 	else
@@ -47,7 +47,7 @@ char	*get_key_or_value(char *key_or_val, char *env, size_t key_len)
 		// printf("value len %zu\n", val_len);
 		val = ft_substr(env, key_len + 1, val_len);
 		if (val == NULL)
-			panic_sms("malloc");
+			panic_sms("malloc", 1);
 		return (val);
 	}
 }
@@ -165,7 +165,7 @@ int	rm_env(t_list **env_list, const char *key_to_remove)
 	{
 		cur_key = get_env_key((char *)cur->content);
 		if (cur_key == NULL)
-			panic_sms("malloc");
+			panic_sms("malloc", 1);
 		if (ft_strcmp(cur_key, key_to_remove) == 0)
 		{
 			rm_node(env_list, &prev, &cur);

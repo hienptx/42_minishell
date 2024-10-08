@@ -90,12 +90,12 @@ char	*get_executable_path(char *env_path, char *prog_name)
 	i = 0;
 	cur_dir = get_all_path(env_path);
 	if (cur_dir == NULL)
-		panic_sms("malloc fails");
+		panic_sms("malloc fails", 1);
 	while (cur_dir[i])
 	{
 		executable_path = ft_strsjoin(NULL, cur_dir[i], "/", prog_name, NULL);
 		if (executable_path == NULL)
-			panic_sms("malloc fails");
+			panic_sms("malloc fails", 1);
 		if (access(executable_path, X_OK) == 0)
 		{
 			ret = ft_strdup(executable_path);

@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 21:51:31 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/07 20:31:28 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/08 19:22:50 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,21 +46,42 @@ t_cmd	*parse_exec(char **tokens)
 		return (NULL);
 	ast = malloc(sizeof(t_cmd));
 	if (ast == NULL)
-		panic_sms("Malloc failed to allocate memory");
+		panic_sms("Malloc failed", 1);
 	ast->type = EXEC;
 	data = malloc(sizeof(t_exec));
 	if (data == NULL)
-		panic_sms("Malloc failed to allocate memory");
+		panic_sms("Malloc failed", 1);
 	ast->cmd.exec = construct_exec(tokens, data);
 	return (ast);
+}
+
+t_cmd	*process_redir(t_cmd *command, char **tokens, int i)
+{
+	char	*file_name;
+	int		fd;
+
+	fd = get_fd(tokens[i]);
+	free(tokens[i]);
+	tokens[i] = NULL;
+	file_name = ft_strdup(tokens[i + 1]);
+	if (file_name == NULL)
+		panic_sms("Syntax error", 0);
+	i += 1;
+	if (command == NULL)
+		command = construct_redir(tokens, fd, file_name);
+	else
+		command->cmd.redir = append_redir_list(command->cmd.redir,
+												tokens,
+												file_name,
+												fd);
+	free(file_name);
+	return (command);
 }
 
 t_cmd	*parse_redir(char **tokens)
 {
 	int		i;
 	t_cmd	*command;
-	int		fd;
-	char	*file_name;
 
 	i = 0;
 	command = NULL;
@@ -69,32 +90,7 @@ t_cmd	*parse_redir(char **tokens)
 		if (ft_strcmp(tokens[i], "<") == 0 || ft_strcmp(tokens[i], ">") == 0
 			|| ft_strcmp(tokens[i], ">>") == 0)
 		{
-			fd = ft_strcmp(tokens[i], "<") == 0 ? 0 : 1;
-			fd = ft_strcmp(tokens[i], ">>") == 0 ? 2 : 1;
-			free(tokens[i]);
-			tokens[i] = NULL;
-			if (tokens[i + 1] == NULL)
-			{
-				printf("syntax error: missing file name after redirection\n");
-				return (NULL);
-			}
-			file_name = ft_strdup(tokens[i + 1]);
-			if (file_name == NULL)
-			{
-				printf("syntax error near unexpected token '|'\n");
-				return (NULL);
-			}
-			i += 1;
-			if (command == NULL)
-			{
-				command = construct_redir(tokens, fd, file_name);
-			}
-			else
-			{
-				command->cmd.redir = append_redir_list(command->cmd.redir,
-						tokens, file_name, fd);
-			}
-			free(file_name);
+			command = process_redir(command, tokens, i);
 		}
 		else if (ft_strcmp(tokens[i], "<<") == 0)
 			command = parse_here_doc(command, tokens, i);
@@ -105,33 +101,7 @@ t_cmd	*parse_redir(char **tokens)
 	return (command);
 }
 
-int	check_invalid_syntax(char **tokens, int i)
-{
-	if (tokens[i + 1] == NULL)
-	{
-		printf("syntax error near unexpected token '|'\n");
-		return (1);
-	}
-	if (ft_strcmp(tokens[i + 1], "|") == 0)
-	{
-		printf("Bad syntax, out of scope of minishell\n");
-		return (1);
-	}
-	else if (tokens[i - 1] != NULL && (ft_strcmp(tokens[i - 1], "<") == 0
-			|| ft_strcmp(tokens[i - 1], ">") == 0))
-	{
-		printf("Syntax error near unexpected token '|' \n");
-		return (1);
-	}
-	else if (tokens[i - 1] != NULL && (ft_strcmp(tokens[i - 1], "<<") == 0
-			|| ft_strcmp(tokens[i - 1], ">>") == 0))
-	{
-		printf("Syntax error near unexpected token '|' \n");
-		return (1);
-	}
-	return (0);
-}
-
+// >>, <, >, <<: bash: syntax error near unexpected token `newline'
 t_cmd	*parse_cmd(char **tokens)
 {
 	int		i;
@@ -144,8 +114,8 @@ t_cmd	*parse_cmd(char **tokens)
 	{
 		if (ft_strcmp(tokens[i], "|") == 0)
 		{
-			if (check_invalid_syntax(tokens, i))
-				return (NULL);
+			// if (check_invalid_syntax(tokens, i))
+			// 	return (NULL);
 			free(tokens[i]);
 			tokens[i] = NULL;
 			left = parse_cmd(tokens);

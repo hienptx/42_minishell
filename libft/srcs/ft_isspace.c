@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcpy.c                                        :+:      :+:    :+:   */
+/*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 17:32:21 by mafalda           #+#    #+#             */
-/*   Updated: 2024/10/08 18:27:13 by hipham           ###   ########.fr       */
+/*   Created: 2024/10/08 15:12:17 by mafalda           #+#    #+#             */
+/*   Updated: 2024/10/08 18:27:04 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strcpy(char *dest, const char *src)
+int	ft_isspace(const int c)
 {
-	int	i;
+	const char	*space;
 
-	i = 0;
-	while (src[i] != '\0')
+	space = "\t\n\v\f\r ";
+	while (*space)
 	{
-		dest[i] = src[i];
-		i++;
+		if (c == *space++)
+			return (1);
 	}
-	dest[i] = '\0';
-	return (dest);
+	return (0);
 }

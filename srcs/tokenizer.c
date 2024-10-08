@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 16:35:48 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/07 20:32:22 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/08 18:35:40 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,16 @@ size_t	count_tokens(char *str)
 			str++;
 		if (*str == '\0')
 			break ;
-		if (ft_strchr(sep, *str) != NULL)
+		if (ft_strncmp(str, ">>", 2) == 0 || ft_strncmp(str, "<<", 2) == 0
+			|| ft_strncmp(str, "||", 2) == 0)
 		{
 			count++;
-			if ((*str == '>' && *(str + 1) == '>') || (*str == '<' && *(str
-						+ 1) == '<'))
-				str += 2; // Skip the '>>' or '<<'
-			str++;        // Skip the single special character
+			str += 2;
+		}
+		else if (ft_strchr(sep, *str) != NULL)
+		{
+			count++;
+			str++;
 		}
 		else
 		{
@@ -79,37 +82,35 @@ char	*cpy_str(char **ret, char *str, size_t *pos)
 	while (*str != '\0' && *str == ' ')
 		str++;
 	if (*str == '\0')
-		return (str); // Return if the string ends after spaces
+		return (str);
 	ptr = str;
-	if (ft_strchr(sep, *str) != NULL)
+	if (ft_strncmp(str, ">>", 2) == 0 || ft_strncmp(str, "<<", 2) == 0
+		|| ft_strncmp(str, "||", 2) == 0)
+		str += 2;
+	else if (ft_strchr(sep, *str) != NULL)
 	{
 		if ((*str == '>' && *(str + 1) == '>') || (*str == '<' && *(str
 					+ 1) == '<'))
 			str += 2;
 		else
-			str++; // Length of single operator like '>', '<', '|'
-		wordlen = str - ptr;
+			str++;
 	}
 	else
-	{
 		str = get_word(str);
-		wordlen = str - ptr; // Calculate the word length
-	}
-	ret[*pos] = ft_malloc(ret[*pos], wordlen); // TO FREE
+	wordlen = str - ptr;
+	ret[*pos] = ft_malloc(ret[*pos], wordlen);
 	ft_strncpy(ret[*pos], ptr, wordlen);
-	ret[*pos][wordlen] = '\0'; // Null-terminate the string
+	ret[*pos][wordlen] = '\0';
 	*pos += 1;
 	return (str);
 }
 
-// TODO check when input has redirection and pipe
 char	**get_tokens(char *str, size_t *nbr_tokens)
 {
 	char	**ret;
 	char	*ptr;
 	size_t	pos;
 
-	// size_t nbr_tokens;
 	ptr = str;
 	*nbr_tokens = count_tokens(str);
 	ret = malloc((*nbr_tokens + 1) * sizeof(char *));

@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:41 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/07 20:30:11 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/08 18:28:13 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ char	*expand_str(char *str, t_param *param)
 	{
 		ret = ft_itoa(param->special.question_mark);
 		if (ret == NULL)
-			panic_sms("malloc");
+			panic_sms("malloc", 1);
 		return (ret);
 	}
 	else

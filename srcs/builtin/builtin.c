@@ -74,7 +74,7 @@ t_list	*cp_env_list(void)
 		env_malloc = ft_strdup(*env);
 		new_node = ft_lstnew(env_malloc);
 		if (new_node == NULL || env_malloc == NULL)
-			panic_sms("malloc");
+			panic_sms("malloc", 1);
 		ft_lstadd_back(&env_list, new_node);
 		env++;
 	}
@@ -164,7 +164,7 @@ int	change_dir(t_list *env_list, const char *path, const char *oldpwd)
 	env_oldpwd = ft_strjoin("OLDPWD=", oldpwd);
 	env_pwd = ft_strjoin("PWD=", cwd);
 	if (env_pwd == NULL || env_oldpwd == NULL)
-		panic_sms("malloc failed");
+		panic_sms("malloc failed", 1);
 	if (update_env(env_list, "OLDPWD", env_oldpwd) != 0 || update_env(env_list,
 			"PWD", env_pwd) != 0)
 		return (1);
@@ -185,7 +185,7 @@ int	cd(t_list *env_list, char *x[]) //{"cd", "tmp", NULL}
 	{
 		oldpwd = getcwd(NULL, 0);
 		if (oldpwd == NULL)
-			panic_sms("getcwd failed");
+			panic_sms("getcwd failed", 1);
 		if (change_dir(env_list, path, oldpwd) != 0)
 			return (1);
 		free(oldpwd);
