@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:41 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/08 18:28:13 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/09 22:06:20 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,40 +36,70 @@ char	*replace_substring(char *str, char *newsub, char *oldsub)
 	return (ptr);
 }
 
+char	*get_expansion(char *substring, t_param *param, char *result)
+{
+	char	*ret_env;
+	char	*ptr;
+
+	ret_env = expand_str(substring + 1, param);
+	if (ret_env == NULL)
+		ret_env = "";
+	ptr = replace_substring(result, ret_env, substring);
+	free(result);
+	result = ptr;
+	return (result);
+}
+
+char	*expansion_loop(char *s, char *str, char *result, t_param *param)
+{
+	unsigned int	start;
+	size_t			len;
+	char			*substring;
+
+	while (s != NULL)
+	{
+		start = s - str;
+		len = (s[1] == '?') ? 2 : 0;
+		if (s[1] != '?')
+		{
+			while (*s != '\0' && *s != ' ' && *s != '\'' && *s != '\"')
+			{
+				len++;
+				s++;
+			}
+		}
+		else
+			s += 2;
+		substring = ft_substr(str, start, len);
+		result = get_expansion(substring, param, result);
+		free(substring);
+		s = ft_strchr(s, '$');
+	}
+	return (result);
+}
+
 char	*expansion_handling(char *str, t_param *param)
 {
-	size_t			len;
-	char			*s;
-	unsigned int	start;
-	char			*path;
-	char			*ret_env;
-	char			*ptr;
+	char	*s;
+	char	*result;
 
 	s = ft_strchr(str, '$');
 	if (s == NULL || (str[0] == '\'' && str[strlen(str) - 1] == '\''))
 		return (str);
-	start = s - str;
-	len = 0;
-	while (*s != '\0' && *s != ' ' && *s != '\'' && *s != '\"')
-	{
-		len++;
-		s++;
-	}
-	path = ft_substr(str, start, len);
-	ret_env = expand_str(path + 1, param);
-	// ret_env = get_env_value(path + 1, env_list);
-	if (ret_env == NULL)
-		ret_env = "";
-	ptr = replace_substring(str, ret_env, path);
-	free(path);
-	return (ptr);
+	if ((s[1] == ' ' || s[1] == '\0' || s[1] == '\"'))
+		return (str);
+	result = ft_strdup(str);
+	if (result == NULL)
+		panic_sms("malloc", 1);
+	result = expansion_loop(s, str, result, param);
+	return (result);
 }
 
 char	*expand_str(char *str, t_param *param)
 {
 	char	*ret;
 
-	if (ft_strcmp(str, "?") == 0)
+	if (str[0] == '?')
 	{
 		ret = ft_itoa(param->special.question_mark);
 		if (ret == NULL)

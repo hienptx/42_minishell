@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:22 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/08 19:36:36 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/08 19:36:36 bcdy hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,10 @@ void	init_param(t_param *param)
 void	process_input(char *input, t_param *param)
 {
 	char	**tok;
-	t_cmd	*ast = NULL;
+	t_cmd	*ast;
 	size_t	nbr_tokens;
 
+	ast = NULL;
 	if (input && *input)
 	{
 		add_history(input);
@@ -106,7 +107,7 @@ void	shell_loop(t_param *param)
 		if (input == NULL)
 		{
 			printf("EOF, exiting shell\n");
-			return ;
+			exit(0);
 		}
 		if (only_space(input))
 		{
