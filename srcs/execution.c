@@ -52,7 +52,7 @@ void	run_exec(t_exec *exec_cmd, t_param *param)
 	{
 		waitpid(pid, &status, 0);
 		// update_env(env_list, "?", ft_strjoin("?=",
-		ft_itoa(WEXITSTATUS(status));
+		// ft_itoa(WEXITSTATUS(status));
 		param->special.question_mark = WEXITSTATUS(status);
 	}
 	return ;

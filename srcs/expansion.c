@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:41 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/09 22:06:20 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/14 15:49:24 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ char	*get_expansion(char *substring, t_param *param, char *result)
 		ret_env = "";
 	ptr = replace_substring(result, ret_env, substring);
 	free(result);
+	free(ret_env);
 	result = ptr;
 	return (result);
 }

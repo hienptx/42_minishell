@@ -39,7 +39,10 @@ int	call_builtin(t_exec *exec_cmd, t_param *param)
 	else if (strcmp(args[0], "env") == 0)
 		ret = env(param->env_list);
 	else if (strcmp(args[0], "exit") == 0)
+	{
+		ft_lstclear(&param->env_list, free);
 		exit(0);
+	}
 	else
 		ret = 0;
 	return (ret);
