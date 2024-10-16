@@ -10,7 +10,7 @@
 # include <stdlib.h>
 # include <sys/wait.h>
 # include <unistd.h>
-// #include "../libft/includes/libft.h"
+# include "../libft/includes/libft.h"
 # include <errno.h>
 
 typedef enum cmd_type
@@ -138,8 +138,8 @@ int					get_file_fd(t_redir *redir_cmd);
 void				dup_fd(t_redir *redir_cmd);
 
 //execution.c
-int					call_exec(t_exec *exec_cmd, t_list *env_list);
-void				run_exec(t_exec *exec_cmd, t_param *param);
+int					call_exec(t_exec *exec_cmd, t_list *env_list, t_parse_data parse);
+void				run_exec(t_exec *exec_cmd, t_param *param,  t_parse_data parse);
 int					set_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse);
 char				*get_executable_path(char *env_path, char *prog_name);
 char				**get_all_path(char *env_path);

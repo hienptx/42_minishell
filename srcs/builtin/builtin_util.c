@@ -16,9 +16,7 @@ char	*get_env_value(char *env_key, t_list *env_list)
 	char	*env;
 	char	*delim;
 
-	// printf("env_key %s\n", env_key);
 	env = get_env(env_key, env_list);
-	// printf("gev %s\n", env);
 	if (env == NULL)
 		return (NULL);
 	delim = ft_strchr(env, '=');
@@ -42,9 +40,7 @@ char	*get_key_or_value(char *key_or_val, char *env, size_t key_len)
 	}
 	else
 	{
-		// printf("%s\n", key_or_val);
 		val_len = ft_strlen(env) - key_len - 1;
-		// printf("value len %zu\n", val_len);
 		val = ft_substr(env, key_len + 1, val_len);
 		if (val == NULL)
 			panic_sms("malloc", 1);
@@ -84,8 +80,12 @@ int	find_env(t_list *env_list, char *key)
 			return (-1);
 		}
 		if (ft_strcmp(cur_key, key) == 0)
+		{
+			free(cur_key);
 			return (1);
+		}
 		env_list = env_list->next;
+		free(cur_key);
 	}
 	return (0);
 }

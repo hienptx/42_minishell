@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int	call_exec(t_exec *exec_cmd, t_list *env_list)
+int	call_exec(t_exec *exec_cmd, t_list *env_list, t_parse_data parse)
 {
 	extern char	**environ;
 	char		*path;
@@ -19,9 +19,10 @@ int	call_exec(t_exec *exec_cmd, t_list *env_list)
 				exec_cmd->arg[0]);
 		if (path == NULL)
 		{
-			errno = ENOENT;
-			perror(exec_cmd->arg[0]);
-			exit(1);
+			printf("%s: %s\n", exec_cmd->arg[0], "command not found");
+			free_parse(parse);
+			ft_lstclear(&env_list, free);
+			exit(127);
 		}
 		exec_cmd->arg[0] = path;
 		environ = mk_env_list(env_list);
@@ -37,7 +38,7 @@ int	call_exec(t_exec *exec_cmd, t_list *env_list)
 		return (-1);
 }
 
-void	run_exec(t_exec *exec_cmd, t_param *param)
+void	run_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 {
 	pid_t	pid;
 	int		status;
@@ -45,7 +46,7 @@ void	run_exec(t_exec *exec_cmd, t_param *param)
 	pid = fork();
 	if (pid == 0)
 	{
-		call_exec(exec_cmd, param->env_list);
+		call_exec(exec_cmd, param->env_list, parse);
 		(void)status;
 	}
 	else
@@ -68,7 +69,7 @@ int	set_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 		param->special.question_mark = builtin_ret;
 	}
 	else
-		run_exec(exec_cmd, param);
+		run_exec(exec_cmd, param, parse);
 	return (0);
 }
 
@@ -89,6 +90,7 @@ char	*get_executable_path(char *env_path, char *prog_name)
 
 	i = 0;
 	cur_dir = get_all_path(env_path);
+	free(env_path);
 	if (cur_dir == NULL)
 		panic_sms("malloc fails", 1);
 	while (cur_dir[i])
@@ -99,10 +101,14 @@ char	*get_executable_path(char *env_path, char *prog_name)
 		if (access(executable_path, X_OK) == 0)
 		{
 			ret = ft_strdup(executable_path);
-			// free_2d_arr(cur_dir);
+			ft_free(cur_dir);
+			free(executable_path);
 			return (ret);
 		}
 		i++;
+		free(executable_path);
+		executable_path = NULL;
 	}
+	ft_free(cur_dir);
 	return (NULL);
 }
