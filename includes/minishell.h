@@ -59,6 +59,14 @@ typedef struct s_cmd
 
 }					t_cmd;
 
+typedef struct s_parse_data
+{
+	t_cmd	*ast;
+	char	**tok;
+	size_t	nbr_tokens;
+	char	*input;
+}			t_parse_data;
+
 typedef struct s_special_param
 {
 	int				question_mark;
@@ -73,6 +81,7 @@ typedef struct s_param
 // minishell.c
 char				*quote_handling(char *token);
 void				signal_handler(int sig);
+t_cmd				*process_tokens(char **tok, t_param *param, t_parse_data parse);
 
 // expansion.c
 char				*expansion_handling(char *str, t_param *param);
@@ -112,33 +121,33 @@ t_cmd				*parse_exec(char **tokens);
 
 // t_exec *parse_exec(char **tokens);
 void				print_command_tree(t_cmd *cmd, int level);
-void				iterate_ast(t_cmd *cmd, t_param *param);
+void				iterate_ast(t_cmd *cmd, t_param *param, t_parse_data parse);
 
 //here_doc.c
 int					heredoc_process(char *arg2);
 t_cmd				*parse_here_doc(t_cmd *command, char **tokens, int i);
 
 //pipe.c
-void				left_pipe(t_pipe *pipe_cmd, int *fd, t_param *param);
-void				right_pipe(t_pipe *pipe_cmd, int *fd, t_param *param);
-int					set_pipe(t_pipe *pipe_cmd, t_param *param);
+void				left_pipe(t_pipe *pipe_cmd, int *fd, t_param *param, t_parse_data parse);
+void				right_pipe(t_pipe *pipe_cmd, int *fd, t_param *param, t_parse_data parse);
+int					set_pipe(t_pipe *pipe_cmd, t_param *param, t_parse_data parse);
 
 //redirect.c
-void				set_redir(t_redir *redir_cmd, t_param *param);
+void				set_redir(t_redir *redir_cmd, t_param *param, t_parse_data parse);
 int					get_file_fd(t_redir *redir_cmd);
 void				dup_fd(t_redir *redir_cmd);
 
 //execution.c
 int					call_exec(t_exec *exec_cmd, t_list *env_list);
 void				run_exec(t_exec *exec_cmd, t_param *param);
-int					set_exec(t_exec *exec_cmd, t_param *param);
+int					set_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse);
 char				*get_executable_path(char *env_path, char *prog_name);
 char				**get_all_path(char *env_path);
 
 void				set_env(t_list **env_list);
 int					ck_builtin(char *executable_name);
 int					find_env(t_list *env_list, char *key);
-int					call_builtin(t_exec *exec_cmd, t_param *param);
+int					call_builtin(t_exec *exec_cmd, t_param *param, t_parse_data parse);
 
 char				*ft_strsjoin(const char *delimiter, ...);
 int					get_full_len(va_list args, const char *delimiter);
@@ -146,7 +155,7 @@ char				*cp_strs(char *result, va_list args, const char *delimiter);
 
 // free.c
 void				free_tokens(char **tokens, size_t nbr_tokens);
-
+void	free_parse(t_parse_data parse);
 // syntax_check.c
 int					check_syntax(char **tokens);
 

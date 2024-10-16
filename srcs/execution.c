@@ -58,13 +58,13 @@ void	run_exec(t_exec *exec_cmd, t_param *param)
 	return ;
 }
 
-int	set_exec(t_exec *exec_cmd, t_param *param)
+int	set_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 {
 	int	builtin_ret;
 
 	if (ck_builtin(exec_cmd->arg[0]) == 1)
 	{
-		builtin_ret = call_builtin(exec_cmd, param);
+		builtin_ret = call_builtin(exec_cmd, param, parse);
 		param->special.question_mark = builtin_ret;
 	}
 	else

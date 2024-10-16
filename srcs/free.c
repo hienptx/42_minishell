@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 15:13:39 by mafalda           #+#    #+#             */
-/*   Updated: 2024/10/08 18:26:38 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/16 19:34:15 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,11 @@ void	free_ast(t_cmd *ast)
 		free(ast->cmd.exec);
 	}
 	free(ast);
+}
+
+void	free_parse(t_parse_data parse)
+{
+	free_ast(parse.ast);
+	free_tokens(parse.tok, parse.nbr_tokens);
+	free(parse.input);
 }

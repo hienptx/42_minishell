@@ -28,7 +28,7 @@ void	signal_handler(int sig)
 		;
 	}
 }
-t_cmd	*process_tokens(char **tok, t_param *param)
+t_cmd	*process_tokens(char **tok, t_param *param, t_parse_data parse)
 {
 	int		i;
 	char	*ptr;
@@ -52,8 +52,8 @@ t_cmd	*process_tokens(char **tok, t_param *param)
 	ast = parse_cmd(tok);
 	if (ast == NULL)
 		return (NULL);
-	// print_command_tree(ast, 0);
-	iterate_ast(ast, param);
+	parse.ast = ast;	
+	iterate_ast(ast, param, parse);
 	return (ast);
 }
 
@@ -67,32 +67,34 @@ void	init_param(t_param *param)
 
 void	process_input(char *input, t_param *param)
 {
-	char	**tok;
-	t_cmd	*ast;
-	size_t	nbr_tokens;
+	t_parse_data	parse;
+	// char	**tok;
+	// t_cmd	*ast;
+	// size_t	nbr_tokens;
 
-	ast = NULL;
+	parse.input = input;
+	parse.ast = NULL;
 	if (input && *input)
 	{
-		add_history(input);
-		tok = get_tokens(input, &nbr_tokens);
-		if (tok == NULL)
+		add_history(parse.input);
+		parse.tok = get_tokens(parse.input, &parse.nbr_tokens);
+		if (parse.tok == NULL)
 		{
-			free(input);
+			free(parse.input);
 			return ;
 		}
-		if (unclosed_quote(tok) || check_syntax(tok))
+		if (unclosed_quote(parse.tok) || check_syntax(parse.tok))
 		{
-			free_tokens(tok, nbr_tokens);
-			free(input);
+			free_tokens(parse.tok, parse.nbr_tokens);
+			free(parse.input);
 		}
 		else
 		{
-			ast = process_tokens(tok, param);
-			if (ast)
-				free_ast(ast);
-			free_tokens(tok, nbr_tokens);
-			free(input);
+			parse.ast = process_tokens(parse.tok, param, parse);	//pass ast, nbr_tokens, input
+			if (parse.ast)
+				free_ast(parse.ast);
+			free_tokens(parse.tok, parse.nbr_tokens);
+			free(parse.input);
 		}
 	}
 }

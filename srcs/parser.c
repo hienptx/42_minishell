@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 21:51:31 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/08 19:22:50 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/16 19:29:41 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	iterate_ast(t_cmd *cmd, t_param *param)
+void	iterate_ast(t_cmd *cmd, t_param *param, t_parse_data parse)
 {
 	t_pipe	*pipe_cmd;
 	t_redir	*redir_cmd;
@@ -23,17 +23,17 @@ void	iterate_ast(t_cmd *cmd, t_param *param)
 	if (cmd->type == PIPE)
 	{
 		pipe_cmd = cmd->cmd.pipe;
-		set_pipe(pipe_cmd, param);
+		set_pipe(pipe_cmd, param, parse);
 	}
 	else if (cmd->type == REDIR)
 	{
 		redir_cmd = cmd->cmd.redir;
-		set_redir(redir_cmd, param);
+		set_redir(redir_cmd, param, parse);
 	}
 	else if (cmd->type == EXEC)
 	{
 		exec_cmd = cmd->cmd.exec;
-		set_exec(exec_cmd, param);
+		set_exec(exec_cmd, param, parse);
 	}
 }
 

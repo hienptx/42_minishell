@@ -20,7 +20,7 @@ int	ck_builtin(char *executable_name)
 	return (0);
 }
 
-int	call_builtin(t_exec *exec_cmd, t_param *param)
+int	call_builtin(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 {
 	char	**args;
 	int		ret;
@@ -28,19 +28,20 @@ int	call_builtin(t_exec *exec_cmd, t_param *param)
 	args = exec_cmd->arg;
 	if (strcmp(args[0], "echo") == 0)
 		ret = echo(args);
-	else if (strcmp(args[0], "cd") == 0)
+	else if (ft_strcmp(args[0], "cd") == 0)
 		ret = cd(param->env_list, args);
-	else if (strcmp(args[0], "pwd") == 0)
+	else if (ft_strcmp(args[0], "pwd") == 0)
 		ret = pwd();
-	else if (strcmp(args[0], "export") == 0)
+	else if (ft_strcmp(args[0], "export") == 0)
 		ret = export(param->env_list, args);
-	else if (strcmp(args[0], "unset") == 0)
+	else if (ft_strcmp(args[0], "unset") == 0)
 		ret = unset(args, param->env_list);
-	else if (strcmp(args[0], "env") == 0)
+	else if (ft_strcmp(args[0], "env") == 0)
 		ret = env(param->env_list);
-	else if (strcmp(args[0], "exit") == 0)
+	else if (ft_strcmp(args[0], "exit") == 0)
 	{
 		ft_lstclear(&param->env_list, free);
+		free_parse(parse);
 		exit(0);
 	}
 	else

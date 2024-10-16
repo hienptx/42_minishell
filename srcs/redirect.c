@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	set_redir(t_redir *redir_cmd, t_param *param)
+void	set_redir(t_redir *redir_cmd, t_param *param, t_parse_data parse)
 {
 	t_redir	*predir_cmd;
 	int		saved_stdin;
@@ -15,7 +15,7 @@ void	set_redir(t_redir *redir_cmd, t_param *param)
 		close(predir_cmd->fd);
 		predir_cmd = predir_cmd->next;
 	}
-	iterate_ast((t_cmd *)redir_cmd->cmd, param);
+	iterate_ast((t_cmd *)redir_cmd->cmd, param, parse);
 	dup2(saved_stdin, STDIN_FILENO);
 	dup2(saved_stdout, STDOUT_FILENO);
 	close(saved_stdin);
