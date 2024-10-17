@@ -1,0 +1,9 @@
+# .DS file
+.DS-Store
+
+# suppress readline, add history leaks
+readline.supp
+
+# .txt files
+*.txt
+
