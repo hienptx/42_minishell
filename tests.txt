@@ -1,0 +1,59 @@
+v                echo hello world
+x                echo "hello world"
+x                echo 'hello world'
+                    ==1330== 320 bytes in 20 blocks are still reachable in loss record 24 of 63
+                    ==1330==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+                    ==1330==    by 0x10DD02: ft_lstnew (in /host/hienptx/minishell/minishell)
+                    ==1330==    by 0x10C319: cp_env_list (in /host/hienptx/minishell/minishell)
+                    ==1330==    by 0x10C2C0: set_env (in /host/hienptx/minishell/minishell)
+                    ==1330==    by 0x10A70F: init_param (in /host/hienptx/minishell/minishell)
+                    ==1330==    by 0x10A8EB: main (in /host/hienptx/minishell/minishell)
+v                echo hello'world'
+v                echo hello""world
+v                echo ''
+v                echo "$PWD"
+v                echo '$PWD'
+v                echo "aspas ->'"
+v                echo "aspas -> ' "
+v                echo 'aspas ->"'
+v                echo 'aspas -> " '
+v                echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $ \ <<"
+v                echo '> >> < * ? [ ] | ; [ ] || && ( ) & # $ \ <<'
+v                echo "exit_code ->$? user ->$USER home -> $HOME"
+v                echo 'exit_code ->$? user ->$USER home -> $HOME'
+v                cho ""
+v                echo "$"
+v                echo '$'
+v                echo $
+v                echo $?
+v                echo $?HELLO
+v                pwd
+v                pwd oi
+v                export hello
+v                export HELLO=123
+                export A-
+                export HELLO=123 A
+                export HELLO="123 A-"
+                export hello world
+                export HELLO-=123
+                export =
+                export 123
+                unset
+                unset HELLO
+                unset HELLO1 HELLO2
+                unset HOME
+                unset PATH
+                unset SHELL
+                cd $PWD
+                cd $PWD hi 
+                cd 123123
+                exit 123
+                exit 298
+                exit +100
+                exit "+100"
+                exit +"100"
+                exit -100
+                exit "-100"
+                exit -"100"
+                exit hello
+                exit 42 world

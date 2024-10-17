@@ -35,7 +35,9 @@ int	call_exec(t_exec *exec_cmd, t_list *env_list, t_parse_data parse)
 		return (0);
 	}
 	else
+	{
 		return (-1);
+	}
 }
 
 void	run_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
@@ -56,6 +58,7 @@ void	run_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 		// ft_itoa(WEXITSTATUS(status));
 		param->special.question_mark = WEXITSTATUS(status);
 	}
+	ft_lstclear(&param->env_list, free);
 	return ;
 }
 

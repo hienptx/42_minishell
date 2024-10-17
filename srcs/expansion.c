@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:41 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/14 15:49:24 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/17 16:02:39 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,8 @@ char	*get_expansion(char *substring, t_param *param, char *result)
 	if (ret_env == NULL)
 		ret_env = "";
 	ptr = replace_substring(result, ret_env, substring);
-	free(result);
-	free(ret_env);
 	result = ptr;
+	free(ret_env);
 	return (result);
 }
 
@@ -89,7 +88,7 @@ char	*expansion_handling(char *str, t_param *param)
 		return (str);
 	if ((s[1] == ' ' || s[1] == '\0' || s[1] == '\"'))
 		return (str);
-	result = ft_strdup(str);
+	result = str;
 	if (result == NULL)
 		panic_sms("malloc", 1);
 	result = expansion_loop(s, str, result, param);

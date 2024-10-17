@@ -68,9 +68,6 @@ void	init_param(t_param *param)
 void	process_input(char *input, t_param *param)
 {
 	t_parse_data	parse;
-	// char	**tok;
-	// t_cmd	*ast;
-	// size_t	nbr_tokens;
 
 	parse.input = input;
 	parse.ast = NULL;
@@ -109,6 +106,7 @@ void	shell_loop(t_param *param)
 		if (input == NULL)
 		{
 			printf("EOF, exiting shell\n");
+			ft_lstclear(&param->env_list, free);
 			exit(0);
 		}
 		if (only_space(input))
@@ -128,7 +126,6 @@ int	main(void)
 	signal(SIGQUIT, signal_handler);
 	init_param(&param);
 	shell_loop(&param);
-	ft_lstclear(&param.env_list, free);
 	return (0);
 }
 
