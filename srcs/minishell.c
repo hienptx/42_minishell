@@ -54,7 +54,6 @@ t_cmd	*process_tokens(char **tok, t_param *param, t_parse_data parse)
 		return (NULL);
 	parse.ast = ast;	
 	iterate_ast(ast, param, parse);
-	ft_lstclear(&param->env_list, free);
 	return (ast);
 }
 
@@ -93,6 +92,7 @@ void	process_input(char *input, t_param *param)
 				free_ast(parse.ast);
 			free_tokens(parse.tok, parse.nbr_tokens);
 			free(parse.input);
+			// ft_lstclear(&param->env_list, free);	
 		}
 	}
 }
@@ -127,7 +127,7 @@ int	main(void)
 	signal(SIGQUIT, signal_handler);
 	init_param(&param);
 	shell_loop(&param);
-	// ft_lstclear(&param.env_list, free);
+	ft_lstclear(&param.env_list, free);
 	return (0);
 }
 

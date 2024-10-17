@@ -46,7 +46,6 @@ int	call_builtin(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 	}
 	else
 		ret = 0;
-	ft_lstclear(&param->env_list, free);
 	return (ret);
 }
 
