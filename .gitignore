@@ -7,3 +7,6 @@ readline.supp
 # .txt files
 *.txt
 
+# .vscode file
+.vscode
+

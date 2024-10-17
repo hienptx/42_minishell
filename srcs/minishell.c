@@ -54,6 +54,7 @@ t_cmd	*process_tokens(char **tok, t_param *param, t_parse_data parse)
 		return (NULL);
 	parse.ast = ast;	
 	iterate_ast(ast, param, parse);
+	ft_lstclear(&param->env_list, free);
 	return (ast);
 }
 
@@ -126,6 +127,7 @@ int	main(void)
 	signal(SIGQUIT, signal_handler);
 	init_param(&param);
 	shell_loop(&param);
+	// ft_lstclear(&param.env_list, free);
 	return (0);
 }
 

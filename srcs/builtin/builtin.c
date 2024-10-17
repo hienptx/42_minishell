@@ -46,7 +46,7 @@ int	call_builtin(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 	}
 	else
 		ret = 0;
-ft_lstclear(&param->env_list, free);
+	ft_lstclear(&param->env_list, free);
 	return (ret);
 }
 
@@ -254,6 +254,7 @@ int	export(t_list *env_list, char *x[])
 {
 	size_t	i;
 	char	*key;
+	char	*tmp;
 
 	i = 1;
 	if (x[i] == NULL)
@@ -266,8 +267,12 @@ int	export(t_list *env_list, char *x[])
 		key = get_env_key(x[i]);
 		if (key == NULL)
 			return (1); // malloc fail
-		if (update_env(env_list, key, ft_strdup(x[i])) == 1)
+		tmp = ft_strdup(x[i]);
+		if (update_env(env_list, key, tmp) == 1)
+		{
+			free(tmp);
 			return (1);
+		}
 		free(key);
 		key = NULL;
 		i++;
