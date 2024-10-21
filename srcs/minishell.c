@@ -38,7 +38,6 @@ t_cmd	*process_tokens(char **tok, t_param *param, t_parse_data parse)
 	i = 0;
 	while (tok[i] != NULL)
 	{
-		// printf("%s\n", tok[i]);
 		ptr = tok[i];
 		tok[i] = expansion_handling(tok[i], param);
 		if (ptr != tok[i])
@@ -52,7 +51,8 @@ t_cmd	*process_tokens(char **tok, t_param *param, t_parse_data parse)
 	ast = parse_cmd(tok);
 	if (ast == NULL)
 		return (NULL);
-	parse.ast = ast;	
+	parse.ast = ast;
+	print_command_tree(ast, 0);
 	iterate_ast(ast, param, parse);
 	return (ast);
 }
@@ -92,7 +92,6 @@ void	process_input(char *input, t_param *param)
 				free_ast(parse.ast);
 			free_tokens(parse.tok, parse.nbr_tokens);
 			free(parse.input);
-			// ft_lstclear(&param->env_list, free);	
 		}
 	}
 }

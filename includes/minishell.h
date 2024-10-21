@@ -56,7 +56,7 @@ typedef struct s_cmd
 		t_redir		*redir;
 		t_exec		*exec;
 	} cmd;
-
+	
 }					t_cmd;
 
 typedef struct s_parse_data
@@ -158,5 +158,6 @@ void				free_tokens(char **tokens, size_t nbr_tokens);
 void	free_parse(t_parse_data parse);
 // syntax_check.c
 int					check_syntax(char **tokens);
+int	is_operator(const char *token);
 
 #endif

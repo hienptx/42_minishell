@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 21:51:31 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/17 17:13:30 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/17 23:02:27 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,8 @@ void	iterate_ast(t_cmd *cmd, t_param *param, t_parse_data parse)
 	else if (cmd->type == EXEC)
 	{
 		exec_cmd = cmd->cmd.exec;
-		set_exec(exec_cmd, param, parse);   
+		set_exec(exec_cmd, param, parse);
 	}
-	// ft_lstclear(&param->env_list, free);
 }
 
 t_cmd	*parse_exec(char **tokens)
@@ -71,10 +70,8 @@ t_cmd	*process_redir(t_cmd *command, char **tokens, int i)
 	if (command == NULL)
 		command = construct_redir(tokens, fd, file_name);
 	else
-		command->cmd.redir = append_redir_list(command->cmd.redir,
-												tokens,
-												file_name,
-												fd);
+		command->cmd.redir = append_redir_list(command->cmd.redir, tokens,
+				file_name, fd);
 	free(file_name);
 	return (command);
 }
@@ -102,7 +99,6 @@ t_cmd	*parse_redir(char **tokens)
 	return (command);
 }
 
-// >>, <, >, <<: bash: syntax error near unexpected token `newline'
 t_cmd	*parse_cmd(char **tokens)
 {
 	int		i;
@@ -115,8 +111,6 @@ t_cmd	*parse_cmd(char **tokens)
 	{
 		if (ft_strcmp(tokens[i], "|") == 0)
 		{
-			// if (check_invalid_syntax(tokens, i))
-			// 	return (NULL);
 			free(tokens[i]);
 			tokens[i] = NULL;
 			left = parse_cmd(tokens);
@@ -132,45 +126,45 @@ t_cmd	*parse_cmd(char **tokens)
 	return (ast);
 }
 
-// void	print_command_tree(t_cmd *cmd, int level)
-// {
-// 	t_pipe	*pipe_cmd;
-// 	t_redir	*redir_cmd;
-// 	t_exec	*exec_cmd;
+void	print_command_tree(t_cmd *cmd, int level)
+{
+	t_pipe	*pipe_cmd;
+	t_redir	*redir_cmd;
+	t_exec	*exec_cmd;
 
-// 	if (cmd == NULL)
-// 		return ;
-// 	if (cmd->type == PIPE)
-// 	{
-// 		pipe_cmd = cmd->cmd.pipe;
-// 		printf("Left pipe, level %d \n", level);
-// 		print_command_tree((t_cmd *)pipe_cmd->left, level + 1);
-// 		printf("Right pipe, level %d \n", level);
-// 		print_command_tree((t_cmd *)pipe_cmd->right, level + 1);
-// 	}
-// 	else if (cmd->type == REDIR)
-// 	{
-// 		redir_cmd = cmd->cmd.redir;
-// 		while (redir_cmd != NULL)
-// 		{
-// 			printf("Redirection file name: %s\n",
-// 				redir_cmd->file_name ? redir_cmd->file_name : "NULL");
-// 			printf("Fd: %i\n", redir_cmd->fd);
-// 			redir_cmd = redir_cmd->next;
-// 		}
-// 		if (cmd->cmd.redir != NULL)
-// 		{
-// 			print_command_tree((t_cmd *)cmd->cmd.redir->cmd, level + 1);
-// 		}
-// 	}
-// 	else if (cmd->type == EXEC)
-// 	{
-// 		exec_cmd = cmd->cmd.exec;
-// 		printf("    Exec Command: ");
-// 		for (int i = 0; exec_cmd->arg[i] != NULL; i++)
-// 			printf("%s ", exec_cmd->arg[i]);
-// 		printf("\n");
-// 	}
-// 	else
-// 		printf("Unknown Command Level %d:\n", level);
-// }
+	if (cmd == NULL)
+		return ;
+	if (cmd->type == PIPE)
+	{
+		pipe_cmd = cmd->cmd.pipe;
+		printf("Left pipe, level %d \n", level);
+		print_command_tree((t_cmd *)pipe_cmd->left, level + 1);
+		printf("Right pipe, level %d \n", level);
+		print_command_tree((t_cmd *)pipe_cmd->right, level + 1);
+	}
+	else if (cmd->type == REDIR)
+	{
+		redir_cmd = cmd->cmd.redir;
+		while (redir_cmd != NULL)
+		{
+			printf("Redirection file name: %s\n",
+				redir_cmd->file_name ? redir_cmd->file_name : "NULL");
+			printf("Fd: %i\n", redir_cmd->fd);
+			redir_cmd = redir_cmd->next;
+		}
+		if (cmd->cmd.redir != NULL)
+		{
+			print_command_tree((t_cmd *)cmd->cmd.redir->cmd, level + 1);
+		}
+	}
+	else if (cmd->type == EXEC)
+	{
+		exec_cmd = cmd->cmd.exec;
+		printf("    Exec Command: ");
+		for (int i = 0; exec_cmd->arg[i] != NULL; i++)
+			printf("%s ", exec_cmd->arg[i]);
+		printf("\n");
+	}
+	else
+		printf("Unknown Command Level %d:\n", level);
+}
