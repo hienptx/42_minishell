@@ -11,7 +11,8 @@ void	left_pipe(t_pipe *pipe_cmd, int *fd, t_param *param, t_parse_data parse)
 	exit(0);
 }
 
-void	right_pipe(t_pipe *pipe_cmd, int *fd, t_param *param, t_parse_data parse)
+void	right_pipe(t_pipe *pipe_cmd, int *fd, t_param *param,
+		t_parse_data parse)
 {
 	close(fd[1]);
 	dup2(fd[0], STDIN_FILENO);

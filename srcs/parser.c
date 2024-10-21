@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 21:51:31 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/17 23:02:27 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/21 16:23:07 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ t_cmd	*parse_exec(char **tokens)
 	return (ast);
 }
 
-t_cmd	*process_redir(t_cmd *command, char **tokens, int i)
+t_cmd	*process_redir(t_cmd *command, char **tokens, int i, char **args)
 {
 	char	*file_name;
 	int		fd;
@@ -68,9 +68,9 @@ t_cmd	*process_redir(t_cmd *command, char **tokens, int i)
 		panic_sms("Syntax error", 0);
 	i += 1;
 	if (command == NULL)
-		command = construct_redir(tokens, fd, file_name);
+		command = construct_redir(args, fd, file_name);
 	else
-		command->cmd.redir = append_redir_list(command->cmd.redir, tokens,
+		command->cmd.redir = append_redir_list(command->cmd.redir, args,
 				file_name, fd);
 	free(file_name);
 	return (command);
@@ -80,22 +80,25 @@ t_cmd	*parse_redir(char **tokens)
 {
 	int		i;
 	t_cmd	*command;
+	char	**args;
 
 	i = 0;
 	command = NULL;
+	args = get_args(tokens);
 	while (tokens[i] != NULL)
 	{
 		if (ft_strcmp(tokens[i], "<") == 0 || ft_strcmp(tokens[i], ">") == 0
 			|| ft_strcmp(tokens[i], ">>") == 0)
 		{
-			command = process_redir(command, tokens, i);
+			command = process_redir(command, tokens, i, args);
 		}
 		else if (ft_strcmp(tokens[i], "<<") == 0)
-			command = parse_here_doc(command, tokens, i);
+			command = parse_here_doc(command, tokens, i, args);
 		i++;
 	}
 	if (!command)
-		command = parse_exec(tokens);
+		command = parse_exec(args);
+	free(args);
 	return (command);
 }
 
@@ -126,45 +129,45 @@ t_cmd	*parse_cmd(char **tokens)
 	return (ast);
 }
 
-void	print_command_tree(t_cmd *cmd, int level)
-{
-	t_pipe	*pipe_cmd;
-	t_redir	*redir_cmd;
-	t_exec	*exec_cmd;
+// void	print_command_tree(t_cmd *cmd, int level)
+// {
+// 	t_pipe	*pipe_cmd;
+// 	t_redir	*redir_cmd;
+// 	t_exec	*exec_cmd;
 
-	if (cmd == NULL)
-		return ;
-	if (cmd->type == PIPE)
-	{
-		pipe_cmd = cmd->cmd.pipe;
-		printf("Left pipe, level %d \n", level);
-		print_command_tree((t_cmd *)pipe_cmd->left, level + 1);
-		printf("Right pipe, level %d \n", level);
-		print_command_tree((t_cmd *)pipe_cmd->right, level + 1);
-	}
-	else if (cmd->type == REDIR)
-	{
-		redir_cmd = cmd->cmd.redir;
-		while (redir_cmd != NULL)
-		{
-			printf("Redirection file name: %s\n",
-				redir_cmd->file_name ? redir_cmd->file_name : "NULL");
-			printf("Fd: %i\n", redir_cmd->fd);
-			redir_cmd = redir_cmd->next;
-		}
-		if (cmd->cmd.redir != NULL)
-		{
-			print_command_tree((t_cmd *)cmd->cmd.redir->cmd, level + 1);
-		}
-	}
-	else if (cmd->type == EXEC)
-	{
-		exec_cmd = cmd->cmd.exec;
-		printf("    Exec Command: ");
-		for (int i = 0; exec_cmd->arg[i] != NULL; i++)
-			printf("%s ", exec_cmd->arg[i]);
-		printf("\n");
-	}
-	else
-		printf("Unknown Command Level %d:\n", level);
-}
+// 	if (cmd == NULL)
+// 		return ;
+// 	if (cmd->type == PIPE)
+// 	{
+// 		pipe_cmd = cmd->cmd.pipe;
+// 		printf("Left pipe, level %d \n", level);
+// 		print_command_tree((t_cmd *)pipe_cmd->left, level + 1);
+// 		printf("Right pipe, level %d \n", level);
+// 		print_command_tree((t_cmd *)pipe_cmd->right, level + 1);
+// 	}
+// 	else if (cmd->type == REDIR)
+// 	{
+// 		redir_cmd = cmd->cmd.redir;
+// 		while (redir_cmd != NULL)
+// 		{
+// 			printf("Redirection file name: %s\n",
+// 				redir_cmd->file_name ? redir_cmd->file_name : "NULL");
+// 			printf("Fd: %i\n", redir_cmd->fd);
+// 			redir_cmd = redir_cmd->next;
+// 		}
+// 		if (cmd->cmd.redir != NULL)
+// 		{
+// 			print_command_tree((t_cmd *)cmd->cmd.redir->cmd, level + 1);
+// 		}
+// 	}
+// 	else if (cmd->type == EXEC)
+// 	{
+// 		exec_cmd = cmd->cmd.exec;
+// 		printf("    Exec Command: ");
+// 		for (int i = 0; exec_cmd->arg[i] != NULL; i++)
+// 			printf("%s ", exec_cmd->arg[i]);
+// 		printf("\n");
+// 	}
+// 	else
+// 		printf("Unknown Command Level %d:\n", level);
+// }

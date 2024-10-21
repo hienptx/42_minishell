@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 18:28:01 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/08 19:38:31 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/21 15:11:00 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	*ft_malloc(void *data, size_t size)
 
 void	*panic_sms(char *s, int i)
 {
-	if(i == 0)
+	if (i == 0)
 		perror(s);
 	else if (i == 1)
 	{
@@ -35,7 +35,7 @@ void	*panic_sms(char *s, int i)
 	else if (i == 2)
 	{
 		printf("%s\n", s);
-		exit (0);
+		exit(0);
 	}
 	return (NULL);
 }
@@ -62,4 +62,24 @@ int	get_fd(char *token)
 	if (ft_strcmp(token, ">>") == 0)
 		fd = 2;
 	return (fd);
+}
+
+size_t	count_non_operators(char **tokens)
+{
+	size_t	len;
+	int		i;
+
+	len = 0;
+	i = 0;
+	while (tokens[i] != NULL)
+	{
+		if (is_operator(tokens[i]) != 0)
+			i += 2;
+		else
+		{
+			len++;
+			i++;
+		}
+	}
+	return (len);
 }

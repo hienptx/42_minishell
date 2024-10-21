@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 15:13:39 by mafalda           #+#    #+#             */
-/*   Updated: 2024/10/16 19:34:15 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/21 14:52:28 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	init_param(t_param *param)
+{
+	param->env_list = NULL;
+	param->special.question_mark = 0;
+	set_env(&param->env_list);
+	return ;
+}
 
 void	free_tokens(char **tokens, size_t nbr_tokens)
 {
@@ -40,10 +48,6 @@ static void	free_redir(t_cmd *ast, t_redir *redir, t_redir *next)
 			free(redir->file_name);
 		if (redir->cmd)
 			free_ast((t_cmd *)redir->cmd);
-		else
-		{
-			;
-		}
 		free(redir);
 		redir = next;
 	}

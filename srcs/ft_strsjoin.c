@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strsjoin.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/21 14:48:34 by hipham            #+#    #+#             */
+/*   Updated: 2024/10/21 15:15:04 by hipham           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 #include <stdarg.h>
 
@@ -72,4 +84,27 @@ char	*cp_strs(char *result, va_list args, const char *delimiter)
 	}
 	*ptr = 0;
 	return (ptr);
+}
+
+char	**get_args(char **tokens)
+{
+	size_t	len;
+	char	**new_arr;
+	int		i;
+	int		j;
+
+	i = 0, len = count_non_operators(tokens);
+	new_arr = malloc(sizeof(char *) * (len + 1));
+	i = 0, j = 0;
+	if (new_arr == NULL)
+		panic_sms("Malloc failed", 1);
+	while (tokens[i] != NULL)
+	{
+		if (is_operator(tokens[i]) != 0)
+			i += 2;
+		else
+			new_arr[j++] = tokens[i++];
+	}
+	new_arr[j] = NULL;
+	return (new_arr);
 }

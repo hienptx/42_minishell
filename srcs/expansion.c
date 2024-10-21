@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:41 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/17 16:02:39 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/21 16:33:48 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,12 @@ char	*expansion_loop(char *s, char *str, char *result, t_param *param)
 	size_t			len;
 	char			*substring;
 
+	len = 0;
 	while (s != NULL)
 	{
 		start = s - str;
-		len = (s[1] == '?') ? 2 : 0;
+		if (s[1] == '?')
+			len = 2;
 		if (s[1] != '?')
 		{
 			while (*s != '\0' && *s != ' ' && *s != '\'' && *s != '\"')

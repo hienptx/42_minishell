@@ -10,3 +10,5 @@ readline.supp
 # .vscode file
 .vscode
 
+#test file
+test.c

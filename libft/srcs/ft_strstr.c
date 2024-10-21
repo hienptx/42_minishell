@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strstr_main.c                                   :+:      :+:    :+:   */
+/*   ft_strstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hienxuan93@gmail.com>              +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 12:43:21 by hipham            #+#    #+#             */
-/*   Updated: 2023/05/08 19:24:58 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/21 16:34:47 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,12 @@ char	*ft_strstr(char *str, char *to_find)
 	{
 		j = 0;
 		while (str[i + j] == to_find[j] && to_find[j] != '\0')
-			{
-				j++;
-			}
+		{
+			j++;
+		}
 		if (to_find[j] == '\0')
-			return(&str[i]);
-	i++;
+			return (&str[i]);
+		i++;
 	}
 	return (0);
 }
-
-// int main(void)
-// {
-// 	char str[] = "dfsa";
-// 	char to_find[] = "adf";
-
-// 	printf("%s", strstr(str, to_find));
-// 	return (0);
-// }

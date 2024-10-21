@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:22 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/08 19:36:36 bcdy hipham           ###   ########.fr       */
+/*   Updated: 2024/10/21 16:22:26 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,13 @@ void	signal_handler(int sig)
 {
 	if (sig == SIGINT)
 	{
-		rl_replace_line("", 1); // Replace current input with empty string
-		rl_on_new_line();       // Signal that we are on a new line
+		rl_replace_line("", 1);
+		rl_on_new_line();
 		printf("\n");
 		rl_redisplay();
 	}
-	if (sig == SIGQUIT)
-	{
-		;
-	}
 }
+
 t_cmd	*process_tokens(char **tok, t_param *param, t_parse_data parse)
 {
 	int		i;
@@ -52,17 +49,8 @@ t_cmd	*process_tokens(char **tok, t_param *param, t_parse_data parse)
 	if (ast == NULL)
 		return (NULL);
 	parse.ast = ast;
-	print_command_tree(ast, 0);
 	iterate_ast(ast, param, parse);
 	return (ast);
-}
-
-void	init_param(t_param *param)
-{
-	param->env_list = NULL;
-	param->special.question_mark = 0;
-	set_env(&param->env_list);
-	return ;
 }
 
 void	process_input(char *input, t_param *param)
@@ -76,10 +64,7 @@ void	process_input(char *input, t_param *param)
 		add_history(parse.input);
 		parse.tok = get_tokens(parse.input, &parse.nbr_tokens);
 		if (parse.tok == NULL)
-		{
 			free(parse.input);
-			return ;
-		}
 		if (unclosed_quote(parse.tok) || check_syntax(parse.tok))
 		{
 			free_tokens(parse.tok, parse.nbr_tokens);
@@ -87,7 +72,7 @@ void	process_input(char *input, t_param *param)
 		}
 		else
 		{
-			parse.ast = process_tokens(parse.tok, param, parse);	//pass ast, nbr_tokens, input
+			parse.ast = process_tokens(parse.tok, param, parse);
 			if (parse.ast)
 				free_ast(parse.ast);
 			free_tokens(parse.tok, parse.nbr_tokens);

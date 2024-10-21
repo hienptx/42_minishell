@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 17:04:45 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/07 20:31:42 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/21 15:09:48 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ char	*quote_handling(char *token)
 	if (!ft_strchr(ptr, '\'') && !ft_strchr(ptr, '\"'))
 		return (ptr);
 	len = get_strlen(token);
-	str = ft_malloc(NULL, len + 1); // Plus one for the null terminator
+	str = ft_malloc(NULL, len + 1);
 	non_quote = str;
 	quote_char = 0;
 	while (*ptr != '\0')

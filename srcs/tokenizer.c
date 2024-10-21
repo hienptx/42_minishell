@@ -6,21 +6,11 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 16:35:48 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/08 18:35:40 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/21 16:25:45 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char	*walk_string(char *str, char c)
-{
-	str++;
-	while (*str != '\0' && *str != c)
-		str++;
-	if (*str == c)
-		str++;
-	return (str);
-}
 
 char	*get_word(char *str)
 {
@@ -30,9 +20,21 @@ char	*get_word(char *str)
 	while (*str != '\0' && *str != ' ' && ft_strchr(exceptor, *str) == NULL)
 	{
 		if (*str == '\"')
-			str = walk_string(str, '\"');
+		{
+			str++;
+			while (*str != '\0' && *str != '\"')
+				str++;
+			if (*str == '\"')
+				str++;
+		}
 		else if (*str == '\'')
-			str = walk_string(str, '\'');
+		{
+			str++;
+			while (*str != '\0' && *str != '\'')
+				str++;
+			if (*str == '\'')
+				str++;
+		}
 		else
 			str++;
 	}
@@ -41,7 +43,7 @@ char	*get_word(char *str)
 
 size_t	count_tokens(char *str)
 {
-	int		count;
+	size_t	count;
 	char	*sep;
 
 	count = 0;
@@ -52,12 +54,8 @@ size_t	count_tokens(char *str)
 			str++;
 		if (*str == '\0')
 			break ;
-		if (ft_strncmp(str, ">>", 2) == 0 || ft_strncmp(str, "<<", 2) == 0
-			|| ft_strncmp(str, "||", 2) == 0)
-		{
+		if (count_operator_tokens(&str))
 			count++;
-			str += 2;
-		}
 		else if (ft_strchr(sep, *str) != NULL)
 		{
 			count++;
@@ -72,30 +70,27 @@ size_t	count_tokens(char *str)
 	return (count);
 }
 
+char	*process_operator(char **str)
+{
+	if (ft_strncmp(*str, ">>", 2) == 0 || ft_strncmp(*str, "<<", 2) == 0)
+		*str += 2;
+	else if (ft_strchr("<>|", **str) != NULL)
+		(*str)++;
+	return (*str);
+}
+
 char	*cpy_str(char **ret, char *str, size_t *pos)
 {
 	char	*ptr;
 	size_t	wordlen;
-	char	*sep;
 
-	sep = "<>|";
 	while (*str != '\0' && *str == ' ')
 		str++;
 	if (*str == '\0')
 		return (str);
 	ptr = str;
-	if (ft_strncmp(str, ">>", 2) == 0 || ft_strncmp(str, "<<", 2) == 0
-		|| ft_strncmp(str, "||", 2) == 0)
-		str += 2;
-	else if (ft_strchr(sep, *str) != NULL)
-	{
-		if ((*str == '>' && *(str + 1) == '>') || (*str == '<' && *(str
-					+ 1) == '<'))
-			str += 2;
-		else
-			str++;
-	}
-	else
+	str = process_operator(&str);
+	if (str == ptr)
 		str = get_word(str);
 	wordlen = str - ptr;
 	ret[*pos] = ft_malloc(ret[*pos], wordlen);

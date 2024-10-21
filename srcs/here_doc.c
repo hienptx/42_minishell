@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 16:21:36 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/08 18:28:07 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/21 16:30:26 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,23 +39,34 @@ int	heredoc_process(char *arg)
 	return (pipe_fd[0]);
 }
 
-t_cmd	*parse_here_doc(t_cmd *command, char **tokens, int i)
+t_cmd	*parse_here_doc(t_cmd *command, char **tokens, int i, char **args)
 {
 	char	*delimiters;
 	int		fd;
 
 	if (tokens[i + 1] == NULL)
 		panic_sms("syntax error near unexpected token `newline'", 2);
-	delimiters = tokens[i + 1]; // File name is the delimiter
+	delimiters = tokens[i + 1];
 	free(tokens[i]);
 	tokens[i] = NULL;
 	fd = heredoc_process(delimiters);
 	if (fd < 0)
 		panic_sms("Error processing heredoc", 2);
 	if (command == NULL)
-		command = construct_redir(tokens, fd, "here_doc");
+		command = construct_redir(args, fd, "here_doc");
 	else
-		command->cmd.redir = append_redir_list(command->cmd.redir, tokens,
+		command->cmd.redir = append_redir_list(command->cmd.redir, args,
 				"here_doc", fd);
 	return (command);
+}
+
+size_t	count_operator_tokens(char **str)
+{
+	if (ft_strncmp(*str, ">>", 2) == 0 || ft_strncmp(*str, "<<", 2) == 0
+		|| ft_strncmp(*str, "||", 2) == 0)
+	{
+		*str += 2;
+		return (1);
+	}
+	return (0);
 }
