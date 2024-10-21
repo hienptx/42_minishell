@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirect.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/21 18:29:01 by dongjle2          #+#    #+#             */
+/*   Updated: 2024/10/21 18:55:16 by dongjle2         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	set_redir(t_redir *redir_cmd, t_param *param, t_parse_data parse)
@@ -5,14 +17,18 @@ void	set_redir(t_redir *redir_cmd, t_param *param, t_parse_data parse)
 	t_redir	*predir_cmd;
 	int		saved_stdin;
 	int		saved_stdout;
+	int		open_fail;
 
 	saved_stdin = dup(STDIN_FILENO);
 	saved_stdout = dup(STDOUT_FILENO);
 	predir_cmd = redir_cmd;
+	open_fail = 0;
 	while (predir_cmd)
 	{
-		dup_fd(predir_cmd);
+		open_fail = dup_fd(predir_cmd);
 		close(predir_cmd->fd);
+		// if (open_fail == -1)
+		// 	break;
 		predir_cmd = predir_cmd->next;
 	}
 	iterate_ast((t_cmd *)redir_cmd->cmd, param, parse);
@@ -22,21 +38,7 @@ void	set_redir(t_redir *redir_cmd, t_param *param, t_parse_data parse)
 	close(saved_stdout);
 }
 
-// void	dup_fd(t_redir *redir_cmd)
-// {
-// 	if ((redir_cmd->fd == 0) || (redir_cmd->fd == 1) || (redir_cmd->fd == 2))
-// 	{
-// 		get_file_fd(redir_cmd);
-// 		if (redir_cmd->fd == 0)
-// 			dup2(redir_cmd->fd, STDIN_FILENO);
-// 		else
-// 			dup2(redir_cmd->fd, STDOUT_FILENO);
-// 	}
-// 	else
-// 		dup2(redir_cmd->fd, STDIN_FILENO);
-// }
-
-void	dup_fd(t_redir *redir_cmd)
+int	dup_fd(t_redir *redir_cmd)
 {
 	int fd;
 
@@ -44,18 +46,19 @@ void	dup_fd(t_redir *redir_cmd)
 	{
 		fd = get_file_fd(redir_cmd);
 		if (fd == -1)
-			return ;
+			return (-1);
 		dup2(fd, STDIN_FILENO);
 	}
 	else if ((redir_cmd->fd == 1) || (redir_cmd->fd == 2))
 	{
 		fd = get_file_fd(redir_cmd);
 		if (fd == -1)
-			return ;
+			return (-1);
 		dup2(fd, STDOUT_FILENO);
 	}
 	else
 		dup2(redir_cmd->fd, STDIN_FILENO);
+	return (0);
 }
 
 int	get_file_fd(t_redir *redir_cmd)
@@ -71,6 +74,6 @@ int	get_file_fd(t_redir *redir_cmd)
 		oflag = (O_WRONLY | O_CREAT | O_APPEND);
 	redir_cmd->fd = open(redir_cmd->file_name, oflag, 0644);
 	if (redir_cmd->fd == -1)
-		panic_sms("open", 1);
+		return (-1);
 	return(redir_cmd->fd);
 }

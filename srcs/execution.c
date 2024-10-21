@@ -1,43 +1,40 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execution.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/19 20:53:47 by dongjle2          #+#    #+#             */
+/*   Updated: 2024/10/21 18:30:37 by dongjle2         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 int	call_exec(t_exec *exec_cmd, t_list *env_list, t_parse_data parse)
 {
 	extern char	**environ;
-	char		*path;
 	int			path_exist;
 
 	if (access(exec_cmd->arg[0], X_OK) == 0)
 	{
 		environ = mk_env_list(env_list);
 		execve(exec_cmd->arg[0], exec_cmd->arg, environ);
+		free_parse(parse);
+		ft_lstclear(&env_list, free);
 		exit(1);
 	}
 	path_exist = find_env(env_list, "PATH");
 	if (path_exist == 1)
 	{
-		path = get_executable_path(get_env_value("PATH", env_list),
-				exec_cmd->arg[0]);
-		if (path == NULL)
-		{
-			printf("%s: %s\n", exec_cmd->arg[0], "command not found");
-			free_parse(parse);
-			ft_lstclear(&env_list, free);
-			exit(127);
-		}
-		exec_cmd->arg[0] = path;
-		environ = mk_env_list(env_list);
-		execve(path, exec_cmd->arg, environ);
-		perror(exec_cmd->arg[0]);
-		exit(1);
+		exec_w_path_env(exec_cmd, env_list, parse);
 	}
 	else if (path_exist == 0)
 	{
 		return (0);
 	}
-	else
-	{
-		return (-1);
-	}
+	return (-1);
 }
 
 void	run_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
@@ -53,10 +50,10 @@ void	run_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 	}
 	else
 	{
+		signal(SIGINT, SIG_IGN);
 		waitpid(pid, &status, 0);
-		// update_env(env_list, "?", ft_strjoin("?=",
-		// ft_itoa(WEXITSTATUS(status));
 		param->special.question_mark = WEXITSTATUS(status);
+		signal(SIGINT, signal_handler);
 	}
 	return ;
 }
@@ -87,14 +84,13 @@ char	*get_executable_path(char *env_path, char *prog_name)
 {
 	char	**cur_dir;
 	char	*executable_path;
-	char	*ret;
 	size_t	i;
 
 	i = 0;
 	cur_dir = get_all_path(env_path);
-	free(env_path);
 	if (cur_dir == NULL)
 		panic_sms("malloc fails", 1);
+	free(env_path);
 	while (cur_dir[i])
 	{
 		executable_path = ft_strsjoin(NULL, cur_dir[i], "/", prog_name, NULL);
@@ -102,10 +98,8 @@ char	*get_executable_path(char *env_path, char *prog_name)
 			panic_sms("malloc fails", 1);
 		if (access(executable_path, X_OK) == 0)
 		{
-			ret = ft_strdup(executable_path);
 			ft_free(cur_dir);
-			free(executable_path);
-			return (ret);
+			return (executable_path);
 		}
 		i++;
 		free(executable_path);

@@ -104,7 +104,8 @@ t_cmd				*construct_redir(char **tokens, int fd, char *file_name);
 t_redir				*append_redir_list(t_redir *ast, char **tokens,
 						char *filename, int fd);
 t_exec				*construct_exec(char **tokens, t_exec *data);
-void				free_ast(t_cmd *ast);
+char				**mk_env_list(t_list *env_list);
+
 
 // parser.c
 t_cmd				*parse_cmd(char **tokens);
@@ -132,7 +133,7 @@ int					set_pipe(t_pipe *pipe_cmd, t_param *param,
 void				set_redir(t_redir *redir_cmd, t_param *param,
 						t_parse_data parse);
 int					get_file_fd(t_redir *redir_cmd);
-void				dup_fd(t_redir *redir_cmd);
+int				dup_fd(t_redir *redir_cmd);
 
 // execution.c
 int					call_exec(t_exec *exec_cmd, t_list *env_list,
@@ -160,9 +161,26 @@ char				**get_args(char **tokens);
 void				free_tokens(char **tokens, size_t nbr_tokens);
 void				free_parse(t_parse_data parse);
 void				init_param(t_param *param);
-
+void	free_ast(t_cmd *ast);
 // syntax_check.c
 int					check_syntax(char **tokens);
-int					is_operator(const char *token);
+int	is_operator(const char *token);
+int	invalid_syntax_sms(char *s);
 
+// builtin_change_env.c
+int		update_env(t_list *env_list, const char *key, char *new_env);
+int		add_env(t_list **env_list, char *new_env);
+void	mod_env(t_list *env_list, const char *new_env);
+void	rm_node(t_list **env_list, t_list **prev, t_list **cur);
+int		rm_env(t_list **env_list, const char *key_to_remove);
+
+//builtin_get_env.c
+char	*get_env_key(char *env);
+char	*get_env_value(char *env_key, t_list *env_list);
+char	*get_key_or_value(char *key_or_val, char *env, size_t key_len);
+char	*get_env(char *env_key, t_list *env_list);
+int		find_env(t_list *env_list, char *key);
+
+//execution_utils.c
+void	exec_w_path_env(t_exec *exec_cmd, t_list *env_list, t_parse_data parse);
 #endif

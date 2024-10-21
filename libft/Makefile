@@ -6,7 +6,7 @@
 NAME = libft.a
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I./includes
+CFLAGS = -g -Wall -Wextra -Werror -I./includes
 
 SRC_PATH = srcs
 OBJ_PATH = objs

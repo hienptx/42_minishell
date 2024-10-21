@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/21 18:28:49 by dongjle2          #+#    #+#             */
+/*   Updated: 2024/10/21 18:28:50 by dongjle2         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/builtin.h"
 #include "../../includes/minishell.h"
 
@@ -8,8 +20,6 @@ int	ck_builtin(char *executable_name)
 	size_t		i;
 	const char	*builtins[8] = {"echo", "cd", "pwd", "export", "unset", "env",
 			"exit", NULL};
-
-	// const char	*builtins[8];
 	i = 0;
 	while (builtins[i])
 	{
@@ -106,41 +116,6 @@ int	env(t_list *env_list)
 	}
 	return (0);
 }
-
-/*
-int	main(void)
-{
-	t_list	*env_list;
-	char	*cmd;
-	char	*arg;
-	char	*cd_arg[] = {cmd, NULL};
-	char	*arg1;
-	char	*arg2;
-	char	*arg4;
-	char	*arg3;
-	char	*new_env[] = {cmd, arg, arg1, arg2, arg3, arg4, NULL};
-	char	**envp;
-
-	env_list = cp_env_list();
-	ft_getenv = getenv;
-	cmd = ft_strdup("cd");
-	arg = ft_strdup("./tmp");
-	// char *cd_arg[] = {cmd, arg, NULL};
-	cd(env_list, cd_arg);
-	cmd = ft_strdup("export");
-	arg = ft_strdup("e=r");
-	arg1 = ft_strdup("e=r");
-	arg2 = ft_strdup("o=i");
-	arg4 = ft_strdup("e=pp");
-	arg3 = ft_strdup("b");
-	export(env_list, new_env);
-	envp = mk_env_list(env_list);
-	print_env_arr(envp);
-	char *argv[] = {"/bin/bash", NULL};	//diff char *[], char **
-	execve("/bin/bash", argv, envp);
-	return (0);
-}
-*/
 
 int	cd_external(const char *path, char **cwd)
 {

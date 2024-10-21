@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   constructor.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 14:53:02 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/21 14:02:10 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/21 18:46:41 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,28 @@ t_exec	*construct_exec(char **tokens, t_exec *data)
 	}
 	data->arg[arg_count] = NULL;
 	return (data);
+}
+
+char	**mk_env_list(t_list *env_list)
+{
+	t_list	*cur;
+	size_t	len_env_list;
+	char	**env_arr;
+	size_t	i;
+
+	i = 0;
+	cur = env_list;
+	len_env_list = ft_lstsize(env_list);
+	env_arr = (char **)malloc((len_env_list + 1) * sizeof(char *));
+	if (!env_arr)
+		return (NULL);
+	while (cur != NULL)
+	{
+		env_arr[i] = (char *)cur->content; //
+		// printf("%s\n", (char *)cur->content);	//
+		cur = cur->next;
+		i++;
+	}
+	env_arr[i] = NULL;
+	return (env_arr);
 }

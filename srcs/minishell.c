@@ -87,6 +87,7 @@ void	shell_loop(t_param *param)
 
 	while (1)
 	{
+		signal(SIGINT, signal_handler);
 		input = readline("$> ");
 		if (input == NULL)
 		{
@@ -107,7 +108,7 @@ int	main(void)
 {
 	t_param	param;
 
-	signal(SIGINT, signal_handler);
+	// signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
 	init_param(&param);
 	shell_loop(&param);
