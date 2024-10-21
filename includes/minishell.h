@@ -183,4 +183,14 @@ int		find_env(t_list *env_list, char *key);
 
 //execution_utils.c
 void	exec_w_path_env(t_exec *exec_cmd, t_list *env_list, t_parse_data parse);
+
+//qsort.c
+void quick_sort(char **arr, int low, int high);
+int	partition(char **arr, int low, int high);
+
+//builtin_sort_env.c
+void	display_sorted_env(t_list *env_list);
+char	**mk_env_list_cp(t_list *env_list);
+void	free_pre_allocated(char **env_arr, size_t i);
+size_t	split_len(char **split);
 #endif

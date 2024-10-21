@@ -6,7 +6,7 @@
 /*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:28:49 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/21 18:28:50 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/21 22:02:25 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,7 @@ int	export(t_list *env_list, char *x[])
 	i = 1;
 	if (x[i] == NULL)
 	{
-		write(1, " ", 1);
+		display_sorted_env(env_list);
 		return (0);
 	}
 	while (x[i])
