@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:22 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/21 16:22:26 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/22 14:26:40 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,6 @@ int	main(void)
 {
 	t_param	param;
 
-	// signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
 	init_param(&param);
 	shell_loop(&param);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_sort_env.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 23:00:15 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/21 23:02:23 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/22 13:47:03 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	display_sorted_env(t_list *env_list)
 	}
 	ft_free(env_arr);
 }
-
 
 char	**mk_env_list_cp(t_list *env_list)
 {

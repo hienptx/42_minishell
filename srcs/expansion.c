@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:41 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/21 16:33:48 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/22 16:08:35 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,19 @@ char	*get_expansion(char *substring, t_param *param, char *result)
 {
 	char	*ret_env;
 	char	*ptr;
+	int		is_allocated;
 
 	ret_env = expand_str(substring + 1, param);
+	is_allocated = (ret_env != NULL);
 	if (ret_env == NULL)
+	{
 		ret_env = "";
+		is_allocated = 0;
+	}
 	ptr = replace_substring(result, ret_env, substring);
 	result = ptr;
-	free(ret_env);
+	if (is_allocated)
+		free(ret_env);
 	return (result);
 }
 
@@ -60,8 +66,7 @@ char	*expansion_loop(char *s, char *str, char *result, t_param *param)
 	while (s != NULL)
 	{
 		start = s - str;
-		if (s[1] == '?')
-			len = 2;
+		len = get_len(&len, s[1]);
 		if (s[1] != '?')
 		{
 			while (*s != '\0' && *s != ' ' && *s != '\'' && *s != '\"')

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   constructor.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 14:53:02 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/21 22:39:14 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/22 13:58:10 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,15 @@ t_cmd	*construct_pipe(char *left, char *right)
 	if (ast == NULL)
 		panic_sms("Malloc failed", 1);
 	ast->type = PIPE;
-	ast->cmd.pipe = malloc(sizeof(t_pipe));
-	if (ast->cmd.pipe == NULL)
+	ast->u_cmd.pipe = malloc(sizeof(t_pipe));
+	if (ast->u_cmd.pipe == NULL)
 		panic_sms("Malloc failed", 1);
-	ast->cmd.pipe->left = left;
-	ast->cmd.pipe->right = right;
+	ast->u_cmd.pipe->left = left;
+	ast->u_cmd.pipe->right = right;
 	return (ast);
 }
 
-t_redir	*append_redir_list(t_redir *redir_list, char **tokens, char *filename,
+t_redir	*append_lst(t_redir *redir_list, char **tokens, char *filename,
 		int fd)
 {
 	t_redir	*newnode;
@@ -51,7 +51,7 @@ t_redir	*append_redir_list(t_redir *redir_list, char **tokens, char *filename,
 	return (redir_list);
 }
 
-t_cmd	*construct_redir(char **tokens, int fd, char *file_name)
+t_cmd	*construct_redir(char **tokens, int fd, char *fn)
 {
 	t_cmd	*ast;
 
@@ -59,9 +59,9 @@ t_cmd	*construct_redir(char **tokens, int fd, char *file_name)
 	if (ast == NULL)
 		panic_sms("Malloc failed", 1);
 	ast->type = REDIR;
-	ast->cmd.redir = NULL;
-	ast->cmd.redir = append_redir_list(ast->cmd.redir, tokens, file_name, fd);
-	if (ast->cmd.redir == NULL)
+	ast->u_cmd.redir = NULL;
+	ast->u_cmd.redir = append_lst(ast->u_cmd.redir, tokens, fn, fd);
+	if (ast->u_cmd.redir == NULL)
 		return (NULL);
 	return (ast);
 }
@@ -102,8 +102,7 @@ char	**mk_env_list(t_list *env_list)
 		return (NULL);
 	while (cur != NULL)
 	{
-		env_arr[i] = (char *)cur->content; //
-		// printf("%s\n", (char *)cur->content);	//
+		env_arr[i] = (char *)cur->content;
 		cur = cur->next;
 		i++;
 	}

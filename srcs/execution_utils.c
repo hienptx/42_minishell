@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 20:53:36 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/21 18:40:47 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/22 13:30:38 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ void	exec_w_path_env(t_exec *exec_cmd, t_list *env_list, t_parse_data parse)
 	extern char	**environ;
 	char		*path;
 
-	path = get_executable_path(get_env_value("PATH", env_list), \
-				exec_cmd->arg[0]);
+	path = get_executable_path(get_env_value("PATH", env_list),
+			exec_cmd->arg[0]);
 	if (path == NULL)
 	{
 		printf("%s: %s\n", exec_cmd->arg[0], "command not found");
@@ -31,8 +31,6 @@ void	exec_w_path_env(t_exec *exec_cmd, t_list *env_list, t_parse_data parse)
 	execve(path, exec_cmd->arg, environ);
 	perror(exec_cmd->arg[0]);
 	free(environ);
-	// ft_lstclear(&env_list, free);
 	free(path);
-	// free_parse(parse);
 	exit(1);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 20:53:47 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/21 18:30:37 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/22 16:15:23 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,17 @@ int	call_exec(t_exec *exec_cmd, t_list *env_list, t_parse_data parse)
 		ft_lstclear(&env_list, free);
 		exit(1);
 	}
+	else
+	{
+		free_parse(parse);
+		ft_lstclear(&env_list, free);
+		exit(1);
+	}
 	path_exist = find_env(env_list, "PATH");
 	if (path_exist == 1)
-	{
 		exec_w_path_env(exec_cmd, env_list, parse);
-	}
 	else if (path_exist == 0)
-	{
 		return (0);
-	}
 	return (-1);
 }
 

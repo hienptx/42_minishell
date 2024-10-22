@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 16:21:36 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/21 16:30:26 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/22 13:53:13 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ t_cmd	*parse_here_doc(t_cmd *command, char **tokens, int i, char **args)
 	if (command == NULL)
 		command = construct_redir(args, fd, "here_doc");
 	else
-		command->cmd.redir = append_redir_list(command->cmd.redir, args,
+		command->u_cmd.redir = append_lst(command->u_cmd.redir, args,
 				"here_doc", fd);
 	return (command);
 }

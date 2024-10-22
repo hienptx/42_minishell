@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 22:19:02 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/21 18:47:56 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/22 13:33:40 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	left_pipe(t_pipe *pipe_cmd, int *fd, \
-					t_param *param, t_parse_data parse)
+void	left_pipe(t_pipe *pipe_cmd, int *fd, t_param *param, t_parse_data parse)
 {
 	close(fd[0]);
 	dup2(fd[1], STDOUT_FILENO);

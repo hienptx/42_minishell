@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/22 13:16:10 by hipham            #+#    #+#             */
+/*   Updated: 2024/10/22 13:28:25 by hipham           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef BUILTIN_H
 # define BUILTIN_H
 
@@ -14,6 +26,7 @@ void	print_env_arr(char **env_arr);
 char	**mk_env_list(t_list *env_list);
 // char *(*ft_getenv)(const char *key);
 t_list	*cp_env_list(void);
+int		cd_external(const char *path, char **cwd);
 
 char	*get_env_key(char *env);
 char	*get_env(char *env_key, t_list *env_list);

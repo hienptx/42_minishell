@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 21:51:31 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/21 18:47:09 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/22 13:58:48 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,17 @@ void	iterate_ast(t_cmd *cmd, t_param *param, t_parse_data parse)
 		return ;
 	if (cmd->type == PIPE)
 	{
-		pipe_cmd = cmd->cmd.pipe;
+		pipe_cmd = cmd->u_cmd.pipe;
 		set_pipe(pipe_cmd, param, parse);
 	}
 	else if (cmd->type == REDIR)
 	{
-		redir_cmd = cmd->cmd.redir;
+		redir_cmd = cmd->u_cmd.redir;
 		set_redir(redir_cmd, param, parse);
 	}
 	else if (cmd->type == EXEC)
 	{
-		exec_cmd = cmd->cmd.exec;
+		exec_cmd = cmd->u_cmd.exec;
 		set_exec(exec_cmd, param, parse);
 	}
 }
@@ -51,7 +51,7 @@ t_cmd	*parse_exec(char **tokens)
 	data = malloc(sizeof(t_exec));
 	if (data == NULL)
 		panic_sms("Malloc failed", 1);
-	ast->cmd.exec = construct_exec(tokens, data);
+	ast->u_cmd.exec = construct_exec(tokens, data);
 	return (ast);
 }
 
@@ -70,7 +70,7 @@ t_cmd	*process_redir(t_cmd *command, char **tokens, int i, char **args)
 	if (command == NULL)
 		command = construct_redir(args, fd, file_name);
 	else
-		command->cmd.redir = append_redir_list(command->cmd.redir, args,
+		command->u_cmd.redir = append_lst(command->u_cmd.redir, args,
 				file_name, fd);
 	free(file_name);
 	return (command);

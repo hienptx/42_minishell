@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_get_env.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 22:09:54 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/19 22:16:19 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/22 15:13:20 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,25 @@ char	*get_env_key(char *env)
 	if (delim == NULL)
 		return (ft_strdup(env));
 	return (get_key_or_value("key", env, delim - env));
+}
+
+char	*get_env(char *env_key, t_list *env_list)
+{
+	size_t	key_len;
+	char	*cur_env;
+
+	key_len = ft_strlen(env_key);
+	while (env_list)
+	{
+		cur_env = (char *)env_list->content;
+		if (ft_strncmp(env_key, cur_env, key_len) == 0
+			&& (cur_env[key_len] == '=' || cur_env[key_len] == '\0'))
+		{
+			return (cur_env);
+		}
+		env_list = env_list->next;
+	}
+	return (NULL);
 }
 
 char	*get_env_value(char *env_key, t_list *env_list)
@@ -58,25 +77,6 @@ char	*get_key_or_value(char *key_or_val, char *env, size_t key_len)
 			panic_sms("malloc", 1);
 		return (val);
 	}
-}
-
-char	*get_env(char *env_key, t_list *env_list)
-{
-	size_t	key_len;
-	char	*cur_env;
-
-	key_len = ft_strlen(env_key);
-	while (env_list)
-	{
-		cur_env = (char *)env_list->content;
-		if (ft_strncmp(env_key, cur_env, key_len) == 0
-			&& (cur_env[key_len] == '=' || cur_env[key_len] == '\0'))
-		{
-			return (cur_env);
-		}
-		env_list = env_list->next;
-	}
-	return (NULL);
 }
 
 int	find_env(t_list *env_list, char *key)

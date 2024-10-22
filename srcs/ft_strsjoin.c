@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsjoin.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:46:58 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/21 18:53:02 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/22 13:57:34 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,11 @@ char	**get_args(char **tokens)
 	int		i;
 	int		j;
 
-	i = 0, len = count_non_operators(tokens);
+	i = 0;
+	len = count_non_operators(tokens);
 	new_arr = malloc(sizeof(char *) * (len + 1));
-	i = 0, j = 0;
+	i = 0;
+	j = 0;
 	if (new_arr == NULL)
 		panic_sms("Malloc failed", 1);
 	while (tokens[i] != NULL)
@@ -107,4 +109,11 @@ char	**get_args(char **tokens)
 	}
 	new_arr[j] = NULL;
 	return (new_arr);
+}
+
+size_t	get_len(size_t *len, char c)
+{
+	if (c == '?')
+		*len = 2;
+	return (*len);
 }

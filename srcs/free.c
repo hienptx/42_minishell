@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 15:13:39 by mafalda           #+#    #+#             */
-/*   Updated: 2024/10/21 23:00:44 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/22 13:49:56 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	free_tokens(char **tokens, size_t nbr_tokens)
 
 static void	free_redir(t_cmd *ast, t_redir *redir, t_redir *next)
 {
-	redir = ast->cmd.redir;
+	redir = ast->u_cmd.redir;
 	while (redir != NULL)
 	{
 		next = redir->next;
@@ -52,6 +52,7 @@ static void	free_redir(t_cmd *ast, t_redir *redir, t_redir *next)
 		redir = next;
 	}
 }
+
 void	free_parse(t_parse_data parse)
 {
 	free_ast(parse.ast);
@@ -68,9 +69,9 @@ void	free_ast(t_cmd *ast)
 	redir = NULL;
 	if (ast->type == PIPE)
 	{
-		free_ast(ast->cmd.pipe->left);
-		free_ast(ast->cmd.pipe->right);
-		free(ast->cmd.pipe);
+		free_ast(ast->u_cmd.pipe->left);
+		free_ast(ast->u_cmd.pipe->right);
+		free(ast->u_cmd.pipe);
 	}
 	else if (ast->type == REDIR)
 	{
@@ -78,8 +79,8 @@ void	free_ast(t_cmd *ast)
 	}
 	else if (ast->type == EXEC)
 	{
-		free(ast->cmd.exec->arg);
-		free(ast->cmd.exec);
+		free(ast->u_cmd.exec->arg);
+		free(ast->u_cmd.exec);
 	}
 	free(ast);
 }

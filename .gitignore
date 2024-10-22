@@ -12,3 +12,6 @@ readline.supp
 
 #test file
 test.c
+
+#readme
+README.md

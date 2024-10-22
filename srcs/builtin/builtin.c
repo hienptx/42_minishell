@@ -3,162 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:28:49 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/21 22:02:25 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/22 13:47:34 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/builtin.h"
 #include "../../includes/minishell.h"
 
-extern char	**environ;
-
-int	ck_builtin(char *executable_name)
+int	cd(t_list *env_list, char *x[])
 {
-	size_t		i;
-	const char	*builtins[8] = {"echo", "cd", "pwd", "export", "unset", "env",
-			"exit", NULL};
-	i = 0;
-	while (builtins[i])
-	{
-		if (ft_strcmp(builtins[i], executable_name) == 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-int	call_builtin(t_exec *exec_cmd, t_param *param, t_parse_data parse)
-{
-	char	**args;
-	int		ret;
-
-	args = exec_cmd->arg;
-	if (strcmp(args[0], "echo") == 0)
-		ret = echo(args);
-	else if (ft_strcmp(args[0], "cd") == 0)
-		ret = cd(param->env_list, args);
-	else if (ft_strcmp(args[0], "pwd") == 0)
-		ret = pwd();
-	else if (ft_strcmp(args[0], "export") == 0)
-		ret = export(param->env_list, args);
-	else if (ft_strcmp(args[0], "unset") == 0)
-		ret = unset(args, param->env_list);
-	else if (ft_strcmp(args[0], "env") == 0)
-		ret = env(param->env_list);
-	else if (ft_strcmp(args[0], "exit") == 0)
-	{
-		ft_lstclear(&param->env_list, free);
-		free_parse(parse);
-		exit(0);
-	}
-	else
-		ret = 0;
-	return (ret);
-}
-
-int	unset(char **args, t_list *env_list)
-{
-	while (*++args)
-	{
-		rm_env(&env_list, *args);
-	}
-	return (0);
-}
-
-void	set_env(t_list **env_list)
-{
-	*env_list = cp_env_list();
-	return ;
-}
-
-t_list	*cp_env_list(void)
-{
-	char	**env;
-	t_list	*env_list;
-	t_list	*new_node;
-	char	*env_malloc;
-
-	env_list = NULL;
-	env = environ;
-	while (*env)
-	{
-		env_malloc = ft_strdup(*env);
-		new_node = ft_lstnew(env_malloc);
-		if (new_node == NULL || env_malloc == NULL)
-			panic_sms("malloc", 1);
-		ft_lstadd_back(&env_list, new_node);
-		env++;
-	}
-	return (env_list);
-}
-
-void	print_env_arr(char **env_arr)
-{
-	size_t	i;
-
-	i = 0;
-	while (env_arr[i] != NULL)
-	{
-		printf("%s\n", env_arr[i]);
-		i++;
-	}
-}
-
-int	env(t_list *env_list)
-{
-	while (env_list != NULL)
-	{
-		printf("%s\n", (char *)env_list->content);
-		env_list = env_list->next;
-	}
-	return (0);
-}
-
-int	cd_external(const char *path, char **cwd)
-{
-	if (chdir(path) == -1)
-	{
-		perror("chdir");
-		return (-1);
-	}
-	*cwd = getcwd(NULL, 0);
-	if (*cwd == NULL)
-		return (2);
-	return (0);
-}
-
-int	change_dir(t_list *env_list, const char *path, const char *oldpwd)
-{
-	char	*cwd;
-	char	*env_oldpwd;
-	char	*env_pwd;
-	int		ret_external;
-
-	ret_external = cd_external(path, &cwd);
-	if (ret_external != 0)
-		return (ret_external);
-	env_oldpwd = ft_strjoin("OLDPWD=", oldpwd);
-	env_pwd = ft_strjoin("PWD=", cwd);
-	if (env_pwd == NULL || env_oldpwd == NULL)
-		panic_sms("malloc failed", 1);
-	if (update_env(env_list, "OLDPWD", env_oldpwd) != 0 || update_env(env_list,
-			"PWD", env_pwd) != 0)
-		return (1);
-	free(cwd);
-	cwd = NULL;
-	return (0);
-}
-
-int	cd(t_list *env_list, char *x[]) //{"cd", "tmp", NULL}
-{
-	const char *path;
-	char *oldpwd;
+	const char	*path;
+	char		*oldpwd;
 
 	path = x[1];
-	if (path == NULL) // just 'cd'
+	if (path == NULL)
 		path = getenv("HOME");
 	if (path)
 	{
@@ -216,7 +77,6 @@ int	pwd(void)
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
 		return (2);
-	// perror("pwd error");
 	write(1, cwd, strlen(cwd));
 	write(1, "\n", 1);
 	free(cwd);
@@ -240,8 +100,8 @@ int	export(t_list *env_list, char *x[])
 	{
 		key = get_env_key(x[i]);
 		if (key == NULL)
-			return (1); // malloc fail
-		tmp = ft_strdup(x[i]);
+			return (1);
+		tmp = ft_strdup(x[i++]);
 		if (update_env(env_list, key, tmp) == 1)
 		{
 			free(tmp);
@@ -249,7 +109,6 @@ int	export(t_list *env_list, char *x[])
 		}
 		free(key);
 		key = NULL;
-		i++;
 	}
 	return (0);
 }

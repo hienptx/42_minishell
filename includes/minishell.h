@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/22 13:35:49 by hipham            #+#    #+#             */
+/*   Updated: 2024/10/22 13:58:35 by hipham           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
@@ -17,7 +28,7 @@ typedef enum cmd_type
 {
 	EXEC,
 	REDIR,
-	PIPE 
+	PIPE
 }					t_type;
 
 typedef struct exec
@@ -29,7 +40,7 @@ typedef struct redir
 {
 	t_exec			*cmd;
 	char			*file_name;
-	int fd; // 0=stdin, 1=stdout
+	int				fd;
 	struct redir	*next;
 }					t_redir;
 
@@ -47,8 +58,7 @@ typedef struct s_cmd
 		t_pipe		*pipe;
 		t_redir		*redir;
 		t_exec		*exec;
-	} cmd;
-
+	} u_cmd;
 }					t_cmd;
 
 typedef struct s_parse_data
@@ -100,12 +110,11 @@ size_t				count_non_operators(char **tokens);
 
 // constructor.c
 t_cmd				*construct_pipe(char *left, char *right);
-t_cmd				*construct_redir(char **tokens, int fd, char *file_name);
-t_redir				*append_redir_list(t_redir *ast, char **tokens,
-						char *filename, int fd);
+t_cmd				*construct_redir(char **tokens, int fd, char *fn);
+t_redir				*append_lst(t_redir *ast, char **tokens, char *filename,
+						int fd);
 t_exec				*construct_exec(char **tokens, t_exec *data);
 char				**mk_env_list(t_list *env_list);
-
 
 // parser.c
 t_cmd				*parse_cmd(char **tokens);
@@ -118,7 +127,8 @@ void				iterate_ast(t_cmd *cmd, t_param *param, t_parse_data parse);
 
 // here_doc.c
 int					heredoc_process(char *arg2);
-t_cmd				*parse_here_doc(t_cmd *command, char **tokens, int i, char **args);
+t_cmd				*parse_here_doc(t_cmd *command, char **tokens, int i,
+						char **args);
 size_t				count_operator_tokens(char **str);
 
 // pipe.c
@@ -133,7 +143,7 @@ int					set_pipe(t_pipe *pipe_cmd, t_param *param,
 void				set_redir(t_redir *redir_cmd, t_param *param,
 						t_parse_data parse);
 int					get_file_fd(t_redir *redir_cmd);
-int				dup_fd(t_redir *redir_cmd);
+int					dup_fd(t_redir *redir_cmd);
 
 // execution.c
 int					call_exec(t_exec *exec_cmd, t_list *env_list,
@@ -151,46 +161,52 @@ int					find_env(t_list *env_list, char *key);
 int					call_builtin(t_exec *exec_cmd, t_param *param,
 						t_parse_data parse);
 
-//ft_strsjoin.c
+// ft_strsjoin.c
 char				*ft_strsjoin(const char *delimiter, ...);
 int					get_full_len(va_list args, const char *delimiter);
 char				*cp_strs(char *result, va_list args, const char *delimiter);
 char				**get_args(char **tokens);
+size_t				get_len(size_t *len, char c);
 
 // free.c
 void				free_tokens(char **tokens, size_t nbr_tokens);
 void				free_parse(t_parse_data parse);
 void				init_param(t_param *param);
-void	free_ast(t_cmd *ast);
+void				free_ast(t_cmd *ast);
+
 // syntax_check.c
 int					check_syntax(char **tokens);
-int	is_operator(const char *token);
-int	invalid_syntax_sms(char *s);
+int					is_operator(const char *token);
+int					invalid_syntax_sms(char *s);
 
 // builtin_change_env.c
-int		update_env(t_list *env_list, const char *key, char *new_env);
-int		add_env(t_list **env_list, char *new_env);
-void	mod_env(t_list *env_list, const char *new_env);
-void	rm_node(t_list **env_list, t_list **prev, t_list **cur);
-int		rm_env(t_list **env_list, const char *key_to_remove);
+int					update_env(t_list *env_list, const char *key,
+						char *new_env);
+int					add_env(t_list **env_list, char *new_env);
+void				mod_env(t_list *env_list, const char *new_env);
+void				rm_node(t_list **env_list, t_list **prev, t_list **cur);
+int					rm_env(t_list **env_list, const char *key_to_remove);
 
-//builtin_get_env.c
-char	*get_env_key(char *env);
-char	*get_env_value(char *env_key, t_list *env_list);
-char	*get_key_or_value(char *key_or_val, char *env, size_t key_len);
-char	*get_env(char *env_key, t_list *env_list);
-int		find_env(t_list *env_list, char *key);
+// builtin_get_env.c
+char				*get_env_key(char *env);
+char				*get_env_value(char *env_key, t_list *env_list);
+char				*get_key_or_value(char *key_or_val, char *env,
+						size_t key_len);
+char				*get_env(char *env_key, t_list *env_list);
+int					find_env(t_list *env_list, char *key);
 
-//execution_utils.c
-void	exec_w_path_env(t_exec *exec_cmd, t_list *env_list, t_parse_data parse);
+// execution_utils.c
+void				exec_w_path_env(t_exec *exec_cmd, t_list *env_list,
+						t_parse_data parse);
 
-//qsort.c
-void quick_sort(char **arr, int low, int high);
-int	partition(char **arr, int low, int high);
+// qsort.c
+void				quick_sort(char **arr, int low, int high);
+int					partition(char **arr, int low, int high);
 
-//builtin_sort_env.c
-void	display_sorted_env(t_list *env_list);
-char	**mk_env_list_cp(t_list *env_list);
-void	free_pre_allocated(char **env_arr, size_t i);
-size_t	split_len(char **split);
+// builtin_sort_env.c
+void				display_sorted_env(t_list *env_list);
+char				**mk_env_list_cp(t_list *env_list);
+void				free_pre_allocated(char **env_arr, size_t i);
+size_t				split_len(char **split);
+
 #endif
