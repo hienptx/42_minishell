@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 20:53:47 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/22 16:15:23 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/22 21:00:59 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,15 @@ int	call_exec(t_exec *exec_cmd, t_list *env_list, t_parse_data parse)
 {
 	extern char	**environ;
 	int			path_exist;
+	int 		ac;
 
-	if (access(exec_cmd->arg[0], X_OK) == 0)
+	if (ft_strcmp(exec_cmd->arg[0], "") == 0)
+		return (0);
+	ac = access(exec_cmd->arg[0], X_OK);
+	if (ac == 0)
 	{
 		environ = mk_env_list(env_list);
 		execve(exec_cmd->arg[0], exec_cmd->arg, environ);
-		free_parse(parse);
-		ft_lstclear(&env_list, free);
-		exit(1);
-	}
-	else
-	{
 		free_parse(parse);
 		ft_lstclear(&env_list, free);
 		exit(1);
@@ -49,6 +47,7 @@ void	run_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 	{
 		call_exec(exec_cmd, param->env_list, parse);
 		(void)status;
+		exit(0);
 	}
 	else
 	{

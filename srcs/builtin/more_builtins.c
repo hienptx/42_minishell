@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:21:13 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/22 13:54:33 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/22 18:55:02 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,10 @@ int	cd_external(const char *path, char **cwd)
 	}
 	*cwd = getcwd(NULL, 0);
 	if (*cwd == NULL)
+	{
+		free(*cwd);
 		return (2);
+	}
+	// free(*cwd);
 	return (0);
 }

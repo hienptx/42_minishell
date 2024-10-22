@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_change_env.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 22:08:52 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/21 18:28:18 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/22 20:56:34 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,15 @@ void	mod_env(t_list *env_list, const char *new_env)
 	return ;
 }
 
-void	rm_node(t_list **env_list, t_list **prev, t_list **cur)
+void	rm_node(t_list **env_list, t_list **prev, t_list *cur)
 {
 	if (*prev)
-		(*prev)->next = (*cur)->next;
-	else
-		*env_list = (*cur)->next;
-	free(*cur);
-	(*cur) = NULL;
+		(*prev)->next = (cur)->next;
+	// else
+	// 	*env_list = (*cur)->next;
+	(void)env_list;
+	free(cur);
+	(cur) = NULL;
 }
 
 int	rm_env(t_list **env_list, const char *key_to_remove)
@@ -84,13 +85,16 @@ int	rm_env(t_list **env_list, const char *key_to_remove)
 			panic_sms("malloc", 1);
 		if (ft_strcmp(cur_key, key_to_remove) == 0)
 		{
-			rm_node(env_list, &prev, &cur);
+			rm_node(env_list, &prev, cur);
 			free(cur_key);
 			cur_key = NULL;
 			return (0);
 		}
-		free(cur_key);
-		cur_key = NULL;
+		if (cur_key != NULL)
+		{
+			free(cur_key);
+			cur_key = NULL;
+		}
 		prev = cur;
 		cur = cur->next;
 	}

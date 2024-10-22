@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:46:58 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/22 13:57:34 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/22 20:42:19 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,9 +111,10 @@ char	**get_args(char **tokens)
 	return (new_arr);
 }
 
-size_t	get_len(size_t *len, char c)
+size_t	get_len(char c)
 {
 	if (c == '?')
-		*len = 2;
-	return (*len);
+		return (2);
+	else
+		return (0);
 }

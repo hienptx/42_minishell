@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:41 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/22 16:08:35 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/22 20:59:32 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*expansion_loop(char *s, char *str, char *result, t_param *param)
 	while (s != NULL)
 	{
 		start = s - str;
-		len = get_len(&len, s[1]);
+		len = get_len(s[1]);
 		if (s[1] != '?')
 		{
 			while (*s != '\0' && *s != ' ' && *s != '\'' && *s != '\"')
@@ -99,6 +99,11 @@ char	*expansion_handling(char *str, t_param *param)
 	if (result == NULL)
 		panic_sms("malloc", 1);
 	result = expansion_loop(s, str, result, param);
+	if (ft_strcmp(result, "") == 0)
+	{
+		free(result);
+		return (NULL);
+	}
 	return (result);
 }
 

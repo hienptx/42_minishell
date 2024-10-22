@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:16:10 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/22 13:28:25 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/22 20:56:36 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,5 @@ int		update_env(t_list *env_list, const char *key, char *new_env);
 int		add_env(t_list **env_list, char *env);
 void	mod_env(t_list *env_list, const char *new_env);
 int		rm_env(t_list **env_list, const char *key_to_remove);
-void	rm_node(t_list **env_list, t_list **prev, t_list **cur);
+void	rm_node(t_list **env_list, t_list **prev, t_list *cur);
 #endif

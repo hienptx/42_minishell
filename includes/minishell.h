@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:35:49 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/22 13:58:35 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/22 20:45:02 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ char				*ft_strsjoin(const char *delimiter, ...);
 int					get_full_len(va_list args, const char *delimiter);
 char				*cp_strs(char *result, va_list args, const char *delimiter);
 char				**get_args(char **tokens);
-size_t				get_len(size_t *len, char c);
+size_t				get_len(char c);
 
 // free.c
 void				free_tokens(char **tokens, size_t nbr_tokens);
@@ -184,7 +184,7 @@ int					update_env(t_list *env_list, const char *key,
 						char *new_env);
 int					add_env(t_list **env_list, char *new_env);
 void				mod_env(t_list *env_list, const char *new_env);
-void				rm_node(t_list **env_list, t_list **prev, t_list **cur);
+void				rm_node(t_list **env_list, t_list **prev, t_list *cur);
 int					rm_env(t_list **env_list, const char *key_to_remove);
 
 // builtin_get_env.c

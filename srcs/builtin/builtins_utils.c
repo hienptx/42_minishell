@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:23:02 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/22 13:25:51 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/22 19:30:55 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ t_list	*cp_env_list(void)
 	{
 		env_malloc = ft_strdup(*env);
 		new_node = ft_lstnew(env_malloc);
-		if (new_node == NULL || env_malloc == NULL)
+		if (new_node == NULL)
 			panic_sms("malloc", 1);
-		ft_lstadd_back(&env_list, new_node);
+		ft_lstadd_back(&env_list, new_node); 
 		env++;
 	}
 	return (env_list);
