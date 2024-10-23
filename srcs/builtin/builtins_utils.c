@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:23:02 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/22 19:30:55 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/23 03:47:32 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,11 @@ int	change_dir(t_list *env_list, const char *path, const char *oldpwd)
 
 	ret_external = cd_external(path, &cwd);
 	if (ret_external != 0)
+	{
+		// free(cwd);
+		// cwd = NULL;
 		return (ret_external);
+	}
 	env_oldpwd = ft_strjoin("OLDPWD=", oldpwd);
 	env_pwd = ft_strjoin("PWD=", cwd);
 	if (env_pwd == NULL || env_oldpwd == NULL)

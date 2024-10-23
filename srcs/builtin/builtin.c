@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:28:49 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/22 13:47:34 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/23 03:52:34 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,12 @@ int	cd(t_list *env_list, char *x[])
 		if (oldpwd == NULL)
 			panic_sms("getcwd failed", 1);
 		if (change_dir(env_list, path, oldpwd) != 0)
+		{
+			panic_sms("malloc", 0);	//
+			free(oldpwd);
 			return (1);
+		}
 		free(oldpwd);
-		oldpwd = NULL;
 	}
 	else
 	{
