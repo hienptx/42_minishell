@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:41 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/22 20:59:32 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/23 20:30:10 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,11 +99,6 @@ char	*expansion_handling(char *str, t_param *param)
 	if (result == NULL)
 		panic_sms("malloc", 1);
 	result = expansion_loop(s, str, result, param);
-	if (ft_strcmp(result, "") == 0)
-	{
-		free(result);
-		return (NULL);
-	}
 	return (result);
 }
 

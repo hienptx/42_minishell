@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 20:53:36 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/23 02:19:23 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/23 21:40:34 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char*	get_full_path(t_exec *exec_cmd, t_list *env_list)
+char	*get_full_path(t_exec *exec_cmd, t_list *env_list)
 {
-	char		*full_path;
+	char	*full_path;
 
 	full_path = get_executable_path(get_env_value("PATH", env_list),
 			exec_cmd->arg[0]);

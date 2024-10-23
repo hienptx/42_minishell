@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:22 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/22 20:29:40 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/23 21:42:39 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,6 @@ t_cmd	*process_tokens(char **tok, t_param *param, t_parse_data parse)
 	{
 		ptr = tok[i];
 		tok[i] = expansion_handling(tok[i], param);
-		if (tok[i] == NULL)
-		{
-			free(ptr);
-			return(NULL);
-		}
 		if (ptr != tok[i])
 			free(ptr);
 		ptr = tok[i];
@@ -54,7 +49,6 @@ t_cmd	*process_tokens(char **tok, t_param *param, t_parse_data parse)
 	if (ast == NULL)
 		return (NULL);
 	parse.ast = ast;
-	// print_command_tree(ast, 0);
 	iterate_ast(ast, param, parse);
 	return (ast);
 }
@@ -117,7 +111,6 @@ int	main(void)
 	signal(SIGQUIT, signal_handler);
 	init_param(&param);
 	shell_loop(&param);
-	ft_lstclear(&param.env_list, free);
 	return (0);
 }
 

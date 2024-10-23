@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:23:02 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/23 03:47:32 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/23 21:42:21 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,6 @@ int	change_dir(t_list *env_list, const char *path, const char *oldpwd)
 	ret_external = cd_external(path, &cwd);
 	if (ret_external != 0)
 	{
-		// free(cwd);
-		// cwd = NULL;
 		return (ret_external);
 	}
 	env_oldpwd = ft_strjoin("OLDPWD=", oldpwd);
@@ -68,7 +66,7 @@ t_list	*cp_env_list(void)
 		new_node = ft_lstnew(env_malloc);
 		if (new_node == NULL)
 			panic_sms("malloc", 1);
-		ft_lstadd_back(&env_list, new_node); 
+		ft_lstadd_back(&env_list, new_node);
 		env++;
 	}
 	return (env_list);

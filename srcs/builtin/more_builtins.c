@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   more_builtins.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:21:13 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/23 03:40:31 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/23 21:39:55 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,5 @@ int	cd_external(const char *path, char **cwd)
 		free(*cwd);
 		return (2);
 	}
-	// free(*cwd);
 	return (0);
 }

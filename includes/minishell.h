@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:35:49 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/23 03:00:10 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/23 21:40:18 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,8 +146,8 @@ int					get_file_fd(t_redir *redir_cmd);
 int					dup_fd(t_redir *redir_cmd);
 
 // execution.c
-int					call_exec(t_exec *exec_cmd, t_list *env_list,\
-					 t_parse_data parse, char *file);
+int					call_exec(t_exec *exec_cmd, t_list *env_list,
+						t_parse_data parse, char *file);
 void				run_exec(t_exec *exec_cmd, t_param *param,
 						t_parse_data parse);
 int					set_exec(t_exec *exec_cmd, t_param *param,

@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 20:53:47 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/23 03:31:53 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/23 21:41:41 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include <sys/stat.h>
 
-int	call_exec(t_exec *exec_cmd, t_list *env_list, t_parse_data parse, char *file)
+int	call_exec(t_exec *exec_cmd, t_list *env_list, t_parse_data parse,
+		char *file)
 {
 	extern char	**environ;
 
@@ -27,9 +28,9 @@ int	call_exec(t_exec *exec_cmd, t_list *env_list, t_parse_data parse, char *file
 
 char	*get_valid_exec(t_exec *exec_cmd, t_list *env_list)
 {
-	int			path_exist;
-	char		*full_path;
-	int 		ac;
+	int		path_exist;
+	char	*full_path;
+	int		ac;
 
 	if (ft_strcmp(exec_cmd->arg[0], "") == 0)
 		return (NULL);
@@ -77,8 +78,10 @@ void	run_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 	return ;
 }
 
-int is_executable(const char *path) {
-	struct stat buffer;
+int	is_executable(const char *path)
+{
+	struct stat	buffer;
+
 	return (stat(path, &buffer) == 0 && buffer.st_mode & S_IXUSR);
 }
 
@@ -93,8 +96,7 @@ int	set_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 	}
 	else
 	{
-		// if (is_executable(exec_cmd->arg[0]))
-			run_exec(exec_cmd, param, parse);
+		run_exec(exec_cmd, param, parse);
 	}
 	return (0);
 }

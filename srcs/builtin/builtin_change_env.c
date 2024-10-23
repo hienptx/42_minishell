@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 22:08:52 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/22 20:56:34 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/23 21:40:45 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,26 @@ void	mod_env(t_list *env_list, const char *new_env)
 	return ;
 }
 
+// void	rm_node(t_list **env_list, t_list **prev, t_list *cur)
+// {
+// 	if (*prev)
+// 		(*prev)->next = (cur)->next;
+// 	else
+// 		*env_list = cur->next;
+// 	free(cur);
+// 	(cur) = NULL;
+// }
+
 void	rm_node(t_list **env_list, t_list **prev, t_list *cur)
 {
+	if (cur->content)
+		free(cur->content);
 	if (*prev)
 		(*prev)->next = (cur)->next;
-	// else
-	// 	*env_list = (*cur)->next;
-	(void)env_list;
+	else
+		*env_list = cur->next;
 	free(cur);
-	(cur) = NULL;
+	cur = NULL;
 }
 
 int	rm_env(t_list **env_list, const char *key_to_remove)
