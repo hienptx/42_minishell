@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:35:49 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/22 20:45:02 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/23 03:00:10 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,8 +146,8 @@ int					get_file_fd(t_redir *redir_cmd);
 int					dup_fd(t_redir *redir_cmd);
 
 // execution.c
-int					call_exec(t_exec *exec_cmd, t_list *env_list,
-						t_parse_data parse);
+int					call_exec(t_exec *exec_cmd, t_list *env_list,\
+					 t_parse_data parse, char *file);
 void				run_exec(t_exec *exec_cmd, t_param *param,
 						t_parse_data parse);
 int					set_exec(t_exec *exec_cmd, t_param *param,
@@ -196,8 +196,9 @@ char				*get_env(char *env_key, t_list *env_list);
 int					find_env(t_list *env_list, char *key);
 
 // execution_utils.c
-void				exec_w_path_env(t_exec *exec_cmd, t_list *env_list,
-						t_parse_data parse);
+char				*get_full_path(t_exec *exec_cmd, t_list *env_list);
+// void				exec_w_path_env(t_exec *exec_cmd, t_list *env_list,
+// 						t_parse_data parse);
 
 // qsort.c
 void				quick_sort(char **arr, int low, int high);

@@ -3,60 +3,83 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 20:53:47 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/22 21:00:59 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/23 03:31:53 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+#include <sys/stat.h>
 
-int	call_exec(t_exec *exec_cmd, t_list *env_list, t_parse_data parse)
+int	call_exec(t_exec *exec_cmd, t_list *env_list, t_parse_data parse, char *file)
 {
 	extern char	**environ;
+
+	environ = mk_env_list(env_list);
+	execve(file, exec_cmd->arg, environ);
+	free(file);
+	free_parse(parse);
+	ft_lstclear(&env_list, free);
+	exit(1);
+}
+
+char	*get_valid_exec(t_exec *exec_cmd, t_list *env_list)
+{
 	int			path_exist;
+	char		*full_path;
 	int 		ac;
 
 	if (ft_strcmp(exec_cmd->arg[0], "") == 0)
-		return (0);
+		return (NULL);
 	ac = access(exec_cmd->arg[0], X_OK);
 	if (ac == 0)
-	{
-		environ = mk_env_list(env_list);
-		execve(exec_cmd->arg[0], exec_cmd->arg, environ);
-		free_parse(parse);
-		ft_lstclear(&env_list, free);
-		exit(1);
-	}
+		return (ft_strdup(exec_cmd->arg[0]));
 	path_exist = find_env(env_list, "PATH");
 	if (path_exist == 1)
-		exec_w_path_env(exec_cmd, env_list, parse);
+	{
+		full_path = get_full_path(exec_cmd, env_list);
+		return (full_path);
+	}
 	else if (path_exist == 0)
-		return (0);
-	return (-1);
+		return (NULL);
+	return (NULL);
 }
 
 void	run_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 {
 	pid_t	pid;
 	int		status;
+	char	*file;
 
+	file = get_valid_exec(exec_cmd, param->env_list);
+	if (file == NULL)
+	{
+		printf("command not found\n");
+		param->special.question_mark = 127;
+		return ;
+	}
 	pid = fork();
 	if (pid == 0)
 	{
-		call_exec(exec_cmd, param->env_list, parse);
+		call_exec(exec_cmd, param->env_list, parse, file);
 		(void)status;
-		exit(0);
 	}
 	else
 	{
+		free(file);
 		signal(SIGINT, SIG_IGN);
 		waitpid(pid, &status, 0);
 		param->special.question_mark = WEXITSTATUS(status);
 		signal(SIGINT, signal_handler);
 	}
 	return ;
+}
+
+int is_executable(const char *path) {
+	struct stat buffer;
+	return (stat(path, &buffer) == 0 && buffer.st_mode & S_IXUSR);
 }
 
 int	set_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
@@ -69,7 +92,10 @@ int	set_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 		param->special.question_mark = builtin_ret;
 	}
 	else
-		run_exec(exec_cmd, param, parse);
+	{
+		// if (is_executable(exec_cmd->arg[0]))
+			run_exec(exec_cmd, param, parse);
+	}
 	return (0);
 }
 
