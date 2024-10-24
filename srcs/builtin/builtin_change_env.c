@@ -6,39 +6,12 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 22:08:52 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/24 16:49:17 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/24 19:28:46 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/builtin.h"
 #include "../../includes/minishell.h"
-
-int	update_env(t_list *env_list, const char *key, char *new_env)
-{
-	char	*cur_key;
-	t_list	*node;
-
-	node = env_list;
-	while (env_list)
-	{
-		cur_key = get_env_key((char *)env_list->content);
-		if (cur_key == NULL)
-			return (1);
-		if (ft_strcmp(cur_key, key) == 0)
-		{
-			mod_env(env_list, new_env);
-			free(cur_key);
-			cur_key = NULL;
-			return (0);
-		}
-		free(cur_key);
-		cur_key = NULL;
-		env_list = env_list->next;
-	}
-	if (add_env(&node, new_env) == 1)
-		return (1);
-	return (0);
-}
 
 int	add_env(t_list **env_list, char *new_env)
 {
@@ -71,14 +44,14 @@ void	rm_node(t_list **env_list, t_list **prev, t_list *cur)
 	cur = NULL;
 }
 
-int	rm_env(t_list **env_list, const char *key_to_remove)
+t_list	*find_env_node(t_list *env_list, const char *key_to_remove,
+		t_list **prev)
 {
 	t_list	*cur;
-	t_list	*prev;
 	char	*cur_key;
 
-	cur = *env_list;
-	prev = NULL;
+	cur = env_list;
+	*prev = NULL;
 	while (cur)
 	{
 		cur_key = get_env_key((char *)cur->content);
@@ -86,18 +59,26 @@ int	rm_env(t_list **env_list, const char *key_to_remove)
 			panic_sms("malloc", 1);
 		if (ft_strcmp(cur_key, key_to_remove) == 0)
 		{
-			rm_node(env_list, &prev, cur);
 			free(cur_key);
-			cur_key = NULL;
-			return (0);
+			return (cur);
 		}
-		if (cur_key != NULL)
-		{
-			free(cur_key);
-			cur_key = NULL;
-		}
-		prev = cur;
+		free(cur_key);
+		*prev = cur;
 		cur = cur->next;
+	}
+	return (NULL);
+}
+
+int	rm_env(t_list **env_list, const char *key_to_remove)
+{
+	t_list	*prev;
+	t_list	*cur;
+
+	cur = find_env_node(*env_list, key_to_remove, &prev);
+	if (cur)
+	{
+		rm_node(env_list, &prev, cur);
+		return (0);
 	}
 	return (0);
 }

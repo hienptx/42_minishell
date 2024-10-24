@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:35:49 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/23 21:40:18 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/24 19:29:45 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
 
@@ -81,7 +82,6 @@ typedef struct s_param
 }					t_param;
 
 // minishell.c
-char				*quote_handling(char *token);
 void				signal_handler(int sig);
 t_cmd				*process_tokens(char **tok, t_param *param,
 						t_parse_data parse);
@@ -120,8 +120,6 @@ char				**mk_env_list(t_list *env_list);
 t_cmd				*parse_cmd(char **tokens);
 t_cmd				*parse_redir(char **tokens);
 t_cmd				*parse_exec(char **tokens);
-
-// t_exec *parse_exec(char **tokens);
 void				print_command_tree(t_cmd *cmd, int level);
 void				iterate_ast(t_cmd *cmd, t_param *param, t_parse_data parse);
 
@@ -180,8 +178,6 @@ int					is_operator(const char *token);
 int					invalid_syntax_sms(char *s);
 
 // builtin_change_env.c
-int					update_env(t_list *env_list, const char *key,
-						char *new_env);
 int					add_env(t_list **env_list, char *new_env);
 void				mod_env(t_list *env_list, const char *new_env);
 void				rm_node(t_list **env_list, t_list **prev, t_list *cur);
@@ -196,9 +192,12 @@ char				*get_env(char *env_key, t_list *env_list);
 int					find_env(t_list *env_list, char *key);
 
 // execution_utils.c
+char				**get_all_path(char *env_path);
 char				*get_full_path(t_exec *exec_cmd, t_list *env_list);
-// void				exec_w_path_env(t_exec *exec_cmd, t_list *env_list,
-// 						t_parse_data parse);
+int					is_executable(const char *path);
+char				*get_executable_path(char *env_path, char *prog_name);
+int					update_env(t_list *env_list, const char *key,
+						char *new_env);
 
 // qsort.c
 void				quick_sort(char **arr, int low, int high);

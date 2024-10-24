@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:41 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/23 20:30:10 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/24 19:10:47 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	*replace_substring(char *str, char *newsub, char *oldsub)
 char	*get_expansion(char *substring, t_param *param, char *result)
 {
 	char	*ret_env;
-	char	*ptr;
+	char	*newstr;
 	int		is_allocated;
 
 	ret_env = expand_str(substring + 1, param);
@@ -49,11 +49,12 @@ char	*get_expansion(char *substring, t_param *param, char *result)
 		ret_env = "";
 		is_allocated = 0;
 	}
-	ptr = replace_substring(result, ret_env, substring);
-	result = ptr;
+	newstr = replace_substring(result, ret_env, substring);
+	if (result != NULL && result != newstr)
+		free(result);
 	if (is_allocated)
 		free(ret_env);
-	return (result);
+	return (newstr);
 }
 
 char	*expansion_loop(char *s, char *str, char *result, t_param *param)
@@ -95,7 +96,7 @@ char	*expansion_handling(char *str, t_param *param)
 		return (str);
 	if ((s[1] == ' ' || s[1] == '\0' || s[1] == '\"'))
 		return (str);
-	result = str;
+	result = ft_strdup(str);
 	if (result == NULL)
 		panic_sms("malloc", 1);
 	result = expansion_loop(s, str, result, param);

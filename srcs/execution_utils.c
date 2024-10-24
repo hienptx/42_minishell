@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 20:53:36 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/23 21:40:34 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/24 17:44:01 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,25 +21,46 @@ char	*get_full_path(t_exec *exec_cmd, t_list *env_list)
 	return (full_path);
 }
 
-// void	exec_w_path_env(t_exec *exec_cmd, t_list *env_list, t_parse_data parse)
-// {
-// 	extern char	**environ;
-// 	char		*path;
+int	is_executable(const char *path)
+{
+	struct stat	buffer;
 
-// 	path = get_executable_path(get_env_value("PATH", env_list),
-// 			exec_cmd->arg[0]);
-// 	if (path == NULL)
-// 	{
-// 		printf("%s: %s\n", exec_cmd->arg[0], "command not found");
-// 		free_parse(parse);
-// 		ft_lstclear(&env_list, free);
-// 		exit(127);
-// 	}
-// 	exec_cmd->arg[0] = path;
-// 	environ = mk_env_list(env_list);
-// 	execve(path, exec_cmd->arg, environ);
-// 	perror(exec_cmd->arg[0]);
-// 	free(environ);
-// 	free(path);
-// 	exit(1);
-// }
+	return (stat(path, &buffer) == 0 && buffer.st_mode & S_IXUSR);
+}
+
+char	**get_all_path(char *env_path)
+{
+	if (env_path == NULL)
+		return (NULL);
+	env_path += 5;
+	return (ft_split(env_path, ':'));
+}
+
+char	*get_executable_path(char *env_path, char *prog_name)
+{
+	char	**cur_dir;
+	char	*executable_path;
+	size_t	i;
+
+	i = 0;
+	cur_dir = get_all_path(env_path);
+	if (cur_dir == NULL)
+		panic_sms("malloc fails", 1);
+	free(env_path);
+	while (cur_dir[i])
+	{
+		executable_path = ft_strsjoin(NULL, cur_dir[i], "/", prog_name, NULL);
+		if (executable_path == NULL)
+			panic_sms("malloc fails", 1);
+		if (access(executable_path, X_OK) == 0)
+		{
+			ft_free(cur_dir);
+			return (executable_path);
+		}
+		i++;
+		free(executable_path);
+		executable_path = NULL;
+	}
+	ft_free(cur_dir);
+	return (NULL);
+}

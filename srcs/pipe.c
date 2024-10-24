@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 22:19:02 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/24 17:09:46 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/24 17:45:38 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@ void	left_pipe(t_pipe *pipe_cmd, int *fd, t_param *param, t_parse_data parse)
 	exit(1);
 }
 
-void	right_pipe(t_pipe *pipe_cmd, int *fd, t_param *param, t_parse_data parse)
+void	right_pipe(t_pipe *pipe_cmd, int *fd, t_param *param,
+		t_parse_data parse)
 {
-	int status;
+	int	status;
 
 	close(fd[1]);
 	dup2(fd[0], STDIN_FILENO);

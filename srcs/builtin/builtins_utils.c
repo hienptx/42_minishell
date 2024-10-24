@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:23:02 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/23 21:42:21 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/24 19:17:36 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,32 @@ int	env(t_list *env_list)
 		printf("%s\n", (char *)env_list->content);
 		env_list = env_list->next;
 	}
+	return (0);
+}
+
+int	update_env(t_list *env_list, const char *key, char *new_env)
+{
+	char	*cur_key;
+	t_list	*node;
+
+	node = env_list;
+	while (env_list)
+	{
+		cur_key = get_env_key((char *)env_list->content);
+		if (cur_key == NULL)
+			return (1);
+		if (ft_strcmp(cur_key, key) == 0)
+		{
+			mod_env(env_list, new_env);
+			free(cur_key);
+			cur_key = NULL;
+			return (0);
+		}
+		free(cur_key);
+		cur_key = NULL;
+		env_list = env_list->next;
+	}
+	if (add_env(&node, new_env) == 1)
+		return (1);
 	return (0);
 }
