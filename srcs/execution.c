@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 20:53:47 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/23 21:41:41 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/24 16:05:29 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void	run_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 	if (pid == 0)
 	{
 		call_exec(exec_cmd, param->env_list, parse, file);
-		(void)status;
 	}
 	else
 	{

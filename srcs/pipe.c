@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 22:19:02 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/22 13:33:40 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/24 17:09:46 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,21 @@ void	left_pipe(t_pipe *pipe_cmd, int *fd, t_param *param, t_parse_data parse)
 	iterate_ast((t_cmd *)pipe_cmd->left, param, parse);
 	free_parse(parse);
 	ft_lstclear(&param->env_list, free);
-	exit(0);
+	exit(1);
 }
 
-void	right_pipe(t_pipe *pipe_cmd, int *fd, t_param *param,
-		t_parse_data parse)
+void	right_pipe(t_pipe *pipe_cmd, int *fd, t_param *param, t_parse_data parse)
 {
+	int status;
+
 	close(fd[1]);
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
 	iterate_ast((t_cmd *)pipe_cmd->right, param, parse);
+	status = param->special.question_mark;
 	free_parse(parse);
 	ft_lstclear(&param->env_list, free);
-	exit(0);
+	exit(status);
 }
 
 int	set_pipe(t_pipe *pipe_cmd, t_param *param, t_parse_data parse)
@@ -58,5 +60,6 @@ int	set_pipe(t_pipe *pipe_cmd, t_param *param, t_parse_data parse)
 	close(fd[1]);
 	waitpid(pid_l, NULL, 0);
 	waitpid(pid_r, &status, 0);
+	param->special.question_mark = WEXITSTATUS(status);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 21:51:31 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/22 16:38:08 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/24 17:14:42 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,45 +129,45 @@ t_cmd	*parse_cmd(char **tokens)
 	return (ast);
 }
 
-void	print_command_tree(t_cmd *cmd, int level)
-{
-	t_pipe	*pipe_cmd;
-	t_redir	*redir_cmd;
-	t_exec	*exec_cmd;
+// void	print_command_tree(t_cmd *cmd, int level)
+// {
+// 	t_pipe	*pipe_cmd;
+// 	t_redir	*redir_cmd;
+// 	t_exec	*exec_cmd;
 
-	if (cmd == NULL)
-		return ;
-	if (cmd->type == PIPE)
-	{
-		pipe_cmd = cmd->u_cmd.pipe;
-		printf("Left pipe, level %d \n", level);
-		print_command_tree((t_cmd *)pipe_cmd->left, level + 1);
-		printf("Right pipe, level %d \n", level);
-		print_command_tree((t_cmd *)pipe_cmd->right, level + 1);
-	}
-	else if (cmd->type == REDIR)
-	{
-		redir_cmd = cmd->u_cmd.redir;
-		while (redir_cmd != NULL)
-		{
-			printf("Redirection file name: %s\n",
-				redir_cmd->file_name ? redir_cmd->file_name : "NULL");
-			printf("Fd: %i\n", redir_cmd->fd);
-			redir_cmd = redir_cmd->next;
-		}
-		if (cmd->u_cmd.redir != NULL)
-		{
-			print_command_tree((t_cmd *)cmd->u_cmd.redir->cmd, level + 1);
-		}
-	}
-	else if (cmd->type == EXEC)
-	{
-		exec_cmd = cmd->u_cmd.exec;
-		printf("    Exec Command: ");
-		for (int i = 0; exec_cmd->arg[i] != NULL; i++)
-			printf("%s ", exec_cmd->arg[i]);
-		printf("\n");
-	}
-	else
-		printf("Unknown Command Level %d:\n", level);
-}
+// 	if (cmd == NULL)
+// 		return ;
+// 	if (cmd->type == PIPE)
+// 	{
+// 		pipe_cmd = cmd->u_cmd.pipe;
+// 		printf("Left pipe, level %d \n", level);
+// 		print_command_tree((t_cmd *)pipe_cmd->left, level + 1);
+// 		printf("Right pipe, level %d \n", level);
+// 		print_command_tree((t_cmd *)pipe_cmd->right, level + 1);
+// 	}
+// 	else if (cmd->type == REDIR)
+// 	{
+// 		redir_cmd = cmd->u_cmd.redir;
+// 		while (redir_cmd != NULL)
+// 		{
+// 			printf("Redirection file name: %s\n",
+// 				redir_cmd->file_name ? redir_cmd->file_name : "NULL");
+// 			printf("Fd: %i\n", redir_cmd->fd);
+// 			redir_cmd = redir_cmd->next;
+// 		}
+// 		if (cmd->u_cmd.redir != NULL)
+// 		{
+// 			print_command_tree((t_cmd *)cmd->u_cmd.redir->cmd, level + 1);
+// 		}
+// 	}
+// 	else if (cmd->type == EXEC)
+// 	{
+// 		exec_cmd = cmd->u_cmd.exec;
+// 		printf("    Exec Command: ");
+// 		for (int i = 0; exec_cmd->arg[i] != NULL; i++)
+// 			printf("%s ", exec_cmd->arg[i]);
+// 		printf("\n");
+// 	}
+// 	else
+// 		printf("Unknown Command Level %d:\n", level);
+// }

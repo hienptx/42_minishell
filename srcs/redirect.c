@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:29:01 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/22 14:18:50 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/24 17:14:10 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int	apply_redir(t_redir *redir_cmd)
+int	apply_redir(t_redir *redir_cmd, t_param *param)
 {
 	t_redir	*predir_cmd;
 
@@ -23,7 +23,7 @@ int	apply_redir(t_redir *redir_cmd)
 	{
 		if (dup_fd(predir_cmd) == -1)
 		{
-			perror(predir_cmd->file_name);
+			param->special.question_mark = 1;
 			return (-1);
 		}
 		close(predir_cmd->fd);
@@ -44,7 +44,7 @@ void	set_redir(t_redir *redir_cmd, t_param *param, t_parse_data parse)
 		perror("dup");
 		return ;
 	}
-	if (apply_redir(redir_cmd) == -1)
+	if (apply_redir(redir_cmd, param) == -1)
 	{
 		dup2(saved_stdin, STDIN_FILENO);
 		dup2(saved_stdout, STDOUT_FILENO);
@@ -95,6 +95,9 @@ int	get_file_fd(t_redir *redir_cmd)
 		oflag = (O_WRONLY | O_CREAT | O_APPEND);
 	redir_cmd->fd = open(redir_cmd->file_name, oflag, 0644);
 	if (redir_cmd->fd == -1)
+	{
+		perror(redir_cmd->file_name);
 		return (-1);
+	}
 	return (redir_cmd->fd);
 }

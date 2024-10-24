@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 22:08:52 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/23 21:40:45 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/24 16:49:17 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,16 +58,6 @@ void	mod_env(t_list *env_list, const char *new_env)
 	env_list->content = (char *)new_env;
 	return ;
 }
-
-// void	rm_node(t_list **env_list, t_list **prev, t_list *cur)
-// {
-// 	if (*prev)
-// 		(*prev)->next = (cur)->next;
-// 	else
-// 		*env_list = cur->next;
-// 	free(cur);
-// 	(cur) = NULL;
-// }
 
 void	rm_node(t_list **env_list, t_list **prev, t_list *cur)
 {
