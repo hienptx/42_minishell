@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 21:37:01 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/25 20:21:17 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/25 21:05:57 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,4 +83,15 @@ void	get_exit_param(t_param *param, t_parse_data parse, char *args1,
 		else
 			ft_exit("\0", ft_atoi(ptr), param, parse);
 	}
+}
+
+int	export_syntax_valid(char *s)
+{
+	while (*s != '\0')
+	{
+		if (!ft_isalnum(*s) && *s != '_' && *s != '=')
+			return (0);
+		s++;
+	}
+	return (1);
 }

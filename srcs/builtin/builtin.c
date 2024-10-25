@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:28:49 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/23 21:41:59 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/25 21:07:01 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,21 +95,17 @@ int	export(t_list *env_list, char *x[])
 
 	i = 1;
 	if (x[i] == NULL)
-	{
-		display_sorted_env(env_list);
-		return (0);
-	}
+		return (display_sorted_env(env_list), 0);
 	while (x[i])
 	{
+		if (!export_syntax_valid(x[1]))
+			return (printf("%s': not a valid identifier\n", x[i]), 1);
 		key = get_env_key(x[i]);
 		if (key == NULL)
 			return (1);
 		tmp = ft_strdup(x[i++]);
 		if (update_env(env_list, key, tmp) == 1)
-		{
-			free(tmp);
-			return (1);
-		}
+			return (free(tmp), 1);
 		free(key);
 		key = NULL;
 	}

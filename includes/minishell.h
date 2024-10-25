@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:35:49 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/25 20:23:07 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/25 21:05:49 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,6 +205,7 @@ void				quick_sort(char **arr, int low, int high);
 int					partition(char **arr, int low, int high);
 void				get_exit_param(t_param *param, t_parse_data parse,
 						char *args1, char *args2);
+int					export_syntax_valid(char *s);
 // builtin_sort_env.c
 void				display_sorted_env(t_list *env_list);
 char				**mk_env_list_cp(t_list *env_list);
