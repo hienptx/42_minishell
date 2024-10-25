@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:16:10 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/22 20:56:36 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/25 21:40:28 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ int		env(t_list *env_list);
 int		change_dir(t_list *env_list, const char *path, const char *oldpwd);
 void	print_env_arr(char **env_arr);
 char	**mk_env_list(t_list *env_list);
-// char *(*ft_getenv)(const char *key);
 t_list	*cp_env_list(void);
 int		cd_external(const char *path, char **cwd);
 

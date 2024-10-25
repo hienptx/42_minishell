@@ -7,30 +7,48 @@ INCL_DIR = ./includes
 LIBFT_H = 
 
 CC = cc
-ifeq ($(shell uname -s), Darwin)
-	CFLAGS = -g -Wall -Wextra -Werror -I$(INCL_DIR) -I$(shell brew --prefix readline)/include
-else
-	CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR)
-endif
 
-LDFLAGS = -L$(shell brew --prefix readline)/lib -lreadline 
+CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR)
+
+LDFLAGS = -Llibft -lreadline 
 
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRCS += $(wildcard $(SRCS_DIR)/*.c) $(wildcard $(SRCS_DIR)/builtin/*.c) 
-# OBJS = $(patsubst $(SRCS_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))
+SRCS = constructor \
+		execution_utils \
+		execution \
+		expansion \
+		free \
+		ft_strsjoin \
+		here_doc \
+		minishell_utils \
+		minishell \
+		parser \
+		pipe \
+		quotes \
+		redirect \
+		syntax_check \
+		tokenizer
+
+BUILTINS = builtin_change_env \
+			builtin_get_env \
+			builtin_sort_env \
+			builtin \
+			builtins_utils \
+			more_builtins \
+			qsort \
+
+SRCS := $(addprefix $(SRCS_DIR)/, $(addsuffix .c, $(SRCS)))
+SRCS += $(addprefix $(SRCS_DIR)/builtin/, $(addsuffix .c, $(BUILTINS)))
+
 OBJS = $(SRCS:.c=.o)
 
 all: $(OBJS_DIR) $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
 	@echo "Creating $(NAME)"
-	@if [ "$(shell uname)" = "Darwin" ]; then \
-		$(CC) -v $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME); \
-	else \
-		$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME); \
-	fi
-# -L$(shell brew --prefix readline)/lib
+	$(CC) -v $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME);
+
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
