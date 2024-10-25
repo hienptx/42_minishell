@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 20:53:36 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/24 17:44:01 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/25 20:19:21 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,12 @@ char	*get_executable_path(char *env_path, char *prog_name)
 	}
 	ft_free(cur_dir);
 	return (NULL);
+}
+
+void	ft_exit(char *sms, int ret, t_param *param, t_parse_data parse)
+{
+	printf("%s", sms);
+	ft_lstclear(&param->env_list, free);
+	free_parse(parse);
+	exit(ret);
 }

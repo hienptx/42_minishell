@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 21:37:01 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/22 13:26:48 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/25 20:21:17 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,34 @@ void	quick_sort(char **arr, int low, int high)
 		pi = partition(arr, low, high);
 		quick_sort(arr, low, pi - 1);
 		quick_sort(arr, pi + 1, high);
+	}
+}
+
+void	get_exit_param(t_param *param, t_parse_data parse, char *args1,
+		char *args2)
+{
+	int		is_nummeric;
+	char	*ptr;
+
+	ptr = args1;
+	if (args2 != NULL)
+		ft_exit(" too many arguments\n", 1, param, parse);
+	else
+	{
+		is_nummeric = 1;
+		if (*args1 == '+' || *args1 == '-')
+			args1++;
+		if (*args1 == '\0')
+			ft_exit(" numeric argument required\n", 255, param, parse);
+		while (*args1 != '\0')
+		{
+			if (!ft_isdigit(*args1))
+				is_nummeric = 0;
+			args1++;
+		}
+		if (!is_nummeric)
+			ft_exit(" numeric argument required\n", 255, param, parse);
+		else
+			ft_exit("\0", ft_atoi(ptr), param, parse);
 	}
 }

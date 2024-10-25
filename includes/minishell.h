@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:35:49 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/24 19:29:45 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/25 20:23:07 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,8 @@ void				*panic_sms(char *s, int i);
 int					only_space(char *input);
 int					get_fd(char *token);
 size_t				count_non_operators(char **tokens);
+int					update_env(t_list *env_list, const char *key,
+						char *new_env);
 
 // constructor.c
 t_cmd				*construct_pipe(char *left, char *right);
@@ -196,13 +198,13 @@ char				**get_all_path(char *env_path);
 char				*get_full_path(t_exec *exec_cmd, t_list *env_list);
 int					is_executable(const char *path);
 char				*get_executable_path(char *env_path, char *prog_name);
-int					update_env(t_list *env_list, const char *key,
-						char *new_env);
-
+void				ft_exit(char *sms, int ret, t_param *param,
+						t_parse_data parse);
 // qsort.c
 void				quick_sort(char **arr, int low, int high);
 int					partition(char **arr, int low, int high);
-
+void				get_exit_param(t_param *param, t_parse_data parse,
+						char *args1, char *args2);
 // builtin_sort_env.c
 void				display_sorted_env(t_list *env_list);
 char				**mk_env_list_cp(t_list *env_list);

@@ -6,7 +6,7 @@
 /*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 13:21:13 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/23 21:39:55 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/25 20:21:01 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	call_builtin(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 	char	**args;
 	int		ret;
 
+	ret = 0;
 	args = exec_cmd->arg;
 	if (strcmp(args[0], "echo") == 0)
 		ret = echo(args);
@@ -49,12 +50,11 @@ int	call_builtin(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 		ret = env(param->env_list);
 	else if (ft_strcmp(args[0], "exit") == 0)
 	{
-		ft_lstclear(&param->env_list, free);
-		free_parse(parse);
-		exit(0);
+		if (args[1] == NULL)
+			ft_exit("\0", 0, param, parse);
+		else
+			get_exit_param(param, parse, args[1], args[2]);
 	}
-	else
-		ret = 0;
 	return (ret);
 }
 
