@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 20:53:47 by dongjle2          #+#    #+#             */
-/*   Updated: 2024/10/24 17:50:08 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/26 03:00:49 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,15 @@ void	run_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 	file = get_valid_exec(exec_cmd, param->env_list);
 	if (file == NULL)
 	{
-		printf("command not found\n");
+		write(STDERR_FILENO, exec_cmd->arg[0], ft_strlen(exec_cmd->arg[0]));
+		write(STDERR_FILENO, ": command not found", 19);
+		write(STDERR_FILENO, "\n", 1);
 		param->special.question_mark = 127;
 		return ;
 	}
 	pid = fork();
 	if (pid == 0)
-	{
 		call_exec(exec_cmd, param->env_list, parse, file);
-	}
 	else
 	{
 		free(file);
@@ -80,6 +80,8 @@ int	set_exec(t_exec *exec_cmd, t_param *param, t_parse_data parse)
 {
 	int	builtin_ret;
 
+	if (exec_cmd->arg[0] == NULL)
+		return (0);
 	if (ck_builtin(exec_cmd->arg[0]) == 1)
 	{
 		builtin_ret = call_builtin(exec_cmd, param, parse);

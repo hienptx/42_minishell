@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_check.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 18:23:45 by mafalda           #+#    #+#             */
-/*   Updated: 2024/10/24 17:47:50 by hipham           ###   ########.fr       */
+/*   Updated: 2024/10/26 02:43:00 by dongjle2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,16 @@ int	check_syntax(char **tokens)
 	int	i;
 
 	i = 0;
-	if (tokens[0] != NULL && is_operator(tokens[0]))
+	if (ft_strcmp(tokens[0], "|") == 0)
 		return (invalid_syntax_sms("Syntax error"));
 	while (tokens[i] != NULL)
 	{
 		if (is_operator(tokens[i]))
 		{
 			if (tokens[i + 1] == NULL
-				|| (is_operator(tokens[i + 1])
-					&& !(ft_strcmp(tokens[i], "|") == 0
-						&& (ft_strcmp(tokens[i + 1], ">") == 0
-							|| ft_strcmp(tokens[i + 1], ">>") == 0))))
+				&& !(ft_strcmp(tokens[i], "|") == 0
+					&& (ft_strcmp(tokens[i + 1], ">") == 0
+						|| ft_strcmp(tokens[i + 1], ">>") == 0)))
 			{
 				return (invalid_syntax_sms("Syntax error"));
 			}

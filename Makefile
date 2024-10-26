@@ -8,7 +8,7 @@ LIBFT_H =
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -I$(INCL_DIR)
+CFLAGS = -g -Wall -Wextra -Werror -I$(INCL_DIR)
 
 LDFLAGS = -Llibft -lreadline 
 
