@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_check.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 18:23:45 by mafalda           #+#    #+#             */
-/*   Updated: 2024/10/26 02:43:00 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/27 18:05:34 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ int	check_syntax(char **tokens)
 		return (invalid_syntax_sms("Syntax error"));
 	while (tokens[i] != NULL)
 	{
+		if (is_redir_op(tokens[i]) && tokens[i + 1] == NULL)
+			return (invalid_syntax_sms("Syntax error"));
 		if (is_pipe_op(tokens[i]) && is_operator(tokens[i - 1]))
 			return (invalid_syntax_sms("Syntax error"));
 		if (is_redir_op(tokens[i]) && is_redir_op(tokens[i + 1]))
