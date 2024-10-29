@@ -64,7 +64,7 @@ This step provides a recursive parser that constructs a struct of Abstract Synta
 and redirections by creating various nodes in the AST.
 
 The Syntax Tree looks like: 
-
+`
                    PIPE (Level 1)
            /                        \
         PIPE (Level 2)               REDIR (>)
@@ -73,7 +73,7 @@ The Syntax Tree looks like:
    |
 REDIR(<)
    |
-"Makefile"
+"Makefile"`
 
 ***Implementation Logic behind AST:***
 
