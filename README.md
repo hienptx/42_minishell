@@ -69,9 +69,9 @@ and redirections by creating various nodes in the AST.
 
 The Syntax Tree looks like: 
 
-                      PIPE (Level 1)
+                      PIPE (Level 0)
               /                           \
-        PIPE (Level 2)                  REDIR (>)
+        PIPE (Level 1)                  REDIR (>)
        /             \                          \
        EXEC(sort)  EXEC(grep hipham)         "output.txt"
        |
@@ -81,12 +81,24 @@ The Syntax Tree looks like:
 
 ***Implementation Logic behind AST:***
 
-Parser will look for the first PIPE(|) operator present in command line and set it to NULL. As next the left part of the Pipe will be saved as a string of char in t_pipe struct bellow. In a recursive manner, if parser detects the next PIPE(|) in the right part of the first PIPE(|), it will repeat the same process, set PIPE->NULL and parse the left and right to the struct untill there is no more PIPE(|) is found.
+1. Detecting Operators: 
+As the parser iterates through the token array, it looks for specific operators, such as pipes (|). When a pipe operator is encountered, it is set to NULL, dividing the command into a left part (before the pipe) and a right part (after the pipe).
 
+2. Recursive Parsing:
+The parser makes recursive calls to process both the left and right parts of the command. Each call handles its portion of the tokens independently, allowing for nested structures.
+During the parsing of the left part, if redirection operators (like <, >, or >>) are detected, the parser immediately processes them. This means that redirection handling is integrated into the parsing flow.
 
+3. Redirection Handling:
+As each left part of the pipe is parsed, the parser checks for redirection operators. When a redirection operator is found, the parser adjusts the command structure accordingly, incorporating the file descriptors and target filenames into the command.
+This is done through a separate function dedicated to processing redirections, which may involve adjusting the command's attributes (e.g., linking to a redirection structure or appending to a list of redirections).
 
-If there are no special operators present in input at all, parser will call exec_constructor to 
-According to the tree, memory for Pipe Struct will be created first when operator (|) presents in command line.
+4. Base Case:
+The base case for the recursion occurs when there are no more pipes to process. At this point, any remaining tokens in the left part are treated as standalone commands or arguments.
+If there are still redirection operators present, they are handled in the same manner as described above.
+
+5. Constructing the AST:
+Once the left part has been fully processed, including any redirections, the parser constructs a node in the abstract syntax tree (AST) representing the left command.
+The process repeats for the right part, and if both sides of the pipe are successfully parsed, the parser creates a pipe node that links the two sub-command nodes.
 
 Populate tokens to following struct of AST:
    ```c
@@ -156,5 +168,5 @@ Print the AST in Terminal:
 **STEP 5 >>> ----EXECUTION----**
 
 
-STEP 6 >>> ----EXECUTE_BUILTINS----
+**STEP 6 >>> ----EXECUTE_BUILTINS----**
 
