@@ -13,7 +13,4 @@ readline.supp
 #test file
 test.c
 
-#readme
-README.md
-
 minishell_test.log

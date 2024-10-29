@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:59:22 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/26 02:26:54 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/29 16:16:45 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ t_cmd	*process_tokens(char **tok, t_param *param, t_parse_data parse)
 	if (ast == NULL)
 		return (NULL);
 	parse.ast = ast;
+	// print_command_tree(ast, 0);
 	iterate_ast(ast, param, parse);
 	return (ast);
 }

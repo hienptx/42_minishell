@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dongjle2 <dongjle2@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: hipham <hipham@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 21:51:31 by hipham            #+#    #+#             */
-/*   Updated: 2024/10/26 02:26:34 by dongjle2         ###   ########.fr       */
+/*   Updated: 2024/10/27 21:08:51 by hipham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,6 @@ t_cmd	*parse_cmd(char **tokens)
 	return (ast);
 }
 
-/*
 void	print_command_tree(t_cmd *cmd, int level)
 {
 	t_pipe	*pipe_cmd;
@@ -172,4 +171,3 @@ void	print_command_tree(t_cmd *cmd, int level)
 	else
 		printf("Unknown Command Level %d:\n", level);
 }
-*/
