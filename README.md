@@ -69,15 +69,15 @@ and redirections by creating various nodes in the AST.
 
 The Syntax Tree looks like: 
 
-`                   PIPE (Level 1)
-           /                        \
-        PIPE (Level 2)               REDIR (>)
-       /       \                          \
-EXEC(sort)  EXEC(grep hipham)         "output.txt"
-   |
-REDIR(<)
-   |
-"Makefile"`
+                      PIPE (Level 1)
+              /                           \
+        PIPE (Level 2)                  REDIR (>)
+       /             \                          \
+       EXEC(sort)  EXEC(grep hipham)         "output.txt"
+       |
+       REDIR(<)
+       |
+       "Makefile"
 
 ***Implementation Logic behind AST:***
 
