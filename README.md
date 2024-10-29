@@ -46,7 +46,7 @@ If any syntax error is found, an error message is printed; otherwise, the syntax
 
 After Expansion and Quotes are handled, array of tokens look like:
 
-$  [0] sort\0 
+   [0] sort\0 
    [1] <\0
    [2] Makefile\0
    [3] |\0
@@ -55,7 +55,7 @@ $  [0] sort\0
    [6] |\0
    [7] uniq\0
    [8] >\0
-   [9] output.txt\0$
+   [9] output.txt\0
 
 
 **STEP 4 >>> ----RECURSIVE_PARSE_TOKENS_&_CONSTRUCT_SYNTAX_TREE----**
@@ -64,16 +64,16 @@ This step provides a recursive parser that constructs a struct of Abstract Synta
 and redirections by creating various nodes in the AST.
 
 The Syntax Tree looks like: 
-$`
-                   PIPE (Level 1)
-           /                        \
-        PIPE (Level 2)               REDIR (>)
-       /    \                          \
- EXEC(sort)  EXEC(grep hipham)         "output.txt"
-   |
-REDIR(<)
-   |
-"Makefile"`$
+
+                      PIPE (Level 1)
+              /                           \
+        PIPE (Level 2)                  REDIR (>)
+       /             \                          \
+       EXEC(sort)  EXEC(grep hipham)         "output.txt"
+       |
+       REDIR(<)
+       |
+       "Makefile"
 
 ***Implementation Logic behind AST:***
 
