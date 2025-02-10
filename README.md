@@ -7,9 +7,8 @@ How do we do it?
 
 Input string before tokenizing: "sort   < Makefile |grep "$USER" | uniq>output.txt"
 
-Follwoing functions breaks a command line input into an array of tokens, handling operators (<, >, |), whitespace, and quoted words. It uses:
-
-Functions explaination: 
+Following functions break input command line into an array of tokens, handling operators (<, >, |), whitespace, and quoted words. It uses:
+ 
    - get_tokens:        Allocates and fills an array of tokens by iterating through the string.
    - count_tokens:      Counts the number of tokens, incrementing for each operator or word.
    - cpy_str:           Copies a token into the result array after processing spaces and operators.
