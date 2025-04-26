@@ -1,171 +1,136 @@
+# MINISHELL Project
 
-# SUM-UP MINISHELL PROJECT
+## How to Use
 
-How do we do it?
-
-**STEP 1 >>> ----TOKENIZER----**
-
-Input string before tokenizing: "sort   < Makefile |grep "$USER" | uniq>output.txt"
-
-Following functions break input command line into an array of tokens, handling operators (<, >, |), whitespace, and quoted words. It uses:
- 
-   - get_tokens:        Allocates and fills an array of tokens by iterating through the string.
-   - count_tokens:      Counts the number of tokens, incrementing for each operator or word.
-   - cpy_str:           Copies a token into the result array after processing spaces and operators.
-   - get_word:          Skips over characters in a word until reaching a space, operator, or quote boundary.
-
-These functions allow parsing of command-line input into tokens, handling operators and quoted strings.
-
-Output string after tokenizing:
-
-$$
-   [0] sort\0 
-   [1] <\0
-   [2] Makefile\0
-   [3] |\0
-   [4] grep\0
-   [5] "$USER\0"
-   [6] |\0
-   [7] uniq\0
-   [8] >\0
-   [9] output.txt\0
-$$
+### 1. Clone the Repository
+```bash
+git clone <repository_url>
+````
+### 2. Compile the project
+```bash
+make
+````
+### 3. Run the shell
+```bash
+./minishell
+````
+### 4. Execute commands
+```bash
+sort < Makefile | grep "pattern" | uniq > output.txt
+````
 
 
-**STEP 2 >>> ----SYNTAX_CHECK----**
+## Overview
 
-Functions explaination: 
-This step checks for syntax errors in a command-line input by validating the sequence of operators and tokens:
-   - check_syntax: Validates the sequence of tokens, ensuring no invalid operator placements 
-   (e.g., no operator as the first token, no consecutive operators, etc.).
+The **MINISHELL** project is a shell program built from scratch that simulates a Unix-like shell. The shell allows users to execute commands, handle pipes (`|`), redirections (`<`, `>`, `>>`), and support for command expansion and quoted strings. The project aims to recreate the functionality of a shell, implementing features like tokenization, syntax checking, parsing, and command execution.
 
-If any syntax error is found, an error message is printed; otherwise, the syntax is valid.
-   - invalid_syntax_sms: Prints an error message and returns 1.
+---
 
+## Key Features
 
-**STEP 3 >>> ----EXPANSION_&_QUOTES_HANDLING----**
+- **Tokenization**: Parses user input into individual tokens.
+- **Syntax Checking**: Verifies that the command structure is valid.
+- **Expansion & Quotes Handling**: Handles environment variable expansion and quoted strings.
+- **Abstract Syntax Tree (AST)**: Constructs an AST to represent the structure of commands and operators.
+- **Command Execution**: Executes the commands with proper handling of pipes, redirections, and built-ins.
+- **Built-in Commands**: Supports internal commands such as `cd`, `echo`, `exit`, etc.
 
-After Expansion and Quotes are handled, array of tokens look like:
+---
 
-$$
-   [0] sort\0 
-   [1] <\0
-   [2] Makefile\0
-   [3] |\0
-   [4] grep\0
-   [5] hipham\0
-   [6] |\0
-   [7] uniq\0
-   [8] >\0
-   [9] output.txt\0
-$$
+## Steps of Implementation
 
+### Step 1: Tokenizer
 
-**STEP 4 >>> ----RECURSIVE_PARSE_TOKENS_&_CONSTRUCT_SYNTAX_TREE----**
+The tokenizer's role is to break down the input string into individual tokens. It handles operators (`<`, `>`, `|`), whitespace, and quoted strings. This process makes it easier to later analyze and parse the command structure.
 
-This step provides a recursive parser that constructs a struct of Abstract Syntax Tree (AST) from a list of tokens. It handles commands, pipes, 
-and redirections by creating various nodes in the AST.
+**Functions involved:**
 
-The Syntax Tree looks like: 
+- **`get_tokens`**: Allocates and fills an array of tokens by iterating through the input string.
+- **`count_tokens`**: Counts the number of tokens.
+- **`cpy_str`**: Copies a token into the result array after processing spaces and operators.
+- **`get_word`**: Skips over characters in a word until it encounters a space, operator, or quote.
 
-                      PIPE (Level 0)
-              /                           \
-        PIPE (Level 1)                  REDIR (>)
-       /             \                          \
-       EXEC(sort)  EXEC(grep hipham)         "output.txt"
-       |
-       REDIR(<)
-       |
-       "Makefile"
+**Example Input**:
+```sh
+sort < Makefile | grep "$USER" | uniq > output.txt
+[0] sort
+[1] <
+[2] Makefile
+[3] |
+[4] grep
+[5] "$USER"
+[6] |
+[7] uniq
+[8] >
+[9] output.txt
+```
+### Step 2: Syntax Checking
 
-***Implementation Logic behind AST:***
+After tokenizing the input, we validate the syntax. This step ensures that the sequence of tokens is valid and adheres to shell grammar rules, such as proper placement of operators and no consecutive operators.
 
-1. Detecting Operators: 
-As the parser iterates through the token array, it looks for specific operators, such as pipes (|). When a pipe operator is encountered, it is set to NULL, dividing the command into a left part (before the pipe) and a right part (after the pipe).
+**Functions Involved**:
+- **`check_syntax`**: Validates the sequence of tokens.
+- **`invalid_syntax_sms`**: Prints an error message and returns `1` if a syntax error is found.
 
-2. Recursive Parsing:
-The parser makes recursive calls to process both the left and right parts of the command. Each call handles its portion of the tokens independently, allowing for nested structures.
-During the parsing of the left part, if redirection operators (like <, >, or >>) are detected, the parser immediately processes them. This means that redirection handling is integrated into the parsing flow.
+Example checks:
+- No operator at the start.
+- No consecutive operators.
+- Operators are properly separated by arguments.
 
-3. Redirection Handling:
-As each left part of the pipe is parsed, the parser checks for redirection operators. When a redirection operator is found, the parser adjusts the command structure accordingly, incorporating the file descriptors and target filenames into the command.
-This is done through a separate function dedicated to processing redirections, which may involve adjusting the command's attributes (e.g., linking to a redirection structure or appending to a list of redirections).
+### Step 3: Expansion & Quotes Handling
 
-4. Base Case:
-The base case for the recursion occurs when there are no more pipes to process. At this point, any remaining tokens in the left part are treated as standalone commands or arguments.
-If there are still redirection operators present, they are handled in the same manner as described above.
+This step handles expanding environment variables (e.g., `$USER`) and correctly parsing quoted strings (e.g., `"some text"` or `'some text'`). It ensures that environment variables are expanded before proceeding with token parsing and execution.
 
-5. Constructing the AST:
-Once the left part has been fully processed, including any redirections, the parser constructs a node in the abstract syntax tree (AST) representing the left command.
-The process repeats for the right part, and if both sides of the pipe are successfully parsed, the parser creates a pipe node that links the two sub-command nodes.
+**Example Input (before expansion)**:
+```bash
+grep "$USER" Makefile
+grep "NAME" Makefile
+```
 
-Populate tokens to following struct of AST:
-   ```c
-   `typedef enum cmd_type
-   {
-      EXEC,
-      REDIR,
-      PIPE
-   }					t_type;
+### Step 4: Recursive Parsing & Abstract Syntax Tree (AST)
 
-   typedef struct exec
-   {
-      char			**arg;
-   }					t_exec;
+Once the tokens are expanded, the next step is parsing them recursively and constructing an Abstract Syntax Tree (AST). The AST represents the structure of the input, breaking it down into commands, redirections, and pipes. 
 
-   typedef struct redir
-   {
-      t_exec			*cmd;
-      char			*file_name;
-      int				fd;
-      struct redir	*next;
-   }					t_redir;
+- **Exec Command (EXEC)**: Represents a command with its arguments.
+- **Redirection (REDIR)**: Handles input/output redirections (`<`, `>`, `>>`).
+- **Pipe (PIPE)**: Represents pipes (`|`) between commands.
 
-   typedef struct pipe
-   {
-      void			*left;
-      void			*right;
-   }					t_pipe;
+The recursive parsing ensures that the left and right parts of pipes are parsed correctly and that redirections are handled in the right order.
 
-   typedef struct s_cmd
-   {
-      t_type			type;
-      union
-      {
-         t_pipe		*pipe;
-         t_redir		*redir;
-         t_exec		*exec;
-      } u_cmd;
-   }					t_cmd;`
-   ```
-
-Functions explaination: 
-   - parse_cmd:                           Recursively parses commands, creating PIPE nodes for each pipe (|), and calling parse_redir if no pipes are found.
-   - process_redir and parse_redir:       Handle redirection tokens (<, >, >>, <<). process_redir creates redirection nodes, while parse_redir iterates through tokens, constructing redirection nodes if redirection operators are found.
-   - parse_exec:                          Creates an EXEC command node in the AST, storing arguments for a basic command.
-   - construct_pipe:                      Builds a PIPE node in the AST, linking the left and right command branches.
-   - construct_redir:                     Creates a REDIR node, calling append_lst to manage redirections.
-   - append_lst:                          Adds a new redirection to the list for REDIR nodes, storing the file descriptor and filename.
-   - construct_exec:                      Populates an EXEC node’s argument list by copying tokens into a t_exec structure.
+**AST Structure Example**:
+            PIPE (Level 0)
+      /                        \
+PIPE (Level 1)              REDIR (>)
+  /       \                        \
+EXEC(sort)  EXEC(grep hipham)    "output.txt"
+  |
+REDIR(<)
+  |
+"Makefile"
 
 
-Overall, the functions work together to build an AST that represents commands, pipes, and redirections, providing a structured way to parse and execute command-line input.
+**Functions Involved**:
+- **`parse_cmd`**: Recursively parses the tokens to create command nodes.
+- **`process_redir` & `parse_redir`**: Handle redirection operators (`<`, `>`, `>>`).
+- **`construct_pipe`**: Constructs a PIPE node.
+- **`construct_redir`**: Creates a REDIR node for handling redirection.
+- **`construct_exec`**: Creates EXEC nodes for basic commands.
 
-Print the AST in Terminal: 
-   Left pipe, level 0 
-      Redirection file name: Makefile
-      Fd: 0
-         Exec Command: sort 
-   Right pipe, level 0 
-      Left pipe, level 1 
-         Exec Command: grep hipham 
-      Right pipe, level 1 
-         Redirection file name: output.txt
-         Fd: 1
-         Exec Command: uniq
+### Step 5: Command Execution
 
-**STEP 5 >>> ----EXECUTION----**
+After the AST is constructed, the shell interprets and executes the commands. It handles the pipes and redirections as specified in the AST.
 
+Execution involves:
+- Running commands in sequence, as specified by the AST.
+- Handling redirections by opening the correct file descriptors.
+- Executing built-in commands when necessary.
 
-**STEP 6 >>> ----EXECUTE_BUILTINS----**
+### Step 6: Built-in Commands
+
+The shell includes support for built-in commands. These commands do not require external programs and are handled directly by the shell. Common built-in commands include:
+- **`cd`**: Changes the current directory.
+- **`echo`**: Prints output to the terminal.
+- **`exit`**: Exits the shell.
+
+Each built-in command has a function that processes the command and performs the action.
 
